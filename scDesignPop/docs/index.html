@@ -8,8 +8,8 @@
 <title>Simulator for population-scale single-cell expression RNA-sequencing data • scDesignPop</title>
 <script src="deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.4.2/css/all.min.css" rel="stylesheet">
-<link href="deps/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet">
+<script src="deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Simulator for population-scale single-cell expression RNA-sequencing data">
 <meta name="description" content="Simulate realistic population-scale single-cell RNA-sequencing (scRNA-seq) data for single-cell expression quantitative trait loci analysis (sc-eQTL) using input eQTL data and scRNA-seq data. We use a flexible, statistical modeling framework that learns interpretable parameters from real data.">
 <meta property="og:description" content="Simulate realistic population-scale single-cell RNA-sequencing (scRNA-seq) data for single-cell expression quantitative trait loci analysis (sc-eQTL) using input eQTL data and scRNA-seq data. We use a flexible, statistical modeling framework that learns interpretable parameters from real data.">
@@ -22,7 +22,7 @@
 
     <a class="navbar-brand me-2" href="index.html">scDesignPop</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9005</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9006</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -38,6 +38,7 @@
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
 <li><a class="dropdown-item" href="articles/scDesignPop-celltype-prop-modeling.html">Model cell type proportions for new individuals</a></li>
     <li><a class="dropdown-item" href="articles/scDesignPop-modify-eQTL-effects.html">Modify eQTL effect for eGenes / non-eGenes</a></li>
+    <li><a class="dropdown-item" href="articles/scDesignPop-power-analysis-ES-specification.html">Power analysis based on user specified eQTL effect sizes</a></li>
     <li><a class="dropdown-item" href="articles/scDesignPop-power-analysis-fitted.html">Power analysis based on a fitted scDesignPop marginal model</a></li>
     <li><a class="dropdown-item" href="articles/scDesignPop-power-analysis-selected.html">Power analysis for selected genes</a></li>
   </ul>
@@ -62,16 +63,13 @@
 <p>scDesignPop is a simulator for population-scale single-cell RNA-sequencing (scRNA-seq) data. By incorporating eQTL effects from genotype data with other covariates, scDesignPop has several key applications:</p>
 <ul>
 <li><ol style="list-style-type: decimal">
-<li>performing eQTL power analyses at cell-type resolution,</li>
+<li>performing eQTL power analysis across cell types,</li>
 </ol></li>
 <li><ol start="2" style="list-style-type: decimal">
-<li>protecting genomic privacy by mitigating eQTL-based re-identification of individuals via linking attacks,</li>
+<li>benchmarking single-cell eQTL mapping methods with user-specified eQTLs,</li>
 </ol></li>
 <li><ol start="3" style="list-style-type: decimal">
-<li>simulating scRNA-seq data for new individuals using either simulated or real genotype data, and</li>
-</ol></li>
-<li><ol start="4" style="list-style-type: decimal">
-<li>generating positive- and negative-control data for cell-type-specific eQTLs.</li>
+<li>protecting genomic privacy by mitigating eQTL-based re-identification of individuals via linking attacks</li>
 </ol></li>
 </ul>
 <p><span style="color:blue"> <strong>Detailed tutorials that illustrate various functionalities of scDesignPop are available at this <a href="https://chrisycd.github.io/scDesignPop/docs/index.html" class="external-link">website</a></strong></span>. The following illustration figure summarizes the workflow of scDesignPop:</p>
@@ -82,7 +80,6 @@
 </h1></div>
 <ol style="list-style-type: decimal">
 <li><a href="#installation">Installation</a></li>
-<li><a href="#quick-start">Quick Start</a></li>
 <li><a href="#tutorials">Tutorials</a></li>
 <li><a href="#contact">Contact</a></li>
 <li><a href="#related-manuscripts">Related Manuscripts</a></li>
@@ -91,42 +88,30 @@
 <h2 id="installation">Installation<a name="installation"></a>
 <a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
-<p>You can install the development version of scDesignPop from <a href="https://github.com" class="external-link">GitHub</a> with:</p>
+<p>To install the key dependence of scDesignPop, we recommend:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># install.packages("remotes")</span></span>
+<code class="sourceCode R"><span><span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="st">"SingleCellExperiment"</span><span class="op">)</span><span class="op">)</span><span class="op">{</span></span>
+<span>  <span class="fu">BiocManager</span><span class="fu">::</span><span class="fu"><a href="https://bioconductor.github.io/BiocManager/reference/install.html" class="external-link">install</a></span><span class="op">(</span><span class="st">"SingleCellExperiment"</span><span class="op">)</span></span>
+<span><span class="op">}</span></span></code></pre></div>
+<p>You can install the development version of scDesignPop from <a href="https://github.com" class="external-link">GitHub</a> with:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="st"><a href="https://remotes.r-lib.org" class="external-link">"remotes"</a></span><span class="op">)</span><span class="op">)</span><span class="op">{</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"remotes"</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
 <span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"chrisycd/scDesignPop"</span><span class="op">)</span></span></code></pre></div>
-</div>
-<div class="section level2">
-<h2 id="quick-start">Quick Start<a name="quick-start"></a>
-<a class="anchor" aria-label="anchor" href="#quick-start"></a>
-</h2>
 </div>
 <div class="section level2">
 <h2 id="tutorials">Tutorials<a name="tutorials"></a>
 <a class="anchor" aria-label="anchor" href="#tutorials"></a>
 </h2>
-<p>For all detailed tutorials, please check the <a href="https://chrisycd.github.io/scDesignPop/docs/index.html" class="external-link">website</a>. The tutorials will demonstrate the applications of <strong>scDesignPop</strong> from the following perspectives: preprocessing, data simulation, model alteration, and power analysis.</p>
+<p>For tutorials, please check the <a href="https://chrisycd.github.io/scDesignPop/docs/index.html" class="external-link">website</a>. The tutorials will demonstrate the applications of <strong>scDesignPop</strong> as follows:</p>
 <ul>
-<li><p>Preprocessing</p></li>
-<li>
-<p>Data simulation</p>
-<ul>
-<li><a href="https://chrisycd.github.io/scDesignPop/docs/articles/scDesignPop-celltype-prop-modeling.html" class="external-link">Model cell type proportions for new individuals</a></li>
-</ul>
-</li>
-<li>
-<p>Model alteration</p>
-<ul>
-<li><a href="https://chrisycd.github.io/scDesignPop/docs/articles/scDesignPop-modify-eQTL-effects.html" class="external-link">Modify eQTL effect for eGenes / non-eGenes</a></li>
-</ul>
-</li>
-<li>
-<p>Power Analysis</p>
-<ul>
-<li><a href="https://chrisycd.github.io/scDesignPop/docs/articles/scDesignPop-power-analysis-fitted.html" class="external-link">Power analysis based on a fitted scDesignPop marginal model</a></li>
-<li><a href="https://chrisycd.github.io/scDesignPop/docs/articles/scDesignPop-power-analysis-selected.html" class="external-link">Power analysis for selected genes</a></li>
-</ul>
-</li>
+<li><p><a href="https://chrisycd.github.io/scDesignPop/docs/articles/scDesignPop.html" class="external-link">Model population-scale scRNA-seq data</a></p></li>
+<li><p><a href="https://chrisycd.github.io/scDesignPop/docs/articles/scDesignPop-celltype-prop-modeling.html" class="external-link">Model cell type proportions for new individuals</a></p></li>
+<li><p><a href="https://chrisycd.github.io/scDesignPop/docs/articles/scDesignPop-modify-eQTL-effects.html" class="external-link">Modify eQTL effect for eGenes / non-eGenes</a></p></li>
+<li><p><a href="https://chrisycd.github.io/scDesignPop/docs/articles/scDesignPop-power-analysis-fitted.html" class="external-link">Power analysis based on a fitted scDesignPop marginal model</a></p></li>
+<li><p><a href="https://chrisycd.github.io/scDesignPop/docs/articles/scDesignPop-power-analysis-selected.html" class="external-link">Power analysis for selected genes</a></p></li>
+<li><p><a href="https://chrisycd.github.io/scDesignPop/docs/articles/scDesignPop-power-analysis-ES-specification.html" class="external-link">Power analysis based on user specified eQTL effect sizes</a></p></li>
 </ul>
 </div>
 <div class="section level2">
@@ -140,7 +125,7 @@
 <a class="anchor" aria-label="anchor" href="#related-manuscripts"></a>
 </h2>
 <ul>
-<li><p>The original <strong>scDesignPop</strong> paper</p></li>
+<li><p>The original <strong>scDesignPop</strong> paper (TBD. Coming soon…)</p></li>
 <li>
 <p>The simulator for general single-cell counts: <strong>scDesign3</strong></p>
 <ul>
@@ -199,8 +184,8 @@
 <div class="developers">
 <h2 data-toc-skip>Developers</h2>
 <ul class="list-unstyled">
-<li>Chris Y. Dong <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0009-0006-2282-0394" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
-<li>Yihui Cen <br><small class="roles"> Author </small> <a href="https://orcid.org/0000-0002-5347-0888" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
+<li>Chris Y. Dong <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0009-0006-2282-0394" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a>  </li>
+<li>Yihui Cen <br><small class="roles"> Author </small> <a href="https://orcid.org/0000-0002-5347-0888" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a>  </li>
 </ul>
 </div>
 
@@ -215,7 +200,7 @@
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer>
