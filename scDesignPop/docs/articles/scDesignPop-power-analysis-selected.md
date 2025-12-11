@@ -35,10 +35,10 @@ data_list_sel <- constructDataPop(
     new_covariate = as.data.frame(colData(example_sce_sel)),
     overlap_features = NULL,
     sampid_vec = NULL,
-    ct_copula = TRUE,
+    copula_variable = "cell_type",
     slot_name = "counts",
     snp_model = "single",
-    cellstate_colname = "cell_type",
+    celltype_colname = "cell_type",
     feature_colname = "gene_id",
     snp_colname = "snp_id",
     loc_colname = "POS",
@@ -64,7 +64,7 @@ marginal_list_sel <- fitMarginalPop(
     n_threads = 1L,
     loc_colname = "POS",
     snp_colname = "snp_id",
-    cellstate_colname = "cell_type",
+    celltype_colname = "cell_type",
     indiv_colname = "indiv",
     filter_snps = TRUE,
     snpvar_thres = 0,
@@ -92,7 +92,10 @@ Parameter `methods` is used to specify the marginal eQTL model from
 `c("nb", "poisson", "gaussian", "pseudoBulkLinear")`. Parameter
 `nindivs` and `ncells` are used to specify the number of individuals and
 number of cells per individual, from which we can analyze the
-performance of power analysis and find the optimal setting.
+performance of power analysis and find the optimal setting. Here, we set
+`power_nsim = 1000` to increase the number of simulations so we can
+calculate power with a higher resolution. Using `power_nsim = 100` in
+default or smaller values can reduce the computation time cost.
 
 ``` r
 set.seed(123)
@@ -126,18 +129,18 @@ power_data <- runPowerAnalysis(marginal_list = marginal_list_sel,
 ## Visualization of power results
 
 The power analysis results can be visualized using the
-`visualizePowerResult` function. The cell type names in the
+`visualizePowerCurve` function. The cell type names in the
 `cellstate_vector` in the input parameters above must be included in the
 above power analysis.
 
 ``` r
-visualizePowerResult(power_result = power_data,
-                     celltype_vector = c("bmem", "monoc"),
-                     x_axis = "nindiv",
-                     y_facet = "ncell",
-                     col_group = "method",
-                     geneid = "ENSG00000163221",
-                     snpid = "1:153337943")
+visualizePowerCurve(power_result = power_data,
+                    celltype_vector = c("bmem", "monoc"),
+                    x_axis = "nindiv",
+                    y_facet = "ncell",
+                    col_group = "method",
+                    geneid = "ENSG00000163221",
+                    snpid = "1:153337943")
 ```
 
 ![](scDesignPop-power-analysis-selected_files/figure-html/unnamed-chunk-6-1.png)
@@ -145,13 +148,32 @@ visualizePowerResult(power_result = power_data,
 By swaping the x and y axis, we can show the result in a different way.
 
 ``` r
-visualizePowerResult(power_result = power_data,
-                     celltype_vector = c("bmem", "monoc"),
-                     x_axis = "ncell",
-                     y_facet = "nindiv",
-                     col_group = "method",
-                     geneid = "ENSG00000163221",
-                     snpid = "1:153337943")
+visualizePowerCurve(power_result = power_data,
+                    celltype_vector = c("bmem", "monoc"),
+                    x_axis = "ncell",
+                    y_facet = "nindiv",
+                    col_group = "method",
+                    geneid = "ENSG00000163221",
+                    snpid = "1:153337943")
 ```
 
 ![](scDesignPop-power-analysis-selected_files/figure-html/unnamed-chunk-7-1.png)
+
+To better visualize the optimal study design, alternatively, power
+results can be shown in heatmaps across different study designs using
+the `visualizePowerHeatmap` function.
+
+``` r
+visualizePowerHeatmap(power_result = power_data,
+                      nindiv_col   = "nindiv",
+                      ncell_col    = "ncell",
+                      x_facet      = "celltype",
+                      y_facet      = "method",
+                      power_col    = "power",
+                      fill_label   = "Power",
+                      fill_limits  = c(0, 1),
+                      facet_scales = "fixed",
+                      base_size    = 12)
+```
+
+![](scDesignPop-power-analysis-selected_files/figure-html/unnamed-chunk-8-1.png)

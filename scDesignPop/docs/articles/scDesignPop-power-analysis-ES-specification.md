@@ -68,13 +68,16 @@ Parameter `methods` is used to specify the marginal eQTL model from
 `c("nb", "poisson", "gaussian", "pseudoBulkLinear")`. Parameter
 `nindivs` and `ncells` are used to specify the number of individuals and
 number of cells per individual, from which we can analyze the
-performance of power analysis and find the optimal setting.
+performance of power analysis and find the optimal setting. Here, we set
+`power_nsim = 1000` to increase the number of simulations so we can
+calculate power with a higher resolution. Using `power_nsim = 100` in
+default or smaller values can reduce the computation time cost.
 
-Here, users can specify different eQTL effect sizes in each cell type
-using the input parameter `celltype_specific_ES_list` as follows, where
-each element of the list represents one scenario allowing eQTL effect
-sizes in multiple cell types can be specified at the same time. (bmem
-cell type is also included but without user specification)
+Specifically, users can specify different eQTL effect sizes in each cell
+type using the input parameter `celltype_specific_ES_list` as follows,
+where each element of the list represents one scenario allowing eQTL
+effect sizes in multiple cell types can be specified at the same time.
+(bmem cell type is also included but without user specification)
 
 ``` r
 set.seed(123)
@@ -116,18 +119,18 @@ power_data <- runPowerAnalysis(marginal_list = marginal_list_sel,
 ## Visualization of power results
 
 The power analysis results can be visualized using the
-`visualizePowerResult` function. The cell type names in the
+`visualizePowerCurve` function. The cell type names in the
 `cellstate_vector` must be included in the above power analysis.
 
 ``` r
-visualizePowerResult(power_result = power_data,
-                     celltype_vector = c("monoc"),
-                     x_axis = "specifiedES",
-                     x_facet="nindiv",
-                     y_facet = "ncell",
-                     col_group = "method",
-                     geneid = "ENSG00000163221",
-                     snpid = "1:153337943")
+visualizePowerCurve(power_result = power_data,
+                    celltype_vector = c("monoc"),
+                    x_axis = "specifiedES",
+                    x_facet="nindiv",
+                    y_facet = "ncell",
+                    col_group = "method",
+                    geneid = "ENSG00000163221",
+                    snpid = "1:153337943")
 ```
 
 ![](scDesignPop-power-analysis-ES-specification_files/figure-html/unnamed-chunk-4-1.png)
@@ -135,14 +138,14 @@ visualizePowerResult(power_result = power_data,
 By swaping the x and y axis, we can show the result in a different way.
 
 ``` r
-visualizePowerResult(power_result = power_data,
-                     celltype_vector = c("monoc"),
-                     x_axis = "specifiedES",
-                     x_facet="ncell",
-                     y_facet = "nindiv",
-                     col_group = "method",
-                     geneid = "ENSG00000163221",
-                     snpid = "1:153337943")
+visualizePowerCurve(power_result = power_data,
+                    celltype_vector = c("monoc"),
+                    x_axis = "specifiedES",
+                    x_facet="ncell",
+                    y_facet = "nindiv",
+                    col_group = "method",
+                    geneid = "ENSG00000163221",
+                    snpid = "1:153337943")
 ```
 
 ![](scDesignPop-power-analysis-ES-specification_files/figure-html/unnamed-chunk-5-1.png)

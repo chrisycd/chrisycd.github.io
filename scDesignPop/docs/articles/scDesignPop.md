@@ -4,7 +4,7 @@
 library(scDesignPop)
 library(SingleCellExperiment)
 library(SummarizedExperiment)
-library(scater)
+library(ggplot2)
 theme_set(theme_bw())
 ```
 
@@ -37,10 +37,10 @@ data_list <- constructDataPop(
     new_covariate = as.data.frame(colData(example_sce)),
     overlap_features = NULL,
     sampid_vec = NULL,
-    ct_copula = TRUE,
+    copula_variable = "cell_type",
     slot_name = "counts",
     snp_model = "single",
-    cellstate_colname = "cell_type",
+    celltype_colname = "cell_type",
     feature_colname = "gene_id",
     snp_colname = "snp_id",
     loc_colname = "POS",
@@ -66,7 +66,7 @@ marginal_list <- fitMarginalPop(
     n_threads = 20L,
     loc_colname = "POS",
     snp_colname = "snp_id",
-    cellstate_colname = "cell_type",
+    celltype_colname = "cell_type",
     indiv_colname = "indiv",
     filter_snps = TRUE,
     snpvar_thres = 0,
@@ -201,62 +201,41 @@ sessionInfo()
 #> [8] base     
 #> 
 #> other attached packages:
-#>  [1] scater_1.26.1               ggplot2_3.5.2              
-#>  [3] scuttle_1.8.4               SingleCellExperiment_1.20.1
-#>  [5] SummarizedExperiment_1.28.0 Biobase_2.58.0             
-#>  [7] GenomicRanges_1.50.2        GenomeInfoDb_1.34.9        
-#>  [9] IRanges_2.32.0              S4Vectors_0.36.2           
-#> [11] BiocGenerics_0.44.0         MatrixGenerics_1.10.0      
-#> [13] matrixStats_1.1.0           scDesignPop_0.0.0.9006     
-#> [15] BiocStyle_2.26.0           
+#>  [1] ggplot2_3.5.2               SingleCellExperiment_1.20.1
+#>  [3] SummarizedExperiment_1.28.0 Biobase_2.58.0             
+#>  [5] GenomicRanges_1.50.2        GenomeInfoDb_1.34.9        
+#>  [7] IRanges_2.32.0              S4Vectors_0.36.2           
+#>  [9] BiocGenerics_0.44.0         MatrixGenerics_1.10.0      
+#> [11] matrixStats_1.1.0           scDesignPop_0.0.0.9006     
+#> [13] BiocStyle_2.26.0           
 #> 
 #> loaded via a namespace (and not attached):
-#>  [1] nlme_3.1-164              bitops_1.0-9             
-#>  [3] fs_1.6.6                  RcppAnnoy_0.0.22         
-#>  [5] RColorBrewer_1.1-3        numDeriv_2016.8-1.1      
-#>  [7] tools_4.2.3               TMB_1.9.11               
-#>  [9] bslib_0.9.0               R6_2.6.1                 
-#> [11] irlba_2.3.5.1             vipor_0.4.7              
-#> [13] uwot_0.2.3                mgcv_1.9-1               
-#> [15] withr_3.0.2               tidyselect_1.2.1         
-#> [17] gridExtra_2.3             compiler_4.2.3           
-#> [19] textshaping_0.4.0         cli_3.6.5                
-#> [21] BiocNeighbors_1.16.0      sandwich_3.1-1           
-#> [23] desc_1.4.3                DelayedArray_0.24.0      
-#> [25] labeling_0.4.3            bookdown_0.43            
-#> [27] sass_0.4.10               scales_1.4.0             
-#> [29] mvtnorm_1.3-3             pbapply_1.7-2            
-#> [31] pkgdown_2.2.0             systemfonts_1.2.3        
-#> [33] digest_0.6.37             minqa_1.2.8              
-#> [35] rmarkdown_2.27            RhpcBLASctl_0.23-42      
-#> [37] XVector_0.38.0            pkgconfig_2.0.3          
-#> [39] htmltools_0.5.8.1         lme4_1.1-35.3            
-#> [41] sparseMatrixStats_1.10.0  fastmap_1.2.0            
-#> [43] htmlwidgets_1.6.4         rlang_1.1.6              
-#> [45] rstudioapi_0.17.1         DelayedMatrixStats_1.20.0
-#> [47] jquerylib_0.1.4           farver_2.1.2             
-#> [49] generics_0.1.4            zoo_1.8-14               
-#> [51] jsonlite_2.0.0            BiocParallel_1.32.6      
-#> [53] dplyr_1.1.4               RCurl_1.98-1.17          
-#> [55] magrittr_2.0.3            BiocSingular_1.14.0      
-#> [57] GenomeInfoDbData_1.2.9    Matrix_1.6-5             
-#> [59] Rcpp_1.0.14               ggbeeswarm_0.7.2         
-#> [61] viridis_0.6.5             lifecycle_1.0.4          
-#> [63] yaml_2.3.10               MASS_7.3-58.2            
-#> [65] zlibbioc_1.44.0           grid_4.2.3               
-#> [67] parallel_4.2.3            ggrepel_0.9.5            
-#> [69] lattice_0.22-6            beachmat_2.14.2          
-#> [71] splines_4.2.3             knitr_1.50               
-#> [73] pillar_1.10.2             boot_1.3-30              
-#> [75] codetools_0.2-20          ScaledMatrix_1.6.0       
-#> [77] glue_1.8.0                evaluate_1.0.3           
-#> [79] BiocManager_1.30.25       Rdpack_2.6.4             
-#> [81] vctrs_0.6.5               nloptr_2.2.1             
-#> [83] gtable_0.3.6              assertthat_0.2.1         
-#> [85] cachem_1.1.0              xfun_0.52                
-#> [87] rbibutils_2.3             rsvd_1.0.5               
-#> [89] reformulas_0.4.1          ragg_1.5.0               
-#> [91] viridisLite_0.4.2         tibble_3.2.1             
-#> [93] pbmcapply_1.5.1           glmmTMB_1.1.13           
-#> [95] beeswarm_0.4.0
+#>  [1] nlme_3.1-164           bitops_1.0-9           fs_1.6.6              
+#>  [4] RcppAnnoy_0.0.22       RColorBrewer_1.1-3     numDeriv_2016.8-1.1   
+#>  [7] tools_4.2.3            TMB_1.9.11             bslib_0.9.0           
+#> [10] R6_2.6.1               irlba_2.3.5.1          uwot_0.2.3            
+#> [13] mgcv_1.9-1             withr_3.0.2            tidyselect_1.2.1      
+#> [16] gridExtra_2.3          compiler_4.2.3         textshaping_0.4.0     
+#> [19] cli_3.6.5              desc_1.4.3             DelayedArray_0.24.0   
+#> [22] sandwich_3.1-1         labeling_0.4.3         bookdown_0.43         
+#> [25] sass_0.4.10            scales_1.4.0           mvtnorm_1.3-3         
+#> [28] pbapply_1.7-2          pkgdown_2.2.0          systemfonts_1.2.3     
+#> [31] digest_0.6.37          minqa_1.2.8            rmarkdown_2.27        
+#> [34] XVector_0.38.0         RhpcBLASctl_0.23-42    pkgconfig_2.0.3       
+#> [37] htmltools_0.5.8.1      lme4_1.1-35.3          fastmap_1.2.0         
+#> [40] htmlwidgets_1.6.4      rlang_1.1.6            rstudioapi_0.17.1     
+#> [43] jquerylib_0.1.4        farver_2.1.2           generics_0.1.4        
+#> [46] zoo_1.8-14             jsonlite_2.0.0         dplyr_1.1.4           
+#> [49] RCurl_1.98-1.17        magrittr_2.0.3         GenomeInfoDbData_1.2.9
+#> [52] Matrix_1.6-5           Rcpp_1.0.14            viridis_0.6.5         
+#> [55] lifecycle_1.0.4        yaml_2.3.10            MASS_7.3-58.2         
+#> [58] zlibbioc_1.44.0        grid_4.2.3             parallel_4.2.3        
+#> [61] lattice_0.22-6         splines_4.2.3          knitr_1.50            
+#> [64] pillar_1.10.2          boot_1.3-30            codetools_0.2-20      
+#> [67] glue_1.8.0             evaluate_1.0.3         BiocManager_1.30.25   
+#> [70] vctrs_0.6.5            nloptr_2.2.1           Rdpack_2.6.4          
+#> [73] gtable_0.3.6           assertthat_0.2.1       cachem_1.1.0          
+#> [76] xfun_0.52              rbibutils_2.3          reformulas_0.4.1      
+#> [79] ragg_1.5.0             viridisLite_0.4.2      tibble_3.2.1          
+#> [82] pbmcapply_1.5.1        glmmTMB_1.1.13
 ```

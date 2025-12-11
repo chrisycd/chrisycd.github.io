@@ -4,6 +4,10 @@
 
 - [Model cell type proportions for new
   individuals](https://github.com/chrisycd/scDesignPop/articles/scDesignPop-celltype-prop-modeling.md):
+- [Model nonlinear dynamic eQTL effects in continuous cell
+  states](https://github.com/chrisycd/scDesignPop/articles/scDesignPop-dynamic-eQTL-NL.md):
+- [Model linear dynamic eQTL effects in continuous cell
+  states](https://github.com/chrisycd/scDesignPop/articles/scDesignPop-dynamic-eQTL.md):
 - [Modify eQTL effect for eGenes /
   non-eGenes](https://github.com/chrisycd/scDesignPop/articles/scDesignPop-modify-eQTL-effects.md):
 - [Power analysis based on user specified eQTL effect

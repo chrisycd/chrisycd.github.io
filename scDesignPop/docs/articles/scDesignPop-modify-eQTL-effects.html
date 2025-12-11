@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">scDesignPop</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9006</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9008</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -35,6 +35,8 @@
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
 <li><a class="dropdown-item" href="../articles/scDesignPop-celltype-prop-modeling.html">Model cell type proportions for new individuals</a></li>
+    <li><a class="dropdown-item" href="../articles/scDesignPop-dynamic-eQTL-NL.html">Model nonlinear dynamic eQTL effects in continuous cell states</a></li>
+    <li><a class="dropdown-item" href="../articles/scDesignPop-dynamic-eQTL.html">Model linear dynamic eQTL effects in continuous cell states</a></li>
     <li><a class="dropdown-item" href="../articles/scDesignPop-modify-eQTL-effects.html">Modify eQTL effect for eGenes / non-eGenes</a></li>
     <li><a class="dropdown-item" href="../articles/scDesignPop-power-analysis-ES-specification.html">Power analysis based on user specified eQTL effect sizes</a></li>
     <li><a class="dropdown-item" href="../articles/scDesignPop-power-analysis-fitted.html">Power analysis based on a fitted scDesignPop marginal model</a></li>
@@ -73,15 +75,15 @@ Cen</h4>
       Department of Computational Medicine, University of California,
 Los Angeles<br><a class="author_email" href="mailto:#"></a><a href="mailto:yihuicen@g.ucla.edu" class="email">yihuicen@g.ucla.edu</a>
       </address>
-                  
-            <h4 data-toc-skip class="date">29 November 2025</h4>
-      
+
+            <h4 data-toc-skip class="date">11 December 2025</h4>
+
       <small class="dont-index">Source: <a href="https://github.com/chrisycd/scDesignPop/blob/HEAD/vignettes/scDesignPop-modify-eQTL-effects.Rmd"><code>vignettes/scDesignPop-modify-eQTL-effects.Rmd</code></a></small>
       <div class="d-none name"><code>scDesignPop-modify-eQTL-effects.Rmd</code></div>
     </div>
 
-    
-    
+
+
 <style type="text/css">
 pre {
   white-space: pre !important;
@@ -110,10 +112,10 @@ example <code>eqtlgeno</code> dataframe is given below.</p>
 <span>    new_covariate <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></span><span class="op">(</span><span class="va">example_sce</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>    overlap_features <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>    sampid_vec <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>    ct_copula <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>    copula_variable <span class="op">=</span> <span class="st">"cell_type"</span>,</span>
 <span>    slot_name <span class="op">=</span> <span class="st">"counts"</span>,</span>
 <span>    snp_model <span class="op">=</span> <span class="st">"single"</span>,</span>
-<span>    cellstate_colname <span class="op">=</span> <span class="st">"cell_type"</span>,</span>
+<span>    celltype_colname <span class="op">=</span> <span class="st">"cell_type"</span>,</span>
 <span>    feature_colname <span class="op">=</span> <span class="st">"gene_id"</span>,</span>
 <span>    snp_colname <span class="op">=</span> <span class="st">"snp_id"</span>,</span>
 <span>    loc_colname <span class="op">=</span> <span class="st">"POS"</span>,</span>
@@ -202,7 +204,7 @@ example <code>eqtlgeno</code> dataframe is given below.</p>
 <span>  mean_baseline_only <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  eqtl_baseline_only <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  disp_scaling <span class="op">=</span> <span class="st">"linear"</span>,</span>
-<span>  cellstate_colname <span class="op">=</span> <span class="st">"cell_type"</span>,</span>
+<span>  celltype_colname <span class="op">=</span> <span class="st">"cell_type"</span>,</span>
 <span>  snp_colname <span class="op">=</span> <span class="st">"snp_id"</span>,</span>
 <span>  verbose <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  debug <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>

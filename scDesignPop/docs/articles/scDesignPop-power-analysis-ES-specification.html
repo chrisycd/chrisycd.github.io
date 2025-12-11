@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">scDesignPop</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9006</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9008</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -35,6 +35,8 @@
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
 <li><a class="dropdown-item" href="../articles/scDesignPop-celltype-prop-modeling.html">Model cell type proportions for new individuals</a></li>
+    <li><a class="dropdown-item" href="../articles/scDesignPop-dynamic-eQTL-NL.html">Model nonlinear dynamic eQTL effects in continuous cell states</a></li>
+    <li><a class="dropdown-item" href="../articles/scDesignPop-dynamic-eQTL.html">Model linear dynamic eQTL effects in continuous cell states</a></li>
     <li><a class="dropdown-item" href="../articles/scDesignPop-modify-eQTL-effects.html">Modify eQTL effect for eGenes / non-eGenes</a></li>
     <li><a class="dropdown-item" href="../articles/scDesignPop-power-analysis-ES-specification.html">Power analysis based on user specified eQTL effect sizes</a></li>
     <li><a class="dropdown-item" href="../articles/scDesignPop-power-analysis-fitted.html">Power analysis based on a fitted scDesignPop marginal model</a></li>
@@ -73,15 +75,15 @@ Cen</h4>
       Department of Computational Medicine, University of California,
 Los Angeles<br><a class="author_email" href="mailto:#"></a><a href="mailto:yihuicen@g.ucla.edu" class="email">yihuicen@g.ucla.edu</a>
       </address>
-                  
-            <h4 data-toc-skip class="date">29 November 2025</h4>
-      
+
+            <h4 data-toc-skip class="date">11 December 2025</h4>
+
       <small class="dont-index">Source: <a href="https://github.com/chrisycd/scDesignPop/blob/HEAD/vignettes/scDesignPop-power-analysis-ES-specification.Rmd"><code>vignettes/scDesignPop-power-analysis-ES-specification.Rmd</code></a></small>
       <div class="d-none name"><code>scDesignPop-power-analysis-ES-specification.Rmd</code></div>
     </div>
 
-    
-    
+
+
 <style type="text/css">
 pre {
   white-space: pre !important;
@@ -161,13 +163,16 @@ used to specify the marginal eQTL model from
 Parameter <code>nindivs</code> and <code>ncells</code> are used to
 specify the number of individuals and number of cells per individual,
 from which we can analyze the performance of power analysis and find the
-optimal setting.</p>
-<p>Here, users can specify different eQTL effect sizes in each cell type
-using the input parameter <code>celltype_specific_ES_list</code> as
-follows, where each element of the list represents one scenario allowing
-eQTL effect sizes in multiple cell types can be specified at the same
-time. (bmem cell type is also included but without user
-specification)</p>
+optimal setting. Here, we set <code>power_nsim = 1000</code> to increase
+the number of simulations so we can calculate power with a higher
+resolution. Using <code>power_nsim = 100</code> in default or smaller
+values can reduce the computation time cost.</p>
+<p>Specifically, users can specify different eQTL effect sizes in each
+cell type using the input parameter
+<code>celltype_specific_ES_list</code> as follows, where each element of
+the list represents one scenario allowing eQTL effect sizes in multiple
+cell types can be specified at the same time. (bmem cell type is also
+included but without user specification)</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span></span>
 <span><span class="va">power_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runPowerAnalysis.html">runPowerAnalysis</a></span><span class="op">(</span>marginal_list <span class="op">=</span> <span class="va">marginal_list_sel</span>,</span>
@@ -208,30 +213,30 @@ specification)</p>
 <h2 id="visualization-of-power-results">Visualization of power results<a class="anchor" aria-label="anchor" href="#visualization-of-power-results"></a>
 </h2>
 <p>The power analysis results can be visualized using the
-<code>visualizePowerResult</code> function. The cell type names in the
+<code>visualizePowerCurve</code> function. The cell type names in the
 <code>cellstate_vector</code> must be included in the above power
 analysis.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/visualizePowerResult.html">visualizePowerResult</a></span><span class="op">(</span>power_result <span class="op">=</span> <span class="va">power_data</span>,</span>
-<span>                     celltype_vector <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"monoc"</span><span class="op">)</span>,</span>
-<span>                     x_axis <span class="op">=</span> <span class="st">"specifiedES"</span>,</span>
-<span>                     x_facet<span class="op">=</span><span class="st">"nindiv"</span>,</span>
-<span>                     y_facet <span class="op">=</span> <span class="st">"ncell"</span>,</span>
-<span>                     col_group <span class="op">=</span> <span class="st">"method"</span>,</span>
-<span>                     geneid <span class="op">=</span> <span class="st">"ENSG00000163221"</span>,</span>
-<span>                     snpid <span class="op">=</span> <span class="st">"1:153337943"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/visualizePowerCurve.html">visualizePowerCurve</a></span><span class="op">(</span>power_result <span class="op">=</span> <span class="va">power_data</span>,</span>
+<span>                    celltype_vector <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"monoc"</span><span class="op">)</span>,</span>
+<span>                    x_axis <span class="op">=</span> <span class="st">"specifiedES"</span>,</span>
+<span>                    x_facet<span class="op">=</span><span class="st">"nindiv"</span>,</span>
+<span>                    y_facet <span class="op">=</span> <span class="st">"ncell"</span>,</span>
+<span>                    col_group <span class="op">=</span> <span class="st">"method"</span>,</span>
+<span>                    geneid <span class="op">=</span> <span class="st">"ENSG00000163221"</span>,</span>
+<span>                    snpid <span class="op">=</span> <span class="st">"1:153337943"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="scDesignPop-power-analysis-ES-specification_files/figure-html/unnamed-chunk-4-1.png" class="r-plt" width="700"></p>
 <p>By swaping the x and y axis, we can show the result in a different
 way.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/visualizePowerResult.html">visualizePowerResult</a></span><span class="op">(</span>power_result <span class="op">=</span> <span class="va">power_data</span>,</span>
-<span>                     celltype_vector <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"monoc"</span><span class="op">)</span>,</span>
-<span>                     x_axis <span class="op">=</span> <span class="st">"specifiedES"</span>,</span>
-<span>                     x_facet<span class="op">=</span><span class="st">"ncell"</span>,</span>
-<span>                     y_facet <span class="op">=</span> <span class="st">"nindiv"</span>,</span>
-<span>                     col_group <span class="op">=</span> <span class="st">"method"</span>,</span>
-<span>                     geneid <span class="op">=</span> <span class="st">"ENSG00000163221"</span>,</span>
-<span>                     snpid <span class="op">=</span> <span class="st">"1:153337943"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/visualizePowerCurve.html">visualizePowerCurve</a></span><span class="op">(</span>power_result <span class="op">=</span> <span class="va">power_data</span>,</span>
+<span>                    celltype_vector <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"monoc"</span><span class="op">)</span>,</span>
+<span>                    x_axis <span class="op">=</span> <span class="st">"specifiedES"</span>,</span>
+<span>                    x_facet<span class="op">=</span><span class="st">"ncell"</span>,</span>
+<span>                    y_facet <span class="op">=</span> <span class="st">"nindiv"</span>,</span>
+<span>                    col_group <span class="op">=</span> <span class="st">"method"</span>,</span>
+<span>                    geneid <span class="op">=</span> <span class="st">"ENSG00000163221"</span>,</span>
+<span>                    snpid <span class="op">=</span> <span class="st">"1:153337943"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="scDesignPop-power-analysis-ES-specification_files/figure-html/unnamed-chunk-5-1.png" class="r-plt" width="700"></p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
