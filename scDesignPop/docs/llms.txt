@@ -57,6 +57,12 @@ follows:
 - [Model population-scale scRNA-seq
   data](https://chrisycd.github.io/scDesignPop/docs/articles/scDesignPop.html)
 
+- [Model linear dynamic eQTL effects in continuous cell
+  states](https://chrisycd.github.io/scDesignPop/docs/articles/scDesignPop-dynamic-eQTL.html)
+
+- [Model Nonlinear dynamic eQTL effects in continuous cell
+  states](https://chrisycd.github.io/scDesignPop/docs/articles/scDesignPop-dynamic-eQTL-NL.html)
+
 - [Model cell type proportions for new
   individuals](https://chrisycd.github.io/scDesignPop/docs/articles/scDesignPop-celltype-prop-modeling.html)
 
@@ -137,11 +143,17 @@ Chris Dong (<cycd@g.ucla.edu>) or Yihui Cen (<yihuicen@g.ucla.edu>).
 - [`constructSCE()`](https://github.com/chrisycd/scDesignPop/reference/constructSCE.md)
   : Construct a SingleCellExperiment object with specified covariates.
 - [`example_eqtlgeno`](https://github.com/chrisycd/scDesignPop/reference/example_eqtlgeno.md)
-  : A dataframe containing both eQTL annotations and genotypes of
-  individuals
+  : Example genotype data for cell-type-specific eQTLs
+- [`example_eqtlgeno_Bcell`](https://github.com/chrisycd/scDesignPop/reference/example_eqtlgeno_Bcell.md)
+  : Example B cell eQTL genotype data
+- [`example_genopc_new`](https://github.com/chrisycd/scDesignPop/reference/example_genopc_new.md)
+  : Genotype principal components for new individuals
+- [`example_genopc_train`](https://github.com/chrisycd/scDesignPop/reference/example_genopc_train.md)
+  : Genotype principal components for training individuals
 - [`example_sce`](https://github.com/chrisycd/scDesignPop/reference/example_sce.md)
-  : A SingleCellExperiment object containing both cell type and
-  individual id
+  : Example single-cell RNA-seq data (multi–cell type)
+- [`example_sce_Bcell`](https://github.com/chrisycd/scDesignPop/reference/example_sce_Bcell.md)
+  : Example B cell single-cell RNA-seq data with pseudotime
 - [`extractFromSCE()`](https://github.com/chrisycd/scDesignPop/reference/extractFromSCE.md)
   : Extract data from SingleCellExperiment object
 - [`extractFromSeurat()`](https://github.com/chrisycd/scDesignPop/reference/extractFromSeurat.md)
@@ -156,6 +168,8 @@ Chris Dong (<cycd@g.ucla.edu>) or Yihui Cen (<yihuicen@g.ucla.edu>).
   : Fit a Marginal Model
 - [`fitPAModel()`](https://github.com/chrisycd/scDesignPop/reference/fitPAModel.md)
   : Fit a marginal model for power analysis
+- [`marginal_list_sel`](https://github.com/chrisycd/scDesignPop/reference/marginal_list_sel.md)
+  : Example list of scDesignPop's marginal models
 - [`modifyMarginalModels()`](https://github.com/chrisycd/scDesignPop/reference/modifyMarginalModels.md)
   : Modify marginal models
 - [`modifyModelPara()`](https://github.com/chrisycd/scDesignPop/reference/modifyModelPara.md)
@@ -177,8 +191,10 @@ Chris Dong (<cycd@g.ucla.edu>) or Yihui Cen (<yihuicen@g.ucla.edu>).
   : Simulate new data
 - [`simulatePADesignMatrix()`](https://github.com/chrisycd/scDesignPop/reference/simulatePADesignMatrix.md)
   : Simulate new design matrix for power analysis
-- [`visualizePowerResult()`](https://github.com/chrisycd/scDesignPop/reference/visualizePowerResult.md)
-  : Visualize the power analysis result
+- [`visualizePowerCurve()`](https://github.com/chrisycd/scDesignPop/reference/visualizePowerCurve.md)
+  : Visualize power as curves across study designs
+- [`visualizePowerHeatmap()`](https://github.com/chrisycd/scDesignPop/reference/visualizePowerHeatmap.md)
+  : Visualize power as heatmaps across study designs
 
 # Articles
 
@@ -186,6 +202,10 @@ Chris Dong (<cycd@g.ucla.edu>) or Yihui Cen (<yihuicen@g.ucla.edu>).
 
 - [Model cell type proportions for new
   individuals](https://github.com/chrisycd/scDesignPop/articles/scDesignPop-celltype-prop-modeling.md):
+- [Model nonlinear dynamic eQTL effects in continuous cell
+  states](https://github.com/chrisycd/scDesignPop/articles/scDesignPop-dynamic-eQTL-NL.md):
+- [Model linear dynamic eQTL effects in continuous cell
+  states](https://github.com/chrisycd/scDesignPop/articles/scDesignPop-dynamic-eQTL.md):
 - [Modify eQTL effect for eGenes /
   non-eGenes](https://github.com/chrisycd/scDesignPop/articles/scDesignPop-modify-eQTL-effects.md):
 - [Power analysis based on user specified eQTL effect
