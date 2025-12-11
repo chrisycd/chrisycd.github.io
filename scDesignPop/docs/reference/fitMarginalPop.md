@@ -14,7 +14,7 @@ fitMarginalPop(
   n_threads = 2L,
   loc_colname = "POS",
   snp_colname = "snp_id",
-  cellstate_colname = "cell_type",
+  celltype_colname = "cell_type",
   indiv_colname = "indiv",
   filter_snps = TRUE,
   snpvar_thres = 0,
@@ -63,9 +63,9 @@ fitMarginalPop(
 
   a string scalar for column name of SNP id variable.
 
-- cellstate_colname:
+- celltype_colname:
 
-  a string scalar for column name of cell state (ie. cell type).
+  a string scalar for column name of cell type.
 
 - indiv_colname:
 

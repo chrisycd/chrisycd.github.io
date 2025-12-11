@@ -10,7 +10,7 @@ plotCellProp(
   col_data,
   title = NULL,
   color_vec = NULL,
-  cellstate_colname = "cell_type",
+  celltype_colname = "cell_type",
   indiv_colname = "indiv",
   width = 1,
   linewidth = 0.01
@@ -22,7 +22,7 @@ plotCellProp(
 - col_data:
 
   a data frame with two columns: individual ids with column name
-  `indiv_colname`, and cell types with column name `cellstate_colname`.
+  `indiv_colname`, and cell types with column name `celltype_colname`.
 
 - title:
 
@@ -34,7 +34,7 @@ plotCellProp(
   names. If NULL, the cell types contained in `col_data` will be ordered
   by alphabetical order with R default color schemes.
 
-- cellstate_colname:
+- celltype_colname:
 
   a string scalar to specify the cell type variable in `col_data`
 

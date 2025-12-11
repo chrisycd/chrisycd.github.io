@@ -22,6 +22,8 @@ in the eQTL genotype dataframe."></head><body>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/scDesignPop-celltype-prop-modeling.html">Model cell type proportions for new individuals</a></li>
+    <li><a class="dropdown-item" href="../articles/scDesignPop-dynamic-eQTL-NL.html">Model nonlinear dynamic eQTL effects in continuous cell states</a></li>
+    <li><a class="dropdown-item" href="../articles/scDesignPop-dynamic-eQTL.html">Model linear dynamic eQTL effects in continuous cell states</a></li>
     <li><a class="dropdown-item" href="../articles/scDesignPop-modify-eQTL-effects.html">Modify eQTL effect for eGenes / non-eGenes</a></li>
     <li><a class="dropdown-item" href="../articles/scDesignPop-power-analysis-ES-specification.html">Power analysis based on user specified eQTL effect sizes</a></li>
     <li><a class="dropdown-item" href="../articles/scDesignPop-power-analysis-fitted.html">Power analysis based on a fitted scDesignPop marginal model</a></li>
@@ -57,10 +59,12 @@ in the eQTL genotype dataframe.</p>
 <span>  new_covariate <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  overlap_features <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  sampid_vec <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  ct_copula <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  copula_variable <span class="op">=</span> <span class="va">celltype_colname</span>,</span>
+<span>  n_quantiles <span class="op">=</span> <span class="fl">10</span>,</span>
 <span>  slot_name <span class="op">=</span> <span class="st">"counts"</span>,</span>
 <span>  snp_model <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"single"</span>, <span class="st">"multi"</span><span class="op">)</span>,</span>
-<span>  cellstate_colname <span class="op">=</span> <span class="st">"cell_type"</span>,</span>
+<span>  time_colname <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  celltype_colname <span class="op">=</span> <span class="st">"cell_type"</span>,</span>
 <span>  feature_colname <span class="op">=</span> <span class="st">"gene_id"</span>,</span>
 <span>  snp_colname <span class="op">=</span> <span class="st">"snp_id"</span>,</span>
 <span>  loc_colname <span class="op">=</span> <span class="st">"POS"</span>,</span>
@@ -102,9 +106,17 @@ The default is NULL.</p></dd>
 The default is NULL.</p></dd>
 
 
-<dt id="arg-ct-copula">ct_copula<a class="anchor" aria-label="anchor" href="#arg-ct-copula"></a></dt>
-<dd><p>a logical scalar for whether to fit the copula by cell state
-variable specified by <code>cellstate_colname</code> option. The default is TRUE.</p></dd>
+<dt id="arg-copula-variable">copula_variable<a class="anchor" aria-label="anchor" href="#arg-copula-variable"></a></dt>
+<dd><p>a string scalar specifying the column name in cell
+covariate of <code>sce</code> object for which to fit the copula by. If NULL, then
+copula will be fitted for all cells. if it's the same as celltype_colname,
+then copula will be fitted per cell type, while if it's the same as
+time_colname, copula will be fitted per time quantile.</p></dd>
+
+
+<dt id="arg-n-quantiles">n_quantiles<a class="anchor" aria-label="anchor" href="#arg-n-quantiles"></a></dt>
+<dd><p>an integer value used for how many time quantiles of continuous
+cell states will be assigned for copula fitting. The default is 10.</p></dd>
 
 
 <dt id="arg-slot-name">slot_name<a class="anchor" aria-label="anchor" href="#arg-slot-name"></a></dt>
@@ -117,8 +129,13 @@ The default is "counts".</p></dd>
 are either "single" for single-SNP, or "multi" for multi-SNP.</p></dd>
 
 
-<dt id="arg-cellstate-colname">cellstate_colname<a class="anchor" aria-label="anchor" href="#arg-cellstate-colname"></a></dt>
-<dd><p>a string scalar specifying the cell state variable in
+<dt id="arg-time-colname">time_colname<a class="anchor" aria-label="anchor" href="#arg-time-colname"></a></dt>
+<dd><p>a string scalar specifying the time/pseudotime variable in
+the cell covariate of <code>sce</code> object.</p></dd>
+
+
+<dt id="arg-celltype-colname">celltype_colname<a class="anchor" aria-label="anchor" href="#arg-celltype-colname"></a></dt>
+<dd><p>a string scalar specifying the cell type variable in
 <code>eqtlgeno_df</code> and cell covariate of <code>sce</code> object.
 The default is "cell_type".</p></dd>
 

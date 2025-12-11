@@ -15,7 +15,7 @@ simuCellProportion(
   PCnum = 5L,
   cov_colnames = NULL,
   indiv_colname = "indiv",
-  cellstate_colname = "cell_type",
+  celltype_colname = "cell_type",
   cn_model_family = "lognormal",
   cn_meanlog = NULL,
   cn_sdlog = NULL,
@@ -65,10 +65,10 @@ simuCellProportion(
   a string scalar to specify the variable in `sce` containing
   individuals.
 
-- cellstate_colname:
+- celltype_colname:
 
   a string scalar to specify the variable in `sce` containing cell
-  states (ie. cell types).
+  types.
 
 - cn_model_family:
 

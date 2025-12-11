@@ -20,7 +20,7 @@ modifyMarginalModels(
   mean_baseline_only = FALSE,
   eqtl_baseline_only = FALSE,
   disp_scaling = "linear",
-  cellstate_colname = "cell_type",
+  celltype_colname = "cell_type",
   snp_colname = "snp_id",
   verbose = TRUE,
   debug = FALSE,
@@ -111,9 +111,9 @@ modifyMarginalModels(
   `"quadratic"`, or `"none"`. (NOTE: currently only applicable to the
   negative binomial model.)
 
-- cellstate_colname:
+- celltype_colname:
 
-  A string for cell state variable name.
+  A string for cell type variable name.
 
 - snp_colname:
 

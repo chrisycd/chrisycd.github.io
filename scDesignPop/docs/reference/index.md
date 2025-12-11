@@ -27,11 +27,17 @@
 - [`constructSCE()`](https://github.com/chrisycd/scDesignPop/reference/constructSCE.md)
   : Construct a SingleCellExperiment object with specified covariates.
 - [`example_eqtlgeno`](https://github.com/chrisycd/scDesignPop/reference/example_eqtlgeno.md)
-  : A dataframe containing both eQTL annotations and genotypes of
-  individuals
+  : Example genotype data for cell-type-specific eQTLs
+- [`example_eqtlgeno_Bcell`](https://github.com/chrisycd/scDesignPop/reference/example_eqtlgeno_Bcell.md)
+  : Example B cell eQTL genotype data
+- [`example_genopc_new`](https://github.com/chrisycd/scDesignPop/reference/example_genopc_new.md)
+  : Genotype principal components for new individuals
+- [`example_genopc_train`](https://github.com/chrisycd/scDesignPop/reference/example_genopc_train.md)
+  : Genotype principal components for training individuals
 - [`example_sce`](https://github.com/chrisycd/scDesignPop/reference/example_sce.md)
-  : A SingleCellExperiment object containing both cell type and
-  individual id
+  : Example single-cell RNA-seq data (multi–cell type)
+- [`example_sce_Bcell`](https://github.com/chrisycd/scDesignPop/reference/example_sce_Bcell.md)
+  : Example B cell single-cell RNA-seq data with pseudotime
 - [`extractFromSCE()`](https://github.com/chrisycd/scDesignPop/reference/extractFromSCE.md)
   : Extract data from SingleCellExperiment object
 - [`extractFromSeurat()`](https://github.com/chrisycd/scDesignPop/reference/extractFromSeurat.md)
@@ -46,6 +52,8 @@
   : Fit a Marginal Model
 - [`fitPAModel()`](https://github.com/chrisycd/scDesignPop/reference/fitPAModel.md)
   : Fit a marginal model for power analysis
+- [`marginal_list_sel`](https://github.com/chrisycd/scDesignPop/reference/marginal_list_sel.md)
+  : Example list of scDesignPop's marginal models
 - [`modifyMarginalModels()`](https://github.com/chrisycd/scDesignPop/reference/modifyMarginalModels.md)
   : Modify marginal models
 - [`modifyModelPara()`](https://github.com/chrisycd/scDesignPop/reference/modifyModelPara.md)
@@ -67,5 +75,7 @@
   : Simulate new data
 - [`simulatePADesignMatrix()`](https://github.com/chrisycd/scDesignPop/reference/simulatePADesignMatrix.md)
   : Simulate new design matrix for power analysis
-- [`visualizePowerResult()`](https://github.com/chrisycd/scDesignPop/reference/visualizePowerResult.md)
-  : Visualize the power analysis result
+- [`visualizePowerCurve()`](https://github.com/chrisycd/scDesignPop/reference/visualizePowerCurve.md)
+  : Visualize power as curves across study designs
+- [`visualizePowerHeatmap()`](https://github.com/chrisycd/scDesignPop/reference/visualizePowerHeatmap.md)
+  : Visualize power as heatmaps across study designs

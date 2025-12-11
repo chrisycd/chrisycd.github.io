@@ -13,10 +13,12 @@ constructDataPop(
   new_covariate = NULL,
   overlap_features = NULL,
   sampid_vec = NULL,
-  ct_copula = TRUE,
+  copula_variable = celltype_colname,
+  n_quantiles = 10,
   slot_name = "counts",
   snp_model = c("single", "multi"),
-  cellstate_colname = "cell_type",
+  time_colname = NULL,
+  celltype_colname = "cell_type",
   feature_colname = "gene_id",
   snp_colname = "snp_id",
   loc_colname = "POS",
@@ -55,10 +57,18 @@ constructDataPop(
   an optional string vector to filter for sample ids. The default is
   NULL.
 
-- ct_copula:
+- copula_variable:
 
-  a logical scalar for whether to fit the copula by cell state variable
-  specified by `cellstate_colname` option. The default is TRUE.
+  a string scalar specifying the column name in cell covariate of `sce`
+  object for which to fit the copula by. If NULL, then copula will be
+  fitted for all cells. if it's the same as celltype_colname, then
+  copula will be fitted per cell type, while if it's the same as
+  time_colname, copula will be fitted per time quantile.
+
+- n_quantiles:
+
+  an integer value used for how many time quantiles of continuous cell
+  states will be assigned for copula fitting. The default is 10.
 
 - slot_name:
 
@@ -70,10 +80,15 @@ constructDataPop(
   a string scalar specifying the type of SNP model used. Options are
   either "single" for single-SNP, or "multi" for multi-SNP.
 
-- cellstate_colname:
+- time_colname:
 
-  a string scalar specifying the cell state variable in `eqtlgeno_df`
-  and cell covariate of `sce` object. The default is "cell_type".
+  a string scalar specifying the time/pseudotime variable in the cell
+  covariate of `sce` object.
+
+- celltype_colname:
+
+  a string scalar specifying the cell type variable in `eqtlgeno_df` and
+  cell covariate of `sce` object. The default is "cell_type".
 
 - feature_colname:
 

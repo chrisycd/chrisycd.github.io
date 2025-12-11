@@ -24,6 +24,8 @@ simulated cell proportions."></head><body>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/scDesignPop-celltype-prop-modeling.html">Model cell type proportions for new individuals</a></li>
+    <li><a class="dropdown-item" href="../articles/scDesignPop-dynamic-eQTL-NL.html">Model nonlinear dynamic eQTL effects in continuous cell states</a></li>
+    <li><a class="dropdown-item" href="../articles/scDesignPop-dynamic-eQTL.html">Model linear dynamic eQTL effects in continuous cell states</a></li>
     <li><a class="dropdown-item" href="../articles/scDesignPop-modify-eQTL-effects.html">Modify eQTL effect for eGenes / non-eGenes</a></li>
     <li><a class="dropdown-item" href="../articles/scDesignPop-power-analysis-ES-specification.html">Power analysis based on user specified eQTL effect sizes</a></li>
     <li><a class="dropdown-item" href="../articles/scDesignPop-power-analysis-fitted.html">Power analysis based on a fitted scDesignPop marginal model</a></li>
@@ -61,7 +63,7 @@ simulated cell proportions.</p>
 <span>  PCnum <span class="op">=</span> <span class="fl">5L</span>,</span>
 <span>  cov_colnames <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  indiv_colname <span class="op">=</span> <span class="st">"indiv"</span>,</span>
-<span>  cellstate_colname <span class="op">=</span> <span class="st">"cell_type"</span>,</span>
+<span>  celltype_colname <span class="op">=</span> <span class="st">"cell_type"</span>,</span>
 <span>  cn_model_family <span class="op">=</span> <span class="st">"lognormal"</span>,</span>
 <span>  cn_meanlog <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  cn_sdlog <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -111,9 +113,9 @@ colData of <code>sce</code>.</p></dd>
 individuals.</p></dd>
 
 
-<dt id="arg-cellstate-colname">cellstate_colname<a class="anchor" aria-label="anchor" href="#arg-cellstate-colname"></a></dt>
+<dt id="arg-celltype-colname">celltype_colname<a class="anchor" aria-label="anchor" href="#arg-celltype-colname"></a></dt>
 <dd><p>a string scalar to specify the variable in <code>sce</code> containing
-cell states (ie. cell types).</p></dd>
+cell types.</p></dd>
 
 
 <dt id="arg-cn-model-family">cn_model_family<a class="anchor" aria-label="anchor" href="#arg-cn-model-family"></a></dt>
