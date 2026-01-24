@@ -49,6 +49,10 @@ A `SingleCellExperiment` object with 1,000 genes and 7,811 cells.
 
   :   Age of the donor.
 
+  `batch`
+
+  :   Batch of the sequencing (Simulated).
+
 - reducedDimNames:
 
   None in this example.
@@ -79,7 +83,7 @@ example_sce
 #>   ENSG00000272216
 #> rowData names(0):
 #> colnames: NULL
-#> colData names(4): indiv cell_type sex age
+#> colData names(5): indiv cell_type sex age batch
 #> reducedDimNames(0):
 #> mainExpName: RNA
 #> altExpNames(0):
