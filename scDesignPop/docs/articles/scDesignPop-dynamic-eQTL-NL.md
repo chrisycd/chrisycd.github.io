@@ -171,26 +171,26 @@ ph <- phate(t(counts(example_sce_Bcell)))
 #>   Running PHATE on 3726 observations and 817 variables.
 #>   Calculating graph and diffusion operator...
 #>     Calculating PCA...
-#>     Calculated PCA in 0.30 seconds.
+#>     Calculated PCA in 0.50 seconds.
 #>     Calculating KNN search...
-#>     Calculated KNN search in 0.97 seconds.
+#>     Calculated KNN search in 1.03 seconds.
 #>     Calculating affinities...
 #>     Calculated affinities in 0.03 seconds.
-#>   Calculated graph and diffusion operator in 1.30 seconds.
+#>   Calculated graph and diffusion operator in 1.57 seconds.
 #>   Calculating landmark operator...
 #>     Calculating SVD...
-#>     Calculated SVD in 0.23 seconds.
+#>     Calculated SVD in 0.45 seconds.
 #>     Calculating KMeans...
-#>     Calculated KMeans in 4.21 seconds.
-#>   Calculated landmark operator in 4.89 seconds.
+#>     Calculated KMeans in 8.25 seconds.
+#>   Calculated landmark operator in 9.23 seconds.
 #>   Calculating optimal t...
 #>     Automatically selected t = 18
-#>   Calculated optimal t in 0.83 seconds.
+#>   Calculated optimal t in 1.09 seconds.
 #>   Calculating diffusion potential...
-#>   Calculated diffusion potential in 0.11 seconds.
+#>   Calculated diffusion potential in 0.22 seconds.
 #>   Calculating metric MDS...
-#>   Calculated metric MDS in 3.78 seconds.
-#> Calculated PHATE in 10.91 seconds.
+#>   Calculated metric MDS in 4.57 seconds.
+#> Calculated PHATE in 16.68 seconds.
 reducedDims(example_sce_Bcell) <- SimpleList(PHATE = ph$embedding)
 
 # run PHATE for simulated data
@@ -199,26 +199,26 @@ ph_simu <- phate(t(counts(simu_sce_Bcell)))
 #>   Running PHATE on 3726 observations and 817 variables.
 #>   Calculating graph and diffusion operator...
 #>     Calculating PCA...
-#>     Calculated PCA in 0.27 seconds.
+#>     Calculated PCA in 0.45 seconds.
 #>     Calculating KNN search...
-#>     Calculated KNN search in 0.88 seconds.
+#>     Calculated KNN search in 1.01 seconds.
 #>     Calculating affinities...
 #>     Calculated affinities in 0.02 seconds.
-#>   Calculated graph and diffusion operator in 1.17 seconds.
+#>   Calculated graph and diffusion operator in 1.48 seconds.
 #>   Calculating landmark operator...
 #>     Calculating SVD...
-#>     Calculated SVD in 0.23 seconds.
+#>     Calculated SVD in 0.32 seconds.
 #>     Calculating KMeans...
-#>     Calculated KMeans in 3.51 seconds.
-#>   Calculated landmark operator in 4.14 seconds.
+#>     Calculated KMeans in 8.19 seconds.
+#>   Calculated landmark operator in 9.14 seconds.
 #>   Calculating optimal t...
-#>     Automatically selected t = 16
-#>   Calculated optimal t in 0.79 seconds.
+#>     Automatically selected t = 15
+#>   Calculated optimal t in 1.13 seconds.
 #>   Calculating diffusion potential...
-#>   Calculated diffusion potential in 0.10 seconds.
+#>   Calculated diffusion potential in 0.23 seconds.
 #>   Calculating metric MDS...
-#>   Calculated metric MDS in 3.61 seconds.
-#> Calculated PHATE in 9.81 seconds.
+#>   Calculated metric MDS in 4.37 seconds.
+#> Calculated PHATE in 16.34 seconds.
 reducedDims(simu_sce_Bcell) <- SimpleList(PHATE = ph_simu$embedding)
 
 # visualize
@@ -282,7 +282,7 @@ sessionInfo()
 #>  [9] GenomicRanges_1.50.2        GenomeInfoDb_1.34.9        
 #> [11] IRanges_2.32.0              S4Vectors_0.36.2           
 #> [13] BiocGenerics_0.44.0         MatrixGenerics_1.10.0      
-#> [15] matrixStats_1.1.0           scDesignPop_0.0.0.9006     
+#> [15] matrixStats_1.1.0           scDesignPop_0.0.0.9009     
 #> [17] BiocStyle_2.26.0           
 #> 
 #> loaded via a namespace (and not attached):
@@ -295,46 +295,45 @@ sessionInfo()
 #>  [13] splines_4.2.3             sparseMatrixStats_1.10.0 
 #>  [15] cachem_1.1.0              knitr_1.50               
 #>  [17] jsonlite_2.0.0            nloptr_2.2.1             
-#>  [19] Cairo_1.6-2               RhpcBLASctl_0.23-42      
-#>  [21] png_0.1-8                 uwot_0.2.3               
-#>  [23] BiocManager_1.30.25       compiler_4.2.3           
-#>  [25] assertthat_0.2.1          fastmap_1.2.0            
-#>  [27] cli_3.6.5                 BiocSingular_1.14.0      
-#>  [29] htmltools_0.5.8.1         tools_4.2.3              
-#>  [31] rsvd_1.0.5                gtable_0.3.6             
-#>  [33] glue_1.8.0                GenomeInfoDbData_1.2.9   
-#>  [35] dplyr_1.1.4               rappdirs_0.3.3           
-#>  [37] Rcpp_1.0.14               jquerylib_0.1.4          
-#>  [39] pkgdown_2.2.0             vctrs_0.6.5              
-#>  [41] nlme_3.1-164              DelayedMatrixStats_1.20.0
-#>  [43] xfun_0.52                 rbibutils_2.3            
-#>  [45] beachmat_2.14.2           lme4_1.1-35.3            
-#>  [47] lifecycle_1.0.4           irlba_2.3.5.1            
-#>  [49] zlibbioc_1.44.0           MASS_7.3-58.2            
-#>  [51] zoo_1.8-14                scales_1.4.0             
-#>  [53] ragg_1.5.0                parallel_4.2.3           
-#>  [55] sandwich_3.1-1            TMB_1.9.11               
-#>  [57] RColorBrewer_1.1-3        yaml_2.3.10              
-#>  [59] memoise_2.0.1             reticulate_1.42.0        
-#>  [61] pbapply_1.7-2             gridExtra_2.3            
-#>  [63] ggrastr_1.0.2             sass_0.4.10              
-#>  [65] desc_1.4.3                ScaledMatrix_1.6.0       
-#>  [67] boot_1.3-30               BiocParallel_1.32.6      
-#>  [69] Rdpack_2.6.4              rlang_1.1.6              
-#>  [71] pkgconfig_2.0.3           systemfonts_1.2.3        
-#>  [73] bitops_1.0-9              evaluate_1.0.3           
-#>  [75] lattice_0.22-6            labeling_0.4.3           
-#>  [77] patchwork_1.2.0           htmlwidgets_1.6.4        
-#>  [79] tidyselect_1.2.1          here_1.0.1               
-#>  [81] magrittr_2.0.3            bookdown_0.43            
-#>  [83] R6_2.6.1                  reformulas_0.4.1         
-#>  [85] generics_0.1.4            DelayedArray_0.24.0      
-#>  [87] pillar_1.10.2             withr_3.0.2              
-#>  [89] mgcv_1.9-1                RCurl_1.98-1.17          
-#>  [91] tibble_3.2.1              rmarkdown_2.27           
-#>  [93] viridis_0.6.5             grid_4.2.3               
-#>  [95] digest_0.6.37             pbmcapply_1.5.1          
-#>  [97] numDeriv_2016.8-1.1       textshaping_0.4.0        
-#>  [99] beeswarm_0.4.0            viridisLite_0.4.2        
-#> [101] vipor_0.4.7               bslib_0.9.0
+#>  [19] Cairo_1.6-2               png_0.1-8                
+#>  [21] BiocManager_1.30.25       compiler_4.2.3           
+#>  [23] assertthat_0.2.1          fastmap_1.2.0            
+#>  [25] cli_3.6.5                 BiocSingular_1.14.0      
+#>  [27] htmltools_0.5.8.1         tools_4.2.3              
+#>  [29] rsvd_1.0.5                gtable_0.3.6             
+#>  [31] glue_1.8.0                GenomeInfoDbData_1.2.9   
+#>  [33] dplyr_1.1.4               rappdirs_0.3.3           
+#>  [35] Rcpp_1.0.14               jquerylib_0.1.4          
+#>  [37] pkgdown_2.2.0             vctrs_0.6.5              
+#>  [39] nlme_3.1-164              DelayedMatrixStats_1.20.0
+#>  [41] xfun_0.52                 rbibutils_2.3            
+#>  [43] beachmat_2.14.2           lme4_1.1-35.3            
+#>  [45] lifecycle_1.0.4           irlba_2.3.5.1            
+#>  [47] zlibbioc_1.44.0           MASS_7.3-58.2            
+#>  [49] zoo_1.8-14                scales_1.4.0             
+#>  [51] ragg_1.5.0                parallel_4.2.3           
+#>  [53] sandwich_3.1-1            TMB_1.9.11               
+#>  [55] RColorBrewer_1.1-3        yaml_2.3.10              
+#>  [57] memoise_2.0.1             reticulate_1.42.0        
+#>  [59] pbapply_1.7-2             gridExtra_2.3            
+#>  [61] ggrastr_1.0.2             sass_0.4.10              
+#>  [63] desc_1.4.3                ScaledMatrix_1.6.0       
+#>  [65] boot_1.3-30               BiocParallel_1.32.6      
+#>  [67] Rdpack_2.6.4              rlang_1.1.6              
+#>  [69] pkgconfig_2.0.3           systemfonts_1.2.3        
+#>  [71] bitops_1.0-9              evaluate_1.0.3           
+#>  [73] lattice_0.22-6            patchwork_1.2.0          
+#>  [75] htmlwidgets_1.6.4         labeling_0.4.3           
+#>  [77] tidyselect_1.2.1          here_1.0.1               
+#>  [79] magrittr_2.0.3            bookdown_0.43            
+#>  [81] R6_2.6.1                  reformulas_0.4.1         
+#>  [83] generics_0.1.4            DelayedArray_0.24.0      
+#>  [85] pillar_1.10.2             withr_3.0.2              
+#>  [87] mgcv_1.9-1                RCurl_1.98-1.17          
+#>  [89] tibble_3.2.1              rmarkdown_2.27           
+#>  [91] viridis_0.6.5             grid_4.2.3               
+#>  [93] digest_0.6.37             pbmcapply_1.5.1          
+#>  [95] numDeriv_2016.8-1.1       textshaping_0.4.0        
+#>  [97] beeswarm_0.4.0            viridisLite_0.4.2        
+#>  [99] vipor_0.4.7               bslib_0.9.0
 ```

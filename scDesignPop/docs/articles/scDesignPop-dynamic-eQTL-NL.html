@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">scDesignPop</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9008</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9009</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -34,13 +34,15 @@
 <li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="../articles/scDesignPop-celltype-prop-modeling.html">Model cell type proportions for new individuals</a></li>
+<li><a class="dropdown-item" href="../articles/scDesignPop-batch-effect.html">Modeling batch effect in population-scale scRNA-seq data</a></li>
+    <li><a class="dropdown-item" href="../articles/scDesignPop-celltype-prop-modeling.html">Model cell type proportions for new individuals</a></li>
     <li><a class="dropdown-item" href="../articles/scDesignPop-dynamic-eQTL-NL.html">Model nonlinear dynamic eQTL effects in continuous cell states</a></li>
     <li><a class="dropdown-item" href="../articles/scDesignPop-dynamic-eQTL.html">Model linear dynamic eQTL effects in continuous cell states</a></li>
     <li><a class="dropdown-item" href="../articles/scDesignPop-modify-eQTL-effects.html">Modify eQTL effect for eGenes / non-eGenes</a></li>
     <li><a class="dropdown-item" href="../articles/scDesignPop-power-analysis-ES-specification.html">Power analysis based on user specified eQTL effect sizes</a></li>
     <li><a class="dropdown-item" href="../articles/scDesignPop-power-analysis-fitted.html">Power analysis based on a fitted scDesignPop marginal model</a></li>
     <li><a class="dropdown-item" href="../articles/scDesignPop-power-analysis-selected.html">Power analysis for selected genes</a></li>
+    <li><a class="dropdown-item" href="../articles/scDesignPop-trans-eQTL.html">Modeling trans-eQTL effect using public data</a></li>
   </ul>
 </li>
       </ul>
@@ -75,15 +77,15 @@ Cen</h4>
       Department of Computational Medicine, University of California,
 Los Angeles<br><a class="author_email" href="mailto:#"></a><a href="mailto:yihuicen@g.ucla.edu" class="email">yihuicen@g.ucla.edu</a>
       </address>
-
-            <h4 data-toc-skip class="date">11 December 2025</h4>
-
+                  
+            <h4 data-toc-skip class="date">23 January 2026</h4>
+      
       <small class="dont-index">Source: <a href="https://github.com/chrisycd/scDesignPop/blob/HEAD/vignettes/scDesignPop-dynamic-eQTL-NL.Rmd"><code>vignettes/scDesignPop-dynamic-eQTL-NL.Rmd</code></a></small>
       <div class="d-none name"><code>scDesignPop-dynamic-eQTL-NL.Rmd</code></div>
     </div>
 
-
-
+    
+    
 <style type="text/css">
 pre {
   white-space: pre !important;
@@ -255,26 +257,26 @@ follows.</p>
 <span><span class="co">#&gt;   Running PHATE on 3726 observations and 817 variables.</span></span>
 <span><span class="co">#&gt;   Calculating graph and diffusion operator...</span></span>
 <span><span class="co">#&gt;     Calculating PCA...</span></span>
-<span><span class="co">#&gt;     Calculated PCA in 0.30 seconds.</span></span>
+<span><span class="co">#&gt;     Calculated PCA in 0.50 seconds.</span></span>
 <span><span class="co">#&gt;     Calculating KNN search...</span></span>
-<span><span class="co">#&gt;     Calculated KNN search in 0.97 seconds.</span></span>
+<span><span class="co">#&gt;     Calculated KNN search in 1.03 seconds.</span></span>
 <span><span class="co">#&gt;     Calculating affinities...</span></span>
 <span><span class="co">#&gt;     Calculated affinities in 0.03 seconds.</span></span>
-<span><span class="co">#&gt;   Calculated graph and diffusion operator in 1.30 seconds.</span></span>
+<span><span class="co">#&gt;   Calculated graph and diffusion operator in 1.57 seconds.</span></span>
 <span><span class="co">#&gt;   Calculating landmark operator...</span></span>
 <span><span class="co">#&gt;     Calculating SVD...</span></span>
-<span><span class="co">#&gt;     Calculated SVD in 0.23 seconds.</span></span>
+<span><span class="co">#&gt;     Calculated SVD in 0.45 seconds.</span></span>
 <span><span class="co">#&gt;     Calculating KMeans...</span></span>
-<span><span class="co">#&gt;     Calculated KMeans in 4.21 seconds.</span></span>
-<span><span class="co">#&gt;   Calculated landmark operator in 4.89 seconds.</span></span>
+<span><span class="co">#&gt;     Calculated KMeans in 8.25 seconds.</span></span>
+<span><span class="co">#&gt;   Calculated landmark operator in 9.23 seconds.</span></span>
 <span><span class="co">#&gt;   Calculating optimal t...</span></span>
 <span><span class="co">#&gt;     Automatically selected t = 18</span></span>
-<span><span class="co">#&gt;   Calculated optimal t in 0.83 seconds.</span></span>
+<span><span class="co">#&gt;   Calculated optimal t in 1.09 seconds.</span></span>
 <span><span class="co">#&gt;   Calculating diffusion potential...</span></span>
-<span><span class="co">#&gt;   Calculated diffusion potential in 0.11 seconds.</span></span>
+<span><span class="co">#&gt;   Calculated diffusion potential in 0.22 seconds.</span></span>
 <span><span class="co">#&gt;   Calculating metric MDS...</span></span>
-<span><span class="co">#&gt;   Calculated metric MDS in 3.78 seconds.</span></span>
-<span><span class="co">#&gt; Calculated PHATE in 10.91 seconds.</span></span>
+<span><span class="co">#&gt;   Calculated metric MDS in 4.57 seconds.</span></span>
+<span><span class="co">#&gt; Calculated PHATE in 16.68 seconds.</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/SingleCellExperiment/man/reducedDims.html" class="external-link">reducedDims</a></span><span class="op">(</span><span class="va">example_sce_Bcell</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu">SimpleList</span><span class="op">(</span>PHATE <span class="op">=</span> <span class="va">ph</span><span class="op">$</span><span class="va">embedding</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># run PHATE for simulated data</span></span>
@@ -283,26 +285,26 @@ follows.</p>
 <span><span class="co">#&gt;   Running PHATE on 3726 observations and 817 variables.</span></span>
 <span><span class="co">#&gt;   Calculating graph and diffusion operator...</span></span>
 <span><span class="co">#&gt;     Calculating PCA...</span></span>
-<span><span class="co">#&gt;     Calculated PCA in 0.27 seconds.</span></span>
+<span><span class="co">#&gt;     Calculated PCA in 0.45 seconds.</span></span>
 <span><span class="co">#&gt;     Calculating KNN search...</span></span>
-<span><span class="co">#&gt;     Calculated KNN search in 0.88 seconds.</span></span>
+<span><span class="co">#&gt;     Calculated KNN search in 1.01 seconds.</span></span>
 <span><span class="co">#&gt;     Calculating affinities...</span></span>
 <span><span class="co">#&gt;     Calculated affinities in 0.02 seconds.</span></span>
-<span><span class="co">#&gt;   Calculated graph and diffusion operator in 1.17 seconds.</span></span>
+<span><span class="co">#&gt;   Calculated graph and diffusion operator in 1.48 seconds.</span></span>
 <span><span class="co">#&gt;   Calculating landmark operator...</span></span>
 <span><span class="co">#&gt;     Calculating SVD...</span></span>
-<span><span class="co">#&gt;     Calculated SVD in 0.23 seconds.</span></span>
+<span><span class="co">#&gt;     Calculated SVD in 0.32 seconds.</span></span>
 <span><span class="co">#&gt;     Calculating KMeans...</span></span>
-<span><span class="co">#&gt;     Calculated KMeans in 3.51 seconds.</span></span>
-<span><span class="co">#&gt;   Calculated landmark operator in 4.14 seconds.</span></span>
+<span><span class="co">#&gt;     Calculated KMeans in 8.19 seconds.</span></span>
+<span><span class="co">#&gt;   Calculated landmark operator in 9.14 seconds.</span></span>
 <span><span class="co">#&gt;   Calculating optimal t...</span></span>
-<span><span class="co">#&gt;     Automatically selected t = 16</span></span>
-<span><span class="co">#&gt;   Calculated optimal t in 0.79 seconds.</span></span>
+<span><span class="co">#&gt;     Automatically selected t = 15</span></span>
+<span><span class="co">#&gt;   Calculated optimal t in 1.13 seconds.</span></span>
 <span><span class="co">#&gt;   Calculating diffusion potential...</span></span>
-<span><span class="co">#&gt;   Calculated diffusion potential in 0.10 seconds.</span></span>
+<span><span class="co">#&gt;   Calculated diffusion potential in 0.23 seconds.</span></span>
 <span><span class="co">#&gt;   Calculating metric MDS...</span></span>
-<span><span class="co">#&gt;   Calculated metric MDS in 3.61 seconds.</span></span>
-<span><span class="co">#&gt; Calculated PHATE in 9.81 seconds.</span></span>
+<span><span class="co">#&gt;   Calculated metric MDS in 4.37 seconds.</span></span>
+<span><span class="co">#&gt; Calculated PHATE in 16.34 seconds.</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/SingleCellExperiment/man/reducedDims.html" class="external-link">reducedDims</a></span><span class="op">(</span><span class="va">simu_sce_Bcell</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu">SimpleList</span><span class="op">(</span>PHATE <span class="op">=</span> <span class="va">ph_simu</span><span class="op">$</span><span class="va">embedding</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># visualize</span></span>
@@ -365,7 +367,7 @@ follows.</p>
 <span><span class="co">#&gt;  [9] GenomicRanges_1.50.2        GenomeInfoDb_1.34.9        </span></span>
 <span><span class="co">#&gt; [11] IRanges_2.32.0              S4Vectors_0.36.2           </span></span>
 <span><span class="co">#&gt; [13] BiocGenerics_0.44.0         MatrixGenerics_1.10.0      </span></span>
-<span><span class="co">#&gt; [15] matrixStats_1.1.0           scDesignPop_0.0.0.9006     </span></span>
+<span><span class="co">#&gt; [15] matrixStats_1.1.0           scDesignPop_0.0.0.9009     </span></span>
 <span><span class="co">#&gt; [17] BiocStyle_2.26.0           </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; loaded via a namespace (and not attached):</span></span>
@@ -378,48 +380,47 @@ follows.</p>
 <span><span class="co">#&gt;  [13] splines_4.2.3             sparseMatrixStats_1.10.0 </span></span>
 <span><span class="co">#&gt;  [15] cachem_1.1.0              knitr_1.50               </span></span>
 <span><span class="co">#&gt;  [17] jsonlite_2.0.0            nloptr_2.2.1             </span></span>
-<span><span class="co">#&gt;  [19] Cairo_1.6-2               RhpcBLASctl_0.23-42      </span></span>
-<span><span class="co">#&gt;  [21] png_0.1-8                 uwot_0.2.3               </span></span>
-<span><span class="co">#&gt;  [23] BiocManager_1.30.25       compiler_4.2.3           </span></span>
-<span><span class="co">#&gt;  [25] assertthat_0.2.1          fastmap_1.2.0            </span></span>
-<span><span class="co">#&gt;  [27] cli_3.6.5                 BiocSingular_1.14.0      </span></span>
-<span><span class="co">#&gt;  [29] htmltools_0.5.8.1         tools_4.2.3              </span></span>
-<span><span class="co">#&gt;  [31] rsvd_1.0.5                gtable_0.3.6             </span></span>
-<span><span class="co">#&gt;  [33] glue_1.8.0                GenomeInfoDbData_1.2.9   </span></span>
-<span><span class="co">#&gt;  [35] dplyr_1.1.4               rappdirs_0.3.3           </span></span>
-<span><span class="co">#&gt;  [37] Rcpp_1.0.14               jquerylib_0.1.4          </span></span>
-<span><span class="co">#&gt;  [39] pkgdown_2.2.0             vctrs_0.6.5              </span></span>
-<span><span class="co">#&gt;  [41] nlme_3.1-164              DelayedMatrixStats_1.20.0</span></span>
-<span><span class="co">#&gt;  [43] xfun_0.52                 rbibutils_2.3            </span></span>
-<span><span class="co">#&gt;  [45] beachmat_2.14.2           lme4_1.1-35.3            </span></span>
-<span><span class="co">#&gt;  [47] lifecycle_1.0.4           irlba_2.3.5.1            </span></span>
-<span><span class="co">#&gt;  [49] zlibbioc_1.44.0           MASS_7.3-58.2            </span></span>
-<span><span class="co">#&gt;  [51] zoo_1.8-14                scales_1.4.0             </span></span>
-<span><span class="co">#&gt;  [53] ragg_1.5.0                parallel_4.2.3           </span></span>
-<span><span class="co">#&gt;  [55] sandwich_3.1-1            TMB_1.9.11               </span></span>
-<span><span class="co">#&gt;  [57] RColorBrewer_1.1-3        yaml_2.3.10              </span></span>
-<span><span class="co">#&gt;  [59] memoise_2.0.1             reticulate_1.42.0        </span></span>
-<span><span class="co">#&gt;  [61] pbapply_1.7-2             gridExtra_2.3            </span></span>
-<span><span class="co">#&gt;  [63] ggrastr_1.0.2             sass_0.4.10              </span></span>
-<span><span class="co">#&gt;  [65] desc_1.4.3                ScaledMatrix_1.6.0       </span></span>
-<span><span class="co">#&gt;  [67] boot_1.3-30               BiocParallel_1.32.6      </span></span>
-<span><span class="co">#&gt;  [69] Rdpack_2.6.4              rlang_1.1.6              </span></span>
-<span><span class="co">#&gt;  [71] pkgconfig_2.0.3           systemfonts_1.2.3        </span></span>
-<span><span class="co">#&gt;  [73] bitops_1.0-9              evaluate_1.0.3           </span></span>
-<span><span class="co">#&gt;  [75] lattice_0.22-6            labeling_0.4.3           </span></span>
-<span><span class="co">#&gt;  [77] patchwork_1.2.0           htmlwidgets_1.6.4        </span></span>
-<span><span class="co">#&gt;  [79] tidyselect_1.2.1          here_1.0.1               </span></span>
-<span><span class="co">#&gt;  [81] magrittr_2.0.3            bookdown_0.43            </span></span>
-<span><span class="co">#&gt;  [83] R6_2.6.1                  reformulas_0.4.1         </span></span>
-<span><span class="co">#&gt;  [85] generics_0.1.4            DelayedArray_0.24.0      </span></span>
-<span><span class="co">#&gt;  [87] pillar_1.10.2             withr_3.0.2              </span></span>
-<span><span class="co">#&gt;  [89] mgcv_1.9-1                RCurl_1.98-1.17          </span></span>
-<span><span class="co">#&gt;  [91] tibble_3.2.1              rmarkdown_2.27           </span></span>
-<span><span class="co">#&gt;  [93] viridis_0.6.5             grid_4.2.3               </span></span>
-<span><span class="co">#&gt;  [95] digest_0.6.37             pbmcapply_1.5.1          </span></span>
-<span><span class="co">#&gt;  [97] numDeriv_2016.8-1.1       textshaping_0.4.0        </span></span>
-<span><span class="co">#&gt;  [99] beeswarm_0.4.0            viridisLite_0.4.2        </span></span>
-<span><span class="co">#&gt; [101] vipor_0.4.7               bslib_0.9.0</span></span></code></pre></div>
+<span><span class="co">#&gt;  [19] Cairo_1.6-2               png_0.1-8                </span></span>
+<span><span class="co">#&gt;  [21] BiocManager_1.30.25       compiler_4.2.3           </span></span>
+<span><span class="co">#&gt;  [23] assertthat_0.2.1          fastmap_1.2.0            </span></span>
+<span><span class="co">#&gt;  [25] cli_3.6.5                 BiocSingular_1.14.0      </span></span>
+<span><span class="co">#&gt;  [27] htmltools_0.5.8.1         tools_4.2.3              </span></span>
+<span><span class="co">#&gt;  [29] rsvd_1.0.5                gtable_0.3.6             </span></span>
+<span><span class="co">#&gt;  [31] glue_1.8.0                GenomeInfoDbData_1.2.9   </span></span>
+<span><span class="co">#&gt;  [33] dplyr_1.1.4               rappdirs_0.3.3           </span></span>
+<span><span class="co">#&gt;  [35] Rcpp_1.0.14               jquerylib_0.1.4          </span></span>
+<span><span class="co">#&gt;  [37] pkgdown_2.2.0             vctrs_0.6.5              </span></span>
+<span><span class="co">#&gt;  [39] nlme_3.1-164              DelayedMatrixStats_1.20.0</span></span>
+<span><span class="co">#&gt;  [41] xfun_0.52                 rbibutils_2.3            </span></span>
+<span><span class="co">#&gt;  [43] beachmat_2.14.2           lme4_1.1-35.3            </span></span>
+<span><span class="co">#&gt;  [45] lifecycle_1.0.4           irlba_2.3.5.1            </span></span>
+<span><span class="co">#&gt;  [47] zlibbioc_1.44.0           MASS_7.3-58.2            </span></span>
+<span><span class="co">#&gt;  [49] zoo_1.8-14                scales_1.4.0             </span></span>
+<span><span class="co">#&gt;  [51] ragg_1.5.0                parallel_4.2.3           </span></span>
+<span><span class="co">#&gt;  [53] sandwich_3.1-1            TMB_1.9.11               </span></span>
+<span><span class="co">#&gt;  [55] RColorBrewer_1.1-3        yaml_2.3.10              </span></span>
+<span><span class="co">#&gt;  [57] memoise_2.0.1             reticulate_1.42.0        </span></span>
+<span><span class="co">#&gt;  [59] pbapply_1.7-2             gridExtra_2.3            </span></span>
+<span><span class="co">#&gt;  [61] ggrastr_1.0.2             sass_0.4.10              </span></span>
+<span><span class="co">#&gt;  [63] desc_1.4.3                ScaledMatrix_1.6.0       </span></span>
+<span><span class="co">#&gt;  [65] boot_1.3-30               BiocParallel_1.32.6      </span></span>
+<span><span class="co">#&gt;  [67] Rdpack_2.6.4              rlang_1.1.6              </span></span>
+<span><span class="co">#&gt;  [69] pkgconfig_2.0.3           systemfonts_1.2.3        </span></span>
+<span><span class="co">#&gt;  [71] bitops_1.0-9              evaluate_1.0.3           </span></span>
+<span><span class="co">#&gt;  [73] lattice_0.22-6            patchwork_1.2.0          </span></span>
+<span><span class="co">#&gt;  [75] htmlwidgets_1.6.4         labeling_0.4.3           </span></span>
+<span><span class="co">#&gt;  [77] tidyselect_1.2.1          here_1.0.1               </span></span>
+<span><span class="co">#&gt;  [79] magrittr_2.0.3            bookdown_0.43            </span></span>
+<span><span class="co">#&gt;  [81] R6_2.6.1                  reformulas_0.4.1         </span></span>
+<span><span class="co">#&gt;  [83] generics_0.1.4            DelayedArray_0.24.0      </span></span>
+<span><span class="co">#&gt;  [85] pillar_1.10.2             withr_3.0.2              </span></span>
+<span><span class="co">#&gt;  [87] mgcv_1.9-1                RCurl_1.98-1.17          </span></span>
+<span><span class="co">#&gt;  [89] tibble_3.2.1              rmarkdown_2.27           </span></span>
+<span><span class="co">#&gt;  [91] viridis_0.6.5             grid_4.2.3               </span></span>
+<span><span class="co">#&gt;  [93] digest_0.6.37             pbmcapply_1.5.1          </span></span>
+<span><span class="co">#&gt;  [95] numDeriv_2016.8-1.1       textshaping_0.4.0        </span></span>
+<span><span class="co">#&gt;  [97] beeswarm_0.4.0            viridisLite_0.4.2        </span></span>
+<span><span class="co">#&gt;  [99] vipor_0.4.7               bslib_0.9.0</span></span></code></pre></div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
