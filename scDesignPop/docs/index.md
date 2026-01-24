@@ -57,6 +57,12 @@ follows:
 - [Model population-scale scRNA-seq
   data](https://chrisycd.github.io/scDesignPop/docs/articles/scDesignPop.html)
 
+- [Modeling batch effect in population-scale scRNA-seq
+  data](https://chrisycd.github.io/scDesignPop/docs/articles/scDesignPop-batch-effect.html)
+
+- [Modeling trans-eQTL effect using public
+  data](https://chrisycd.github.io/scDesignPop/docs/articles/scDesignPop-trans-eqtl.html)
+
 - [Model linear dynamic eQTL effects in continuous cell
   states](https://chrisycd.github.io/scDesignPop/docs/articles/scDesignPop-dynamic-eQTL.html)
 
