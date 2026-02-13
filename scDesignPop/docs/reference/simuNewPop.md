@@ -15,7 +15,7 @@ simuNewPop(
   zero_mat,
   quantile_mat = NULL,
   copula_list,
-  n_cores,
+  n_cores = 2L,
   fastmvn = FALSE,
   family_use,
   nonnegative = TRUE,
@@ -23,11 +23,14 @@ simuNewPop(
   input_data,
   new_covariate,
   important_feature = "all",
-  parallelization = "mcmapply",
+  parallelization = c("pbmcapply", "future.apply", "parallel", "biocparallel"),
   BPPARAM = NULL,
+  future.seed = FALSE,
+  data_maxsize = 1,
   filtered_gene,
   mean_limit = 1e+15,
-  debug = FALSE
+  debug = FALSE,
+  ...
 )
 ```
 
@@ -65,7 +68,8 @@ simuNewPop(
 
 - n_cores:
 
-  An integer. The number of cores to use.
+  a positive integer value (greater or equal to 1) to specify the number
+  of CPU cores used in parallelization. The default is 2.
 
 - fastmvn:
 
@@ -115,19 +119,36 @@ simuNewPop(
 
 - parallelization:
 
-  A string indicating the specific parallelization function to use. Must
-  be one of 'mcmapply', 'bpmapply', or 'pbmcmapply', which corresponds
-  to the parallelization function in the package
-  `parallel`,`BiocParallel`, and `pbmcapply` respectively. The default
-  value is 'mcmapply'.
+  a string scalar specifying the parallelization backend used when
+  simulating data. Must be one of "parallel", "future.apply",
+  "biocparallel", or "pbmcapply". The default value is "parallel". See
+  details.
 
 - BPPARAM:
 
-  A `MulticoreParam` object or NULL. When the parameter parallelization
-  = 'mcmapply' or 'pbmcmapply', this parameter must be NULL. When the
-  parameter parallelization = 'bpmapply', this parameter must be one of
-  the `MulticoreParam` object offered by the package 'BiocParallel. The
-  default value is NULL.
+  a BiocParallelParam class object (from `BiocParallel` R package) that
+  must be specified when using `parallelization = "biocparallel"`.
+  Either
+  [`BiocParallel::SnowParam()`](https://rdrr.io/pkg/BiocParallel/man/SnowParam-class.html)
+  or
+  [`BiocParallel::MulticoreParam()`](https://rdrr.io/pkg/BiocParallel/man/MulticoreParam-class.html)
+  can be used to initialize, depending on the operating system. BPPARAM
+  is not used in other parallelization options. The default is NULL.
+
+- future.seed:
+
+  a logical or an integer (of length one or seven), or a list of
+  length(X) with pre-generated random seeds that can be specified when
+  using `parallelization = "future.apply"`. See
+  [`future.apply::future_eapply`](https://future.apply.futureverse.org/reference/future_lapply.html)
+  documentation for more details on its usage. future.seed is not used
+  in other parallelization options. The default is FALSE.
+
+- data_maxsize:
+
+  a positive numeric value used to set max marginal_list size in GiB
+  increments. Used only when `parallelization = "future.apply"`. The
+  default is 1.
 
 - filtered_gene:
 
@@ -145,6 +166,10 @@ simuNewPop(
   A logical scalar for whether to return a list of variables in addition
   to simulated count matrix. The default is FALSE.
 
+- ...:
+
+  additional arguments passed to internal functions.
+
 ## Value
 
 A feature by cell matrix of the new simulated count (expression) matrix
@@ -158,6 +183,14 @@ parameter matrices from
 [`extractParaPop`](https://github.com/chrisycd/scDesignPop/reference/extractParaPop.md)
 and multivariate Unifs from
 [`fitCopulaPop`](https://github.com/chrisycd/scDesignPop/reference/fitCopulaPop.md).
+
+### Parallelization options
+
+If "parallel" is used then `mcmapply` is called from the `parallel`
+package; if "biocparallel" is used, then `bpmapply` is called from the
+`BiocParallel` package; if "future.apply" is used, then `future_mapply`
+is called from the `future.apply` package; if "pbmcapply" is used, then
+`pbmcmapply` is called from the `pbmcapply` package.
 
 ## Examples
 

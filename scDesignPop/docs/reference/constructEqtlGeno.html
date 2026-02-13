@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">scDesignPop</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9009</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9010</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -25,7 +25,6 @@
     <li><a class="dropdown-item" href="../articles/scDesignPop-dynamic-eQTL.html">Model linear dynamic eQTL effects in continuous cell states</a></li>
     <li><a class="dropdown-item" href="../articles/scDesignPop-modify-eQTL-effects.html">Modify eQTL effect for eGenes / non-eGenes</a></li>
     <li><a class="dropdown-item" href="../articles/scDesignPop-power-analysis-ES-specification.html">Power analysis based on user specified eQTL effect sizes</a></li>
-    <li><a class="dropdown-item" href="../articles/scDesignPop-power-analysis-fitted.html">Power analysis based on a fitted scDesignPop marginal model</a></li>
     <li><a class="dropdown-item" href="../articles/scDesignPop-power-analysis-selected.html">Power analysis for selected genes</a></li>
     <li><a class="dropdown-item" href="../articles/scDesignPop-trans-eQTL.html">Modeling trans-eQTL effect using public data</a></li>
   </ul></li>
@@ -57,7 +56,7 @@
 <span>  <span class="va">sampid_vec</span>,</span>
 <span>  name <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  feature_colname <span class="op">=</span> <span class="st">"gene_name"</span>,</span>
-<span>  cellstate_colname <span class="op">=</span> <span class="st">"cell_type"</span>,</span>
+<span>  celltype_colname <span class="op">=</span> <span class="st">"cell_type"</span>,</span>
 <span>  snp_colname <span class="op">=</span> <span class="st">"snp_id"</span>,</span>
 <span>  loc_colname <span class="op">=</span> <span class="st">"POS"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -87,8 +86,8 @@
 <dd><p>feature variable name</p></dd>
 
 
-<dt id="arg-cellstate-colname">cellstate_colname<a class="anchor" aria-label="anchor" href="#arg-cellstate-colname"></a></dt>
-<dd><p>cell state variable name</p></dd>
+<dt id="arg-celltype-colname">celltype_colname<a class="anchor" aria-label="anchor" href="#arg-celltype-colname"></a></dt>
+<dd><p>cell type variable name</p></dd>
 
 
 <dt id="arg-snp-colname">snp_colname<a class="anchor" aria-label="anchor" href="#arg-snp-colname"></a></dt>

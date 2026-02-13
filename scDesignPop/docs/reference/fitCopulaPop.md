@@ -1,6 +1,6 @@
 # Fits copula for input
 
-Fits copula for input
+This is the main function for fitting a copula.
 
 ## Usage
 
@@ -11,15 +11,18 @@ fitCopulaPop(
   input_data,
   marginal_list,
   family_use,
-  copula = "gaussian",
+  copula = c("gaussian", "vine"),
   DT = TRUE,
   pseudo_obs = FALSE,
   epsilon = 1e-06,
   family_set = c("gaussian", "indep"),
   important_feature = "all",
-  n_cores,
-  parallelization = "mcmapply",
-  BPPARAM = NULL
+  n_cores = 2L,
+  parallelization = c("pbmcapply", "future.apply", "parallel", "biocparallel"),
+  BPPARAM = NULL,
+  future.seed = FALSE,
+  data_maxsize = 1,
+  ...
 )
 ```
 
@@ -27,63 +30,141 @@ fitCopulaPop(
 
 - sce:
 
-  add later
+  a SingleCellExperiment object.
 
 - assay_use:
 
-  add later
+  a string scalar specifying the slot to use in input `sce`. The default
+  is "counts".
 
 - input_data:
 
-  add later
+  a cell-by-covariate data frame obtained in the list output from
+  [`constructDataPop`](https://github.com/chrisycd/scDesignPop/reference/constructDataPop.md).
+  It must have a corr_group variable.
 
 - marginal_list:
 
-  add later
+  a list of named features, each with the fitted object and other
+  variables as output from
+  [`fitMarginalPop`](https://github.com/chrisycd/scDesignPop/reference/fitMarginalPop.md).
 
 - family_use:
 
-  add later
+  a string scalar to specify model fitting used.
 
 - copula:
 
-  add later
+  a string value to specify the type of Copula fitting to use.
+  Currently, only Gaussian copula is supported. The default is
+  "gaussian".
 
 - DT:
 
-  add later
+  a logic value to perform the distributional transformation. The
+  default is `TRUE`.
 
 - pseudo_obs:
 
-  add later
+  a logic value. If TRUE, use the empirical quantiles instead of
+  theoretical quantiles for fitting copula. The default is FALSE. (not
+  currently implemented)
 
 - epsilon:
 
-  add later
+  a numeric value close to 0 to specify tolerance for avoiding 0 or 1
+  quantiles. The default value is 1e-06.
 
 - family_set:
 
-  add later
+  a string or a string vector of the bivariate copula families. Default
+  is c("gaussian", "indep").
 
 - important_feature:
 
-  add later
+  a string vector of genes.
 
 - n_cores:
 
-  add later
+  positive integer value (greater or equal to 1) to specify the number
+  of CPU cores used in parallelization. The default is 2.
 
 - parallelization:
 
-  add later
+  a string value specifying the parallelization backend used during
+  copula fitting. Must be one of "parallel", "future.apply",
+  "biocparallel", or "pbmcapply". The default value is "parallel". See
+  details.
 
 - BPPARAM:
 
-  add later
+  a BiocParallelParam class object (from `BiocParallel` R package) that
+  must be specified when using `parallelization = "biocparallel"`.
+  Either
+  [`BiocParallel::SnowParam()`](https://rdrr.io/pkg/BiocParallel/man/SnowParam-class.html)
+  or
+  [`BiocParallel::MulticoreParam()`](https://rdrr.io/pkg/BiocParallel/man/MulticoreParam-class.html)
+  can be used to initialize, depending on the operating system. BPPARAM
+  is not used in other parallelization options. The default is NULL.
+
+- future.seed:
+
+  a logical or an integer (of length one or seven), or a list of
+  length(X) with pre-generated random seeds that can be specified when
+  using `parallelization = "future.apply"`. See
+  [`future.apply::future_eapply`](https://future.apply.futureverse.org/reference/future_lapply.html)
+  documentation for more details on its usage. future.seed is not used
+  in other parallelization options. The default is FALSE.
+
+- data_maxsize:
+
+  a positive numeric value used to set max marginal_list size in GiB
+  increments. Used only when `parallelization = "future.apply"`. The
+  default is 1.
+
+- ...:
+
+  additional arguments passed to internal functions.
 
 ## Value
 
-A list
+outputs a list with following elements:
+
+- `model_aic`:
+
+  total model AIC value.
+
+- `model_bic`:
+
+  total model BIC value.
+
+- `copula_list`:
+
+  a list of fitted copulas for each `corr_group`.
+
+- `important_features`:
+
+  a string vector of genes.
+
+- `na_marginal_aic`:
+
+  a named string vector of genes that did not have AIC in the marginal
+  models.
+
+- `na_marginal_bic`:
+
+  a named string vector of genes that did not have BIC in the marginal
+  models.
+
+## Details
+
+### Parallelization options
+
+If "parallel" is used then `mcmapply` is called from the `parallel`
+package; if "biocparallel" is used, then `bpmapply` is called from the
+`BiocParallel` package; if "future.apply" is used, then `future_mapply`
+is called from the `future.apply` package; if "pbmcapply" is used, then
+`pbmcmapply` is called from the `pbmcapply` package.
 
 ## Examples
 

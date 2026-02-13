@@ -16,7 +16,7 @@ constructSCE(
   slot_name = "counts",
   sce_name = slot_name,
   indiv_colname = "indiv",
-  cellstate_colname = "cell_type",
+  celltype_colname = "cell_type",
   factor_colnames = NULL,
   cellcov_renames = cellcov_names
 )
@@ -76,9 +76,9 @@ constructSCE(
   a string scalar for the sample id colname. Must be present in
   `cellcov_df` or `data_obj`. Default is 'indiv'.
 
-- cellstate_colname:
+- celltype_colname:
 
-  a string scalar for the cell state colname. Must be present in
+  a string scalar for the cell type colname. Must be present in
   `cellcov_df` or `data_obj`. Default is 'cell_type'.
 
 - factor_colnames:

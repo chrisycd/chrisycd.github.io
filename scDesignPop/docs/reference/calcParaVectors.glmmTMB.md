@@ -13,20 +13,22 @@ calcParaVectors(fit, family_use, new_covariate, total_cells, ...)
 
 - fit:
 
-  add later
+  a fitted object in the marginal_list.
 
 - family_use:
 
-  add later
+  a string scalar or vector of marginal distribution used.
 
 - new_covariate:
 
-  add later
+  a cell-by-covariate data frame obtained in the list output from
+  [`constructDataPop`](https://github.com/chrisycd/scDesignPop/reference/constructDataPop.md).
+  It must have a corr_group variable.
 
 - total_cells:
 
-  add later
+  a positive integer for the number of total cells to simulate.
 
 - ...:
 
-  Additional arguments passed to calcParaVectors S3 method functions.
+  additional arguments passed to calcParaVectors S3 method functions.

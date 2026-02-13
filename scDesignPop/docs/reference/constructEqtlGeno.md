@@ -12,7 +12,7 @@ constructEqtlGeno(
   sampid_vec,
   name = NULL,
   feature_colname = "gene_name",
-  cellstate_colname = "cell_type",
+  celltype_colname = "cell_type",
   snp_colname = "snp_id",
   loc_colname = "POS"
 )
@@ -40,9 +40,9 @@ constructEqtlGeno(
 
   feature variable name
 
-- cellstate_colname:
+- celltype_colname:
 
-  cell state variable name
+  cell type variable name
 
 - snp_colname:
 

@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">scDesignPop</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9009</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9010</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -25,7 +25,6 @@
     <li><a class="dropdown-item" href="../articles/scDesignPop-dynamic-eQTL.html">Model linear dynamic eQTL effects in continuous cell states</a></li>
     <li><a class="dropdown-item" href="../articles/scDesignPop-modify-eQTL-effects.html">Modify eQTL effect for eGenes / non-eGenes</a></li>
     <li><a class="dropdown-item" href="../articles/scDesignPop-power-analysis-ES-specification.html">Power analysis based on user specified eQTL effect sizes</a></li>
-    <li><a class="dropdown-item" href="../articles/scDesignPop-power-analysis-fitted.html">Power analysis based on a fitted scDesignPop marginal model</a></li>
     <li><a class="dropdown-item" href="../articles/scDesignPop-power-analysis-selected.html">Power analysis for selected genes</a></li>
     <li><a class="dropdown-item" href="../articles/scDesignPop-trans-eQTL.html">Modeling trans-eQTL effect using public data</a></li>
   </ul></li>
@@ -69,7 +68,11 @@
 <span>  nCellPerPool <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  alpha <span class="op">=</span> <span class="fl">0.05</span>,</span>
 <span>  nsims <span class="op">=</span> <span class="fl">100</span>,</span>
-<span>  ncores <span class="op">=</span> <span class="fl">1</span></span>
+<span>  ncores <span class="op">=</span> <span class="fl">2L</span>,</span>
+<span>  parallelization <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"pbmcapply"</span>, <span class="st">"future.apply"</span>, <span class="st">"parallel"</span>, <span class="st">"biocparallel"</span><span class="op">)</span>,</span>
+<span>  BPPARAM <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  future.seed <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  data_maxsize <span class="op">=</span> <span class="fl">1</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -150,7 +153,36 @@ of <code>marginal_list[[geneid]]$frame</code>. The default is "indiv".</p></dd>
 
 
 <dt id="arg-ncores">ncores<a class="anchor" aria-label="anchor" href="#arg-ncores"></a></dt>
-<dd><p>number of CPU cores user wants to use.</p></dd>
+<dd><p>a positive integer value (greater or equal to 1) to specify the
+number of CPU cores used in parallelization. The default is 2.</p></dd>
+
+
+<dt id="arg-parallelization">parallelization<a class="anchor" aria-label="anchor" href="#arg-parallelization"></a></dt>
+<dd><p>a string scalar specifying the parallelization backend
+used when simulating data. Must be one of "parallel", "future.apply",
+"biocparallel", or "pbmcapply". The default value is "pbmcapply". See details.</p></dd>
+
+
+<dt id="arg-bpparam">BPPARAM<a class="anchor" aria-label="anchor" href="#arg-bpparam"></a></dt>
+<dd><p>a BiocParallelParam class object (from <code>BiocParallel</code> R package)
+that must be specified when using <code>parallelization = "biocparallel"</code>. Either
+<code><a href="https://rdrr.io/pkg/BiocParallel/man/SnowParam-class.html" class="external-link">BiocParallel::SnowParam()</a></code> or <code><a href="https://rdrr.io/pkg/BiocParallel/man/MulticoreParam-class.html" class="external-link">BiocParallel::MulticoreParam()</a></code>
+can be used to initialize, depending on the operating system. BPPARAM is
+not used in other parallelization options. The default is NULL.</p></dd>
+
+
+<dt id="arg-future-seed">future.seed<a class="anchor" aria-label="anchor" href="#arg-future-seed"></a></dt>
+<dd><p>a logical or an integer (of length one or seven), or a list
+of length(X) with pre-generated random seeds that can be specified when using
+<code>parallelization = "future.apply"</code>. See <code><a href="https://future.apply.futureverse.org/reference/future_lapply.html" class="external-link">future.apply::future_eapply</a></code>
+documentation for more details on its usage. future.seed is not used in
+other parallelization options. The default is FALSE.</p></dd>
+
+
+<dt id="arg-data-maxsize">data_maxsize<a class="anchor" aria-label="anchor" href="#arg-data-maxsize"></a></dt>
+<dd><p>a positive numeric value used to set max marginal_list size
+in GiB increments. Used only when <code>parallelization = "future.apply"</code>.
+The default is 1.</p></dd>
 
 </dl></div>
     <div class="section level2">

@@ -9,7 +9,7 @@ This function is adapted from simu_new function in scDesign3 v0.99.7"></head><bo
 
     <a class="navbar-brand me-2" href="../index.html">scDesignPop</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9009</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9010</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -27,7 +27,6 @@ This function is adapted from simu_new function in scDesign3 v0.99.7"></head><bo
     <li><a class="dropdown-item" href="../articles/scDesignPop-dynamic-eQTL.html">Model linear dynamic eQTL effects in continuous cell states</a></li>
     <li><a class="dropdown-item" href="../articles/scDesignPop-modify-eQTL-effects.html">Modify eQTL effect for eGenes / non-eGenes</a></li>
     <li><a class="dropdown-item" href="../articles/scDesignPop-power-analysis-ES-specification.html">Power analysis based on user specified eQTL effect sizes</a></li>
-    <li><a class="dropdown-item" href="../articles/scDesignPop-power-analysis-fitted.html">Power analysis based on a fitted scDesignPop marginal model</a></li>
     <li><a class="dropdown-item" href="../articles/scDesignPop-power-analysis-selected.html">Power analysis for selected genes</a></li>
     <li><a class="dropdown-item" href="../articles/scDesignPop-trans-eQTL.html">Modeling trans-eQTL effect using public data</a></li>
   </ul></li>
@@ -62,7 +61,7 @@ This function is adapted from simu_new function in scDesign3 v0.99.7</p>
 <span>  <span class="va">zero_mat</span>,</span>
 <span>  quantile_mat <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">copula_list</span>,</span>
-<span>  <span class="va">n_cores</span>,</span>
+<span>  n_cores <span class="op">=</span> <span class="fl">2L</span>,</span>
 <span>  fastmvn <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  <span class="va">family_use</span>,</span>
 <span>  nonnegative <span class="op">=</span> <span class="cn">TRUE</span>,</span>
@@ -70,11 +69,14 @@ This function is adapted from simu_new function in scDesign3 v0.99.7</p>
 <span>  <span class="va">input_data</span>,</span>
 <span>  <span class="va">new_covariate</span>,</span>
 <span>  important_feature <span class="op">=</span> <span class="st">"all"</span>,</span>
-<span>  parallelization <span class="op">=</span> <span class="st">"mcmapply"</span>,</span>
+<span>  parallelization <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"pbmcapply"</span>, <span class="st">"future.apply"</span>, <span class="st">"parallel"</span>, <span class="st">"biocparallel"</span><span class="op">)</span>,</span>
 <span>  BPPARAM <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  future.seed <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  data_maxsize <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  <span class="va">filtered_gene</span>,</span>
 <span>  mean_limit <span class="op">=</span> <span class="fl">1e+15</span>,</span>
-<span>  debug <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>  debug <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -113,7 +115,8 @@ matrix. If provided, the <code>quantile_mat</code> must be NULL.</p></dd>
 
 
 <dt id="arg-n-cores">n_cores<a class="anchor" aria-label="anchor" href="#arg-n-cores"></a></dt>
-<dd><p>An integer. The number of cores to use.</p></dd>
+<dd><p>a positive integer value (greater or equal to 1) to specify the
+number of CPU cores used in parallelization. The default is 2.</p></dd>
 
 
 <dt id="arg-fastmvn">fastmvn<a class="anchor" aria-label="anchor" href="#arg-fastmvn"></a></dt>
@@ -157,15 +160,31 @@ The default value for is "all".</p></dd>
 
 
 <dt id="arg-parallelization">parallelization<a class="anchor" aria-label="anchor" href="#arg-parallelization"></a></dt>
-<dd><p>A string indicating the specific parallelization function to use.
-Must be one of 'mcmapply', 'bpmapply', or 'pbmcmapply', which corresponds to the parallelization function in the package
-<code>parallel</code>,<code>BiocParallel</code>, and <code>pbmcapply</code> respectively. The default value is 'mcmapply'.</p></dd>
+<dd><p>a string scalar specifying the parallelization backend
+used when simulating data. Must be one of "parallel", "future.apply",
+"biocparallel", or "pbmcapply". The default value is "parallel". See details.</p></dd>
 
 
 <dt id="arg-bpparam">BPPARAM<a class="anchor" aria-label="anchor" href="#arg-bpparam"></a></dt>
-<dd><p>A <code>MulticoreParam</code> object or NULL. When the parameter parallelization = 'mcmapply' or 'pbmcmapply',
-this parameter must be NULL. When the parameter parallelization = 'bpmapply',  this parameter must be one of the
-<code>MulticoreParam</code> object offered by the package 'BiocParallel. The default value is NULL.</p></dd>
+<dd><p>a BiocParallelParam class object (from <code>BiocParallel</code> R package)
+that must be specified when using <code>parallelization = "biocparallel"</code>. Either
+<code><a href="https://rdrr.io/pkg/BiocParallel/man/SnowParam-class.html" class="external-link">BiocParallel::SnowParam()</a></code> or <code><a href="https://rdrr.io/pkg/BiocParallel/man/MulticoreParam-class.html" class="external-link">BiocParallel::MulticoreParam()</a></code>
+can be used to initialize, depending on the operating system. BPPARAM is
+not used in other parallelization options. The default is NULL.</p></dd>
+
+
+<dt id="arg-future-seed">future.seed<a class="anchor" aria-label="anchor" href="#arg-future-seed"></a></dt>
+<dd><p>a logical or an integer (of length one or seven), or a list
+of length(X) with pre-generated random seeds that can be specified when using
+<code>parallelization = "future.apply"</code>. See <code><a href="https://future.apply.futureverse.org/reference/future_lapply.html" class="external-link">future.apply::future_eapply</a></code>
+documentation for more details on its usage. future.seed is not used in
+other parallelization options. The default is FALSE.</p></dd>
+
+
+<dt id="arg-data-maxsize">data_maxsize<a class="anchor" aria-label="anchor" href="#arg-data-maxsize"></a></dt>
+<dd><p>a positive numeric value used to set max marginal_list size
+in GiB increments. Used only when <code>parallelization = "future.apply"</code>.
+The default is 1.</p></dd>
 
 
 <dt id="arg-filtered-gene">filtered_gene<a class="anchor" aria-label="anchor" href="#arg-filtered-gene"></a></dt>
@@ -182,6 +201,10 @@ avoid features that have extremely high and unreasonable means.</p></dd>
 <dd><p>A logical scalar for whether to return a list of variables in
 addition to simulated count matrix. The default is FALSE.</p></dd>
 
+
+<dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
+<dd><p>additional arguments passed to internal functions.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -191,7 +214,16 @@ addition to simulated count matrix. The default is FALSE.</p></dd>
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>The function takes the new covariate (if use) from <code><a href="constructDataPop.html">constructDataPop</a></code>,
 parameter matrices from <code><a href="extractParaPop.html">extractParaPop</a></code> and multivariate Unifs
-from <code><a href="fitCopulaPop.html">fitCopulaPop</a></code>.</p>
+from <code><a href="fitCopulaPop.html">fitCopulaPop</a></code>.</p><div class="section">
+<h3 id="parallelization-options">Parallelization options<a class="anchor" aria-label="anchor" href="#parallelization-options"></a></h3>
+
+
+<p>If "parallel" is used then <code>mcmapply</code> is called from the <code>parallel</code> package; if
+"biocparallel" is used, then <code>bpmapply</code> is called from the <code>BiocParallel</code> package; if
+"future.apply" is used, then <code>future_mapply</code> is called from the <code>future.apply</code> package;
+if "pbmcapply" is used, then <code>pbmcmapply</code> is called from the <code>pbmcapply</code> package.</p>
+</div>
+
     </div>
 
     <div class="section level2">

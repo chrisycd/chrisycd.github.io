@@ -9,7 +9,7 @@ in the eQTL genotype dataframe."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">scDesignPop</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9009</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9010</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -27,7 +27,6 @@ in the eQTL genotype dataframe."></head><body>
     <li><a class="dropdown-item" href="../articles/scDesignPop-dynamic-eQTL.html">Model linear dynamic eQTL effects in continuous cell states</a></li>
     <li><a class="dropdown-item" href="../articles/scDesignPop-modify-eQTL-effects.html">Modify eQTL effect for eGenes / non-eGenes</a></li>
     <li><a class="dropdown-item" href="../articles/scDesignPop-power-analysis-ES-specification.html">Power analysis based on user specified eQTL effect sizes</a></li>
-    <li><a class="dropdown-item" href="../articles/scDesignPop-power-analysis-fitted.html">Power analysis based on a fitted scDesignPop marginal model</a></li>
     <li><a class="dropdown-item" href="../articles/scDesignPop-power-analysis-selected.html">Power analysis for selected genes</a></li>
     <li><a class="dropdown-item" href="../articles/scDesignPop-trans-eQTL.html">Modeling trans-eQTL effect using public data</a></li>
   </ul></li>
@@ -64,7 +63,7 @@ in the eQTL genotype dataframe.</p>
 <span>  copula_variable <span class="op">=</span> <span class="va">celltype_colname</span>,</span>
 <span>  n_quantiles <span class="op">=</span> <span class="fl">10</span>,</span>
 <span>  slot_name <span class="op">=</span> <span class="st">"counts"</span>,</span>
-<span>  snp_model <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"single"</span>, <span class="st">"multi"</span><span class="op">)</span>,</span>
+<span>  snp_mode <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"single"</span>, <span class="st">"multi"</span><span class="op">)</span>,</span>
 <span>  time_colname <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  celltype_colname <span class="op">=</span> <span class="st">"cell_type"</span>,</span>
 <span>  feature_colname <span class="op">=</span> <span class="st">"gene_id"</span>,</span>
@@ -72,7 +71,8 @@ in the eQTL genotype dataframe.</p>
 <span>  loc_colname <span class="op">=</span> <span class="st">"POS"</span>,</span>
 <span>  chrom_colname <span class="op">=</span> <span class="st">"CHR"</span>,</span>
 <span>  indiv_colname <span class="op">=</span> <span class="st">"indiv"</span>,</span>
-<span>  prune_thres <span class="op">=</span> <span class="fl">0.9</span></span>
+<span>  prune_thres <span class="op">=</span> <span class="fl">0.9</span>,</span>
+<span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -126,9 +126,11 @@ cell states will be assigned for copula fitting. The default is 10.</p></dd>
 The default is "counts".</p></dd>
 
 
-<dt id="arg-snp-model">snp_model<a class="anchor" aria-label="anchor" href="#arg-snp-model"></a></dt>
-<dd><p>a string scalar specifying the type of SNP model used. Options
-are either "single" for single-SNP, or "multi" for multi-SNP.</p></dd>
+<dt id="arg-snp-mode">snp_mode<a class="anchor" aria-label="anchor" href="#arg-snp-mode"></a></dt>
+<dd><p>a string scalar specifying the type of SNP mode used in the marginal
+models. Options are either "single" for single-SNP mode, or "multi" for
+multi-SNP mode. If multi-SNP mode is used, each gene will have one or more
+SNPs in the model upon SNP pruning. The default is "single".</p></dd>
 
 
 <dt id="arg-time-colname">time_colname<a class="anchor" aria-label="anchor" href="#arg-time-colname"></a></dt>
@@ -171,6 +173,10 @@ of <code>sce</code>. The default is "indiv".</p></dd>
 <dd><p>a numerical value between 0 and 1 used to threshold the pairwise
 correlations of eQTLs' genotypes for each feature. The default value is 0.9.</p></dd>
 
+
+<dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
+<dd><p>additional arguments passed to internal functions.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -181,10 +187,14 @@ correlations of eQTLs' genotypes for each feature. The default value is 0.9.</p>
 <dd><p>a cell-by-covariate data frame used for fit marginal.</p></dd>
 
 <dt><code>new_covariate</code></dt>
-<dd><p>an optional cell-by-covariate data frame used for prediction.</p></dd>
+<dd><p>an optional cell-by-covariate data frame used
+in simulation.</p></dd>
 
 <dt><code>important_features</code></dt>
 <dd><p>a string vector of gene ids.</p></dd>
+
+<dt><code>noeqtl_features</code></dt>
+<dd><p>a string vector of gene ids that do not have eQTLs.</p></dd>
 
 <dt><code>eqtl_geno_list</code></dt>
 <dd><p>a list of eQTL genotype dataframes for each gene

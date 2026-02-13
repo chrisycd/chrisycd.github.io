@@ -13,7 +13,7 @@ additional model attributes."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">scDesignPop</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9009</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9010</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -31,7 +31,6 @@ additional model attributes."></head><body>
     <li><a class="dropdown-item" href="../articles/scDesignPop-dynamic-eQTL.html">Model linear dynamic eQTL effects in continuous cell states</a></li>
     <li><a class="dropdown-item" href="../articles/scDesignPop-modify-eQTL-effects.html">Modify eQTL effect for eGenes / non-eGenes</a></li>
     <li><a class="dropdown-item" href="../articles/scDesignPop-power-analysis-ES-specification.html">Power analysis based on user specified eQTL effect sizes</a></li>
-    <li><a class="dropdown-item" href="../articles/scDesignPop-power-analysis-fitted.html">Power analysis based on a fitted scDesignPop marginal model</a></li>
     <li><a class="dropdown-item" href="../articles/scDesignPop-power-analysis-selected.html">Power analysis for selected genes</a></li>
     <li><a class="dropdown-item" href="../articles/scDesignPop-trans-eQTL.html">Modeling trans-eQTL effect using public data</a></li>
   </ul></li>
@@ -113,7 +112,7 @@ analysis using the fitted marginal models of the scDesignPop.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ hessian : logi FALSE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ method  : chr "BFGS"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ retape  :function (set.defaults = TRUE)  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ env     :&lt;environment: 0x5c80adab5778&gt; </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ env     :&lt;environment: 0x63a40cf4c888&gt; </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ report  :function (par = last.par)  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ simulate:function (par = last.par, complete = FALSE)  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  $ fit      :List of 7</span>
@@ -144,7 +143,7 @@ analysis using the fitted marginal models of the scDesignPop.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ par.random     : Named num [1:40] -0.0836 -0.1549 -0.3842 0.1453 0.005 ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..- attr(*, "names")= chr [1:40] "b" "b" "b" "b" ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ diag.cov.random: num [1:40] 0.0613 0.0166 0.0123 0.0432 0.0538 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ env            :&lt;environment: 0x5c80ad808018&gt; </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ env            :&lt;environment: 0x63a40d17cda0&gt; </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   ..- attr(*, "class")= chr "sdreport"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  $ call     : language glmmTMB::glmmTMB(formula = response ~ (1 | indiv) + cell_type + `1:153337943` +      `1:153337943`:cell_type, dat| __truncated__ ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  $ frame    :'data.frame':	7811 obs. of  4 variables:</span>
@@ -162,7 +161,7 @@ analysis using the fitted marginal models of the scDesignPop.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..- attr(*, "order")= int [1:4] 1 1 1 2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..- attr(*, "intercept")= int 1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..- attr(*, "response")= int 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..- attr(*, ".Environment")=&lt;environment: 0x5c80ad808590&gt; </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..- attr(*, ".Environment")=&lt;environment: 0x63a40d17d318&gt; </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..- attr(*, "predvars")= language list(response, indiv, cell_type, `1:153337943`)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..- attr(*, "dataClasses")= Named chr [1:4] "numeric" "factor" "factor" "numeric"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..- attr(*, "names")= chr [1:4] "response" "indiv" "cell_type" "1:153337943"</span>
@@ -203,7 +202,7 @@ analysis using the fitted marginal models of the scDesignPop.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. .. .. ..- attr(*, "order")= int [1:3] 1 1 2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. .. .. ..- attr(*, "intercept")= int 1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. .. .. ..- attr(*, "response")= int 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. .. .. ..- attr(*, ".Environment")=&lt;environment: 0x5c80ad808590&gt; </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. .. .. ..- attr(*, ".Environment")=&lt;environment: 0x63a40d17d318&gt; </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. .. .. ..- attr(*, "predvars")= language list(response, cell_type, `1:153337943`)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. .. .. ..- attr(*, "dataClasses")= Named chr [1:3] "numeric" "factor" "numeric"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. .. .. .. ..- attr(*, "names")= chr [1:3] "response" "cell_type" "1:153337943"</span>
@@ -218,7 +217,7 @@ analysis using the fitted marginal models of the scDesignPop.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. .. .. ..- attr(*, "order")= int(0) </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. .. .. ..- attr(*, "intercept")= int 1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. .. .. ..- attr(*, "response")= int 0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. .. .. ..- attr(*, ".Environment")=&lt;environment: 0x5c80ad808590&gt; </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. .. .. ..- attr(*, ".Environment")=&lt;environment: 0x63a40d17d318&gt; </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. .. .. ..- attr(*, "predvars")= language list()</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. .. .. ..- attr(*, "dataClasses")= Named chr(0) </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. .. .. .. ..- attr(*, "names")= chr(0) </span>
@@ -234,7 +233,7 @@ analysis using the fitted marginal models of the scDesignPop.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. .. ..- attr(*, "order")= int [1:3] 1 1 2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. .. ..- attr(*, "intercept")= int 1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. .. ..- attr(*, "response")= int 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. .. ..- attr(*, ".Environment")=&lt;environment: 0x5c80ad808590&gt; </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. .. ..- attr(*, ".Environment")=&lt;environment: 0x63a40d17d318&gt; </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. .. ..- attr(*, "predvars")= language list(response, cell_type, `1:153337943`)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. .. ..- attr(*, "dataClasses")= Named chr [1:3] "numeric" "factor" "numeric"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. .. .. ..- attr(*, "names")= chr [1:3] "response" "cell_type" "1:153337943"</span>
@@ -247,7 +246,7 @@ analysis using the fitted marginal models of the scDesignPop.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. .. ..- attr(*, "order")= int(0) </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. .. ..- attr(*, "intercept")= int 1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. .. ..- attr(*, "response")= int 0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. .. ..- attr(*, ".Environment")=&lt;environment: 0x5c80ad808590&gt; </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. .. ..- attr(*, ".Environment")=&lt;environment: 0x63a40d17d318&gt; </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. .. ..- attr(*, "predvars")= language list()</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. .. ..- attr(*, "dataClasses")= Named chr(0) </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. .. .. ..- attr(*, "names")= chr(0) </span>
@@ -265,13 +264,13 @@ analysis using the fitted marginal models of the scDesignPop.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ dispReStruc: list()</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ allForm       :List of 4</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ combForm   :Class 'formula'  language response ~ (1 + indiv) + cell_type + `1:153337943` + `1:153337943`:cell_type +      0 + 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..- attr(*, ".Environment")=&lt;environment: 0x5c80ad808590&gt; </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..- attr(*, ".Environment")=&lt;environment: 0x63a40d17d318&gt; </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ formula    :Class 'formula'  language response ~ (1 | indiv) + cell_type + `1:153337943` + `1:153337943`:cell_type</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..- attr(*, ".Environment")=&lt;environment: 0x5c80ad808590&gt; </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..- attr(*, ".Environment")=&lt;environment: 0x63a40d17d318&gt; </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ ziformula  :Class 'formula'  language ~0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..- attr(*, ".Environment")=&lt;environment: 0x5c80ad808590&gt; </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..- attr(*, ".Environment")=&lt;environment: 0x63a40d17d318&gt; </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ dispformula:Class 'formula'  language ~1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..- attr(*, ".Environment")=&lt;environment: 0x5c80ad808590&gt; </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. .. ..- attr(*, ".Environment")=&lt;environment: 0x63a40d17d318&gt; </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ REML          : logi FALSE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ map           : NULL</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ sparseX       : Named logi [1:3] FALSE FALSE FALSE</span>

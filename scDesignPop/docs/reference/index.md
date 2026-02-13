@@ -43,7 +43,7 @@
 - [`extractFromSeurat()`](https://github.com/chrisycd/scDesignPop/reference/extractFromSeurat.md)
   : Extract data from Seurat object
 - [`extractParaPop()`](https://github.com/chrisycd/scDesignPop/reference/extractParaPop.md)
-  : Extract parameter matrix for new covariate df
+  : Extract parameter matrix for a new covariate data frame
 - [`fitCopulaPop()`](https://github.com/chrisycd/scDesignPop/reference/fitCopulaPop.md)
   : Fits copula for input
 - [`fitMarginalPop()`](https://github.com/chrisycd/scDesignPop/reference/fitMarginalPop.md)

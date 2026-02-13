@@ -49,10 +49,6 @@ A `SingleCellExperiment` object with 1,000 genes and 7,811 cells.
 
   :   Age of the donor.
 
-  `batch`
-
-  :   Batch of the sequencing (Simulated).
-
 - reducedDimNames:
 
   None in this example.

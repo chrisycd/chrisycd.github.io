@@ -19,7 +19,7 @@ modifyMarginalModels(
   eqtl_baseline = NULL,
   mean_baseline_only = FALSE,
   eqtl_baseline_only = FALSE,
-  disp_scaling = "linear",
+  disp_scaling = FALSE,
   celltype_colname = "cell_type",
   snp_colname = "snp_id",
   verbose = TRUE,
@@ -106,9 +106,10 @@ modifyMarginalModels(
 
 - disp_scaling:
 
-  A string value to specify the dispersion-mean scaling for certain
-  parametric models. Current options are either `"linear"`,
-  `"quadratic"`, or `"none"`. (NOTE: currently only applicable to the
+  A string or logical value to specify the dispersion-mean scaling for
+  certain parametric models. Current options are either `"linear"`,
+  `"quadratic"`, or `NULL`. If FALSE, the dispersion parameter is not
+  changed. The default is FALSE. (NOTE: currently only applicable to the
   negative binomial model.)
 
 - celltype_colname:
@@ -131,7 +132,13 @@ modifyMarginalModels(
 
 - ...:
 
-  Additional options.
+  Additional options used. Currently supported:
+
+  `mod_scale`
+
+  :   A string to specify on what scale the modified response will be
+      on. The two options are 'response' or 'link'. The default is
+      'response'.
 
 ## Value
 

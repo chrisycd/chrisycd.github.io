@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">scDesignPop</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9009</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9010</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -25,7 +25,6 @@
     <li><a class="dropdown-item" href="../articles/scDesignPop-dynamic-eQTL.html">Model linear dynamic eQTL effects in continuous cell states</a></li>
     <li><a class="dropdown-item" href="../articles/scDesignPop-modify-eQTL-effects.html">Modify eQTL effect for eGenes / non-eGenes</a></li>
     <li><a class="dropdown-item" href="../articles/scDesignPop-power-analysis-ES-specification.html">Power analysis based on user specified eQTL effect sizes</a></li>
-    <li><a class="dropdown-item" href="../articles/scDesignPop-power-analysis-fitted.html">Power analysis based on a fitted scDesignPop marginal model</a></li>
     <li><a class="dropdown-item" href="../articles/scDesignPop-power-analysis-selected.html">Power analysis for selected genes</a></li>
     <li><a class="dropdown-item" href="../articles/scDesignPop-trans-eQTL.html">Modeling trans-eQTL effect using public data</a></li>
   </ul></li>
@@ -56,8 +55,8 @@
 <span>  <span class="va">mean_formula</span>,</span>
 <span>  model_family <span class="op">=</span> <span class="st">"nb"</span>,</span>
 <span>  interact_colnames <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  parallelization <span class="op">=</span> <span class="st">"pbmcapply"</span>,</span>
-<span>  n_threads <span class="op">=</span> <span class="fl">2L</span>,</span>
+<span>  parallelization <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"pbmcapply"</span>, <span class="st">"future.apply"</span>, <span class="st">"parallel"</span>, <span class="st">"biocparallel"</span><span class="op">)</span>,</span>
+<span>  n_cores <span class="op">=</span> <span class="fl">2L</span>,</span>
 <span>  loc_colname <span class="op">=</span> <span class="st">"POS"</span>,</span>
 <span>  snp_colname <span class="op">=</span> <span class="st">"snp_id"</span>,</span>
 <span>  celltype_colname <span class="op">=</span> <span class="st">"cell_type"</span>,</span>
@@ -65,8 +64,11 @@
 <span>  filter_snps <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  snpvar_thres <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  force_formula <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  keep_cellnames <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  BPPARAM <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  future.seed <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  data_maxsize <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>  keep_cellnames <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -93,13 +95,14 @@ have first-order interaction with SNP genotypes.</p></dd>
 
 
 <dt id="arg-parallelization">parallelization<a class="anchor" aria-label="anchor" href="#arg-parallelization"></a></dt>
-<dd><p>a string scalar specifying the type of parallelization
-used during marginal fitting.</p></dd>
+<dd><p>a string scalar specifying the parallelization backend
+used during marginal fitting. Must be one of either "parallel", "future.apply",
+"biocparallel", or "pbmcapply". The default value is "pbmcapply". See details.</p></dd>
 
 
-<dt id="arg-n-threads">n_threads<a class="anchor" aria-label="anchor" href="#arg-n-threads"></a></dt>
+<dt id="arg-n-cores">n_cores<a class="anchor" aria-label="anchor" href="#arg-n-cores"></a></dt>
 <dd><p>positive integer value (greater or equal to 1) to specify the
-number of CPU threads used in parallelization.</p></dd>
+number of CPU cores used in parallelization. The default is 2.</p></dd>
 
 
 <dt id="arg-loc-colname">loc_colname<a class="anchor" aria-label="anchor" href="#arg-loc-colname"></a></dt>
@@ -137,14 +140,35 @@ main effects in the model would be permitted. Results in error if
 <code>force_formula = FALSE</code> and <code>length(geno_interact_names) &gt; 0</code>.</p></dd>
 
 
-<dt id="arg-data-maxsize">data_maxsize<a class="anchor" aria-label="anchor" href="#arg-data-maxsize"></a></dt>
-<dd><p>a positive numeric value used to set max data_list size
-in GiB unit. Used only when <code>parallelization = 'future'</code>.</p></dd>
-
-
 <dt id="arg-keep-cellnames">keep_cellnames<a class="anchor" aria-label="anchor" href="#arg-keep-cellnames"></a></dt>
 <dd><p>a logical scalar for whether to keep cell barcode names.
 If <code>keep_cellnames = TRUE</code>, the memory will be larger. The default is FALSE.</p></dd>
+
+
+<dt id="arg-bpparam">BPPARAM<a class="anchor" aria-label="anchor" href="#arg-bpparam"></a></dt>
+<dd><p>a BiocParallelParam class object (from <code>BiocParallel</code> R package)
+that must be specified when using <code>parallelization = "biocparallel"</code>. Either
+<code><a href="https://rdrr.io/pkg/BiocParallel/man/SnowParam-class.html" class="external-link">BiocParallel::SnowParam()</a></code> or <code><a href="https://rdrr.io/pkg/BiocParallel/man/MulticoreParam-class.html" class="external-link">BiocParallel::MulticoreParam()</a></code>
+can be used to initialize, depending on the operating system. BPPARAM is
+not used in other parallelization options. The default is NULL.</p></dd>
+
+
+<dt id="arg-future-seed">future.seed<a class="anchor" aria-label="anchor" href="#arg-future-seed"></a></dt>
+<dd><p>a logical or an integer (of length one or seven), or a list
+of length(X) with pre-generated random seeds that can be specified when using
+<code>parallelization = "future.apply"</code>. See <code><a href="https://future.apply.futureverse.org/reference/future_lapply.html" class="external-link">future.apply::future_eapply</a></code>
+documentation for more details on its usage. future.seed is not used in
+other parallelization options. The default is FALSE.</p></dd>
+
+
+<dt id="arg-data-maxsize">data_maxsize<a class="anchor" aria-label="anchor" href="#arg-data-maxsize"></a></dt>
+<dd><p>a positive numeric value used to set max data_list size
+in GiB increments. Used only when <code>parallelization = "future.apply"</code>.
+The default is 1.</p></dd>
+
+
+<dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
+<dd><p>additional arguments passed to internal functions.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -169,6 +193,20 @@ removed due to low-variance (NOT currently implemented).</p></dd>
 
 
 </dl></div>
+    <div class="section level2">
+    <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
+
+<div class="section">
+<h3 id="parallelization-options">Parallelization options<a class="anchor" aria-label="anchor" href="#parallelization-options"></a></h3>
+
+
+<p>If "parallel" is used then <code>mclapply</code> is called from the <code>parallel</code> package;
+if "biocparallel" is used, then <code>bplapply</code> is called from the <code>BiocParallel</code> package;
+if "future.apply" is used, then <code>future_lapply</code> is called from the <code>future.apply</code> package;
+if "pbmcapply" is used, then <code>pbmclapply</code> is called from the <code>pbmcapply</code> package.</p>
+</div>
+
+    </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
