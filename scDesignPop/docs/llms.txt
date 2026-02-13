@@ -75,9 +75,6 @@ follows:
 - [Modify eQTL effect for eGenes /
   non-eGenes](https://chrisycd.github.io/scDesignPop/docs/articles/scDesignPop-modify-eQTL-effects.html)
 
-- [Power analysis based on a fitted scDesignPop marginal
-  model](https://chrisycd.github.io/scDesignPop/docs/articles/scDesignPop-power-analysis-fitted.html)
-
 - [Power analysis for selected
   genes](https://chrisycd.github.io/scDesignPop/docs/articles/scDesignPop-power-analysis-selected.html)
 
@@ -165,7 +162,7 @@ Chris Dong (<cycd@g.ucla.edu>) or Yihui Cen (<yihuicen@g.ucla.edu>).
 - [`extractFromSeurat()`](https://github.com/chrisycd/scDesignPop/reference/extractFromSeurat.md)
   : Extract data from Seurat object
 - [`extractParaPop()`](https://github.com/chrisycd/scDesignPop/reference/extractParaPop.md)
-  : Extract parameter matrix for new covariate df
+  : Extract parameter matrix for a new covariate data frame
 - [`fitCopulaPop()`](https://github.com/chrisycd/scDesignPop/reference/fitCopulaPop.md)
   : Fits copula for input
 - [`fitMarginalPop()`](https://github.com/chrisycd/scDesignPop/reference/fitMarginalPop.md)
@@ -218,8 +215,6 @@ Chris Dong (<cycd@g.ucla.edu>) or Yihui Cen (<yihuicen@g.ucla.edu>).
   non-eGenes](https://github.com/chrisycd/scDesignPop/articles/scDesignPop-modify-eQTL-effects.md):
 - [Power analysis based on user specified eQTL effect
   sizes](https://github.com/chrisycd/scDesignPop/articles/scDesignPop-power-analysis-ES-specification.md):
-- [Power analysis based on a fitted scDesignPop marginal
-  model](https://github.com/chrisycd/scDesignPop/articles/scDesignPop-power-analysis-fitted.md):
 - [Power analysis for selected
   genes](https://github.com/chrisycd/scDesignPop/articles/scDesignPop-power-analysis-selected.md):
 - [Modeling trans-eQTL effect using public
