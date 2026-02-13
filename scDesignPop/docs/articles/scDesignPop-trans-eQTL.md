@@ -10,10 +10,12 @@ theme_set(theme_bw())
 
 ## Introduction
 
-scDesignPop allows users to specify eQTL pairs, thus providing the
-capability to also provide ground truth for trans eQTL studies.
+scDesignPop supports user-defined eQTL pairs, making it straightforward
+to extend the framework to trans-eQTL studies with known ground truth.
 
-## Step 0: prepare the eQTL genotype dataframe as input
+## Library and data preparation
+
+### prepare the eQTL genotype dataframe as input
 
 Here, we take the trans-eQTL list from eQTLGen phase 1
 (<https://www.eqtlgen.org/trans-eqtls.html>) as an example to show the
@@ -23,58 +25,63 @@ link of the trans-eQTL list is
 
 ``` bash
 wget https://download.gcc.rug.nl/downloads/eqtlgen/trans-eqtl/2018-09-04-trans-eQTLsFDR0.05-CohortInfoRemoved-BonferroniAdded.txt.gz
-#> --2026-01-23 17:58:42--  https://download.gcc.rug.nl/downloads/eqtlgen/trans-eqtl/2018-09-04-trans-eQTLsFDR0.05-CohortInfoRemoved-BonferroniAdded.txt.gz
+#> --2026-02-13 01:24:58--  https://download.gcc.rug.nl/downloads/eqtlgen/trans-eqtl/2018-09-04-trans-eQTLsFDR0.05-CohortInfoRemoved-BonferroniAdded.txt.gz
 #> Resolving download.gcc.rug.nl (download.gcc.rug.nl)... 195.169.22.66
 #> Connecting to download.gcc.rug.nl (download.gcc.rug.nl)|195.169.22.66|:443... connected.
 #> HTTP request sent, awaiting response... 200 OK
 #> Length: 1839918 (1.8M) [application/octet-stream]
-#> Saving to: ‘2018-09-04-trans-eQTLsFDR0.05-CohortInfoRemoved-BonferroniAdded.txt.gz.7’
+#> Saving to: ‘2018-09-04-trans-eQTLsFDR0.05-CohortInfoRemoved-BonferroniAdded.txt.gz.12’
 #> 
-#>      0K .......... .......... .......... .......... ..........  2%  165K 11s
-#>     50K .......... .......... .......... .......... ..........  5%  330K 8s
-#>    100K .......... .......... .......... .......... ..........  8% 74.6M 5s
-#>    150K .......... .......... .......... .......... .......... 11% 1.20M 4s
-#>    200K .......... .......... .......... .......... .......... 13%  449K 4s
-#>    250K .......... .......... .......... .......... .......... 16% 91.4M 3s
-#>    300K .......... .......... .......... .......... .......... 19% 81.3M 3s
-#>    350K .......... .......... .......... .......... .......... 22% 77.6M 2s
-#>    400K .......... .......... .......... .......... .......... 25% 1.24M 2s
-#>    450K .......... .......... .......... .......... .......... 27%  451K 2s
-#>    500K .......... .......... .......... .......... .......... 30% 70.0M 2s
-#>    550K .......... .......... .......... .......... .......... 33%  106M 2s
-#>    600K .......... .......... .......... .......... .......... 36%  109M 1s
-#>    650K .......... .......... .......... .......... .......... 38% 94.3M 1s
-#>    700K .......... .......... .......... .......... .......... 41%  126M 1s
-#>    750K .......... .......... .......... .......... .......... 44%  130M 1s
-#>    800K .......... .......... .......... .......... .......... 47% 1.29M 1s
-#>    850K .......... .......... .......... .......... .......... 50% 99.2M 1s
-#>    900K .......... .......... .......... .......... .......... 52%  454K 1s
-#>    950K .......... .......... .......... .......... .......... 55% 72.0M 1s
-#>   1000K .......... .......... .......... .......... .......... 58%  102M 1s
-#>   1050K .......... .......... .......... .......... .......... 61% 76.8M 1s
-#>   1100K .......... .......... .......... .......... .......... 64%  151M 1s
-#>   1150K .......... .......... .......... .......... .......... 66% 99.1M 0s
-#>   1200K .......... .......... .......... .......... .......... 69% 57.0M 0s
-#>   1250K .......... .......... .......... .......... .......... 72%  171M 0s
-#>   1300K .......... .......... .......... .......... .......... 75%  196M 0s
-#>   1350K .......... .......... .......... .......... .......... 77%  176M 0s
-#>   1400K .......... .......... .......... .......... .......... 80% 55.5M 0s
-#>   1450K .......... .......... .......... .......... .......... 83%  327K 0s
-#>   1500K .......... .......... .......... .......... .......... 86% 82.5M 0s
-#>   1550K .......... .......... .......... .......... .......... 89%  255M 0s
-#>   1600K .......... .......... .......... .......... .......... 91% 1.40M 0s
-#>   1650K .......... .......... .......... .......... .......... 94%  131M 0s
-#>   1700K .......... .......... .......... .......... .......... 97%  117M 0s
-#>   1750K .......... .......... .......... .......... ......    100%  277M=1.1s
+#>      0K .......... .......... .......... .......... ..........  2%  177K 10s
+#>     50K .......... .......... .......... .......... ..........  5%  329K 7s
+#>    100K .......... .......... .......... .......... ..........  8% 61.5M 5s
+#>    150K .......... .......... .......... .......... .......... 11% 2.37M 4s
+#>    200K .......... .......... .......... .......... .......... 13%  382K 4s
+#>    250K .......... .......... .......... .......... .......... 16% 68.6M 3s
+#>    300K .......... .......... .......... .......... .......... 19% 85.3M 2s
+#>    350K .......... .......... .......... .......... .......... 22%  107M 2s
+#>    400K .......... .......... .......... .......... .......... 25% 2.48M 2s
+#>    450K .......... .......... .......... .......... .......... 27%  382K 2s
+#>    500K .......... .......... .......... .......... .......... 30% 84.8M 2s
+#>    550K .......... .......... .......... .......... .......... 33%  141M 1s
+#>    600K .......... .......... .......... .......... .......... 36% 84.5M 1s
+#>    650K .......... .......... .......... .......... .......... 38%  103M 1s
+#>    700K .......... .......... .......... .......... .......... 41%  112M 1s
+#>    750K .......... .......... .......... .......... .......... 44%  129M 1s
+#>    800K .......... .......... .......... .......... .......... 47% 2.69M 1s
+#>    850K .......... .......... .......... .......... .......... 50%  122M 1s
+#>    900K .......... .......... .......... .......... .......... 52%  383K 1s
+#>    950K .......... .......... .......... .......... .......... 55%  123M 1s
+#>   1000K .......... .......... .......... .......... .......... 58% 89.0M 1s
+#>   1050K .......... .......... .......... .......... .......... 61%  136M 1s
+#>   1100K .......... .......... .......... .......... .......... 64%  131M 1s
+#>   1150K .......... .......... .......... .......... .......... 66% 94.2M 0s
+#>   1200K .......... .......... .......... .......... .......... 69%  119M 0s
+#>   1250K .......... .......... .......... .......... .......... 72%  136M 0s
+#>   1300K .......... .......... .......... .......... .......... 75%  130M 0s
+#>   1350K .......... .......... .......... .......... .......... 77% 80.2M 0s
+#>   1400K .......... .......... .......... .......... .......... 80%  143K 0s
+#>   1450K .......... .......... .......... .......... .......... 83%  110K 0s
+#>   1500K .......... .......... .......... .......... .......... 86%  329K 0s
+#>   1550K .......... .......... .......... .......... .......... 89%  329K 0s
+#>   1600K .......... .......... .......... .......... .......... 91%  329K 0s
+#>   1650K .......... .......... .......... .......... .......... 94%  329K 0s
+#>   1700K .......... .......... .......... .......... .......... 97% 93.6M 0s
+#>   1750K .......... .......... .......... .......... ......    100%  170M=2.3s
 #> 
-#> 2026-01-23 17:58:44 (1.59 MB/s) - ‘2018-09-04-trans-eQTLsFDR0.05-CohortInfoRemoved-BonferroniAdded.txt.gz.7’ saved [1839918/1839918]
+#> 2026-02-13 01:25:01 (778 KB/s) - ‘2018-09-04-trans-eQTLsFDR0.05-CohortInfoRemoved-BonferroniAdded.txt.gz.12’ saved [1839918/1839918]
 ```
 
 Then, we reformat this trans-eQTL list into the required eQTL dataframe
 as follows,
 
 ``` r
+library(scDesignPop)
+library(SingleCellExperiment)
+library(SummarizedExperiment)
+library(ggplot2)
 library(data.table)
+
 transeqtl <- fread("2018-09-04-trans-eQTLsFDR0.05-CohortInfoRemoved-BonferroniAdded.txt.gz")
 transeqtl <- transeqtl[,c("Gene","SNP","SNPChr","SNPPos")]
 transeqtl <- cbind("bin", transeqtl)
@@ -167,7 +174,9 @@ trans_eqtlgeno
 #> 133:      1      1      0      0      2      2
 ```
 
-## Step 1: construct a data list
+## Modeling and simulation
+
+### Step 1: construct a data list
 
 To run scDesignPop, a list of data is required as input. This is done
 using the `constructDataPop` function. A `SingleCellExperiment` object
@@ -194,7 +203,7 @@ data_list <- constructDataPop(
     sampid_vec = NULL,
     copula_variable = "cell_type",
     slot_name = "counts",
-    snp_model = "single",
+    snp_mode = "single",
     celltype_colname = "cell_type",
     feature_colname = "gene_id",
     snp_colname = "snp_id",
@@ -205,7 +214,7 @@ data_list <- constructDataPop(
     )
 ```
 
-## Step 2: fit marginal model
+### Step 2: fit marginal model
 
 Next, a marginal model is specified to fit each gene using the
 `fitMarginalPop` function.  
@@ -230,7 +239,7 @@ marginal_list <- fitMarginalPop(
     )
 ```
 
-## Step 3: fit a Gaussian copula
+### Step 3: fit a Gaussian copula
 
 The third step is to fit a Gaussian copula using the `fitCopulaPop`
 function.
@@ -252,7 +261,7 @@ copula_fit <- fitCopulaPop(
 RNGkind("Mersenne-Twister")  # reset
 ```
 
-## Step 4: extract parameters
+### Step 4: extract parameters
 
 The fourth step is to compute the mean, sigma, and zero probability
 parameters using the `extractParaPop` function.
@@ -272,7 +281,7 @@ para_new <- extractParaPop(
     )
 ```
 
-## Step 5: simulate counts
+### Step 5: simulate counts
 
 The fifth step is to simulate counts using the `simuNewPop` function.
 
@@ -297,7 +306,7 @@ newcount_mat <- simuNewPop(
     )
 ```
 
-## Step 6: create SingleCellExperiment object using simulated data
+### Step 6: create SingleCellExperiment object using simulated data
 
 After simulating the data, we can create a `SingleCellExperiment` object
 as follows.
@@ -354,33 +363,33 @@ sessionInfo()
 #>  [7] GenomeInfoDb_1.34.9         IRanges_2.32.0             
 #>  [9] S4Vectors_0.36.2            BiocGenerics_0.44.0        
 #> [11] MatrixGenerics_1.10.0       matrixStats_1.1.0          
-#> [13] scDesignPop_0.0.0.9009      BiocStyle_2.26.0           
+#> [13] scDesignPop_0.0.0.9010      BiocStyle_2.26.0           
 #> 
 #> loaded via a namespace (and not attached):
-#>  [1] sass_0.4.10            jsonlite_2.0.0         splines_4.2.3         
-#>  [4] R.utils_2.13.0         bslib_0.9.0            Rdpack_2.6.4          
-#>  [7] assertthat_0.2.1       BiocManager_1.30.25    GenomeInfoDbData_1.2.9
-#> [10] yaml_2.3.10            numDeriv_2016.8-1.1    pillar_1.10.2         
-#> [13] lattice_0.22-6         glue_1.8.0             reformulas_0.4.1      
-#> [16] digest_0.6.37          rbibutils_2.3          RColorBrewer_1.1-3    
-#> [19] XVector_0.38.0         glmmTMB_1.1.13         minqa_1.2.8           
-#> [22] sandwich_3.1-1         htmltools_0.5.8.1      Matrix_1.6-5          
-#> [25] R.oo_1.27.1            pkgconfig_2.0.3        bookdown_0.43         
-#> [28] zlibbioc_1.44.0        mvtnorm_1.3-3          scales_1.4.0          
-#> [31] lme4_1.1-35.3          tibble_3.2.1           mgcv_1.9-1            
-#> [34] generics_0.1.4         farver_2.1.2           cachem_1.1.0          
-#> [37] withr_3.0.2            pbapply_1.7-2          TMB_1.9.11            
-#> [40] cli_3.6.5              magrittr_2.0.3         evaluate_1.0.3        
-#> [43] R.methodsS3_1.8.2      fs_1.6.6               nlme_3.1-164          
-#> [46] MASS_7.3-58.2          textshaping_0.4.0      tools_4.2.3           
-#> [49] lifecycle_1.0.4        DelayedArray_0.24.0    compiler_4.2.3        
+#>  [1] viridis_0.6.5          sass_0.4.10            jsonlite_2.0.0        
+#>  [4] viridisLite_0.4.2      splines_4.2.3          R.utils_2.13.0        
+#>  [7] RhpcBLASctl_0.23-42    bslib_0.9.0            assertthat_0.2.1      
+#> [10] BiocManager_1.30.25    GenomeInfoDbData_1.2.9 yaml_2.3.10           
+#> [13] numDeriv_2016.8-1.1    pillar_1.10.2          lattice_0.22-6        
+#> [16] glue_1.8.0             digest_0.6.37          RColorBrewer_1.1-3    
+#> [19] XVector_0.38.0         glmmTMB_1.1.9          minqa_1.2.8           
+#> [22] R.oo_1.27.1            htmltools_0.5.8.1      Matrix_1.6-5          
+#> [25] pkgconfig_2.0.3        bookdown_0.43          zlibbioc_1.44.0       
+#> [28] mvtnorm_1.3-3          scales_1.4.0           lme4_1.1-35.3         
+#> [31] tibble_3.2.1           mgcv_1.9-1             generics_0.1.4        
+#> [34] farver_2.1.2           withr_3.0.2            cachem_1.1.0          
+#> [37] pbapply_1.7-2          TMB_1.9.11             cli_3.6.5             
+#> [40] magrittr_2.0.3         evaluate_1.0.3         R.methodsS3_1.8.2     
+#> [43] fs_1.6.6               nlme_3.1-164           MASS_7.3-58.2         
+#> [46] textshaping_0.4.0      tools_4.2.3            lifecycle_1.0.4       
+#> [49] DelayedArray_0.24.0    irlba_2.3.5.1          compiler_4.2.3        
 #> [52] pkgdown_2.2.0          jquerylib_0.1.4        pbmcapply_1.5.1       
 #> [55] systemfonts_1.2.3      rlang_1.1.6            grid_4.2.3            
 #> [58] RCurl_1.98-1.17        nloptr_2.2.1           rstudioapi_0.17.1     
 #> [61] htmlwidgets_1.6.4      bitops_1.0-9           rmarkdown_2.27        
 #> [64] boot_1.3-30            gtable_0.3.6           R6_2.6.1              
-#> [67] zoo_1.8-14             knitr_1.50             dplyr_1.1.4           
-#> [70] fastmap_1.2.0          ragg_1.5.0             desc_1.4.3            
-#> [73] parallel_4.2.3         Rcpp_1.0.14            vctrs_0.6.5           
-#> [76] tidyselect_1.2.1       xfun_0.52
+#> [67] gridExtra_2.3          knitr_1.50             dplyr_1.1.4           
+#> [70] fastmap_1.2.0          uwot_0.2.3             ragg_1.5.0            
+#> [73] desc_1.4.3             parallel_4.2.3         Rcpp_1.0.14           
+#> [76] vctrs_0.6.5            tidyselect_1.2.1       xfun_0.52
 ```

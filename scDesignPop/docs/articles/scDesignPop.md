@@ -15,7 +15,54 @@ RNA-sequencing (scRNA-seq) data. For more information, please check the
 Articles on our website:
 (<https://chrisycd.github.io/scDesignPop/docs/index.html>).
 
-## Step 1: construct a data list
+## Library and data preparation
+
+Here, we use an example SingleCellExperiment object `example_sce` with
+1000 genes and 7811 cells and an example eQTL genotype dataframe
+`example_eqtlgeno` to demonstrate the main tutorial. These two objects
+contains the gene expression and SNP genotypes of 40 anonymized
+individuals while the eQTL genotype dataframe provides 2826 putative
+cell-type-specific eQTLs.
+
+``` r
+library(scDesignPop)
+library(SingleCellExperiment)
+library(SummarizedExperiment)
+library(ggplot2)
+
+data("example_sce")
+data("example_eqtlgeno")
+
+example_sce
+#> class: SingleCellExperiment 
+#> dim: 1000 7811 
+#> metadata(0):
+#> assays(2): counts logcounts
+#> rownames(1000): ENSG00000023902 ENSG00000027869 ... ENSG00000254709
+#>   ENSG00000272216
+#> rowData names(0):
+#> colnames: NULL
+#> colData names(5): indiv cell_type sex age batch
+#> reducedDimNames(0):
+#> mainExpName: RNA
+#> altExpNames(0):
+head(example_eqtlgeno[,1:8])
+#> # A tibble: 6 × 8
+#>   cell_type gene_id         snp_id        CHR       POS SAMP1 SAMP2 SAMP3
+#>   <chr>     <chr>           <chr>       <dbl>     <dbl> <dbl> <dbl> <dbl>
+#> 1 cd4nc     ENSG00000023902 1:150133323     1 150133323     0     0     0
+#> 2 cd8nc     ENSG00000023902 1:150159616     1 150159616     2     2     1
+#> 3 cd4nc     ENSG00000027869 1:156693018     1 156693018     0     0     0
+#> 4 cd4nc     ENSG00000028137 1:12192270      1  12192270     2     2     1
+#> 5 cd8nc     ENSG00000028137 1:12267999      1  12267999     2     1     1
+#> 6 nk        ENSG00000028137 1:12267999      1  12267999     1     0     1
+dim(example_eqtlgeno)
+#> [1] 2826   45
+```
+
+## Modeling and simulation
+
+### Step 1: construct a data list
 
 To run scDesignPop, a list of data is required as input. This is done
 using the `constructDataPop` function. A `SingleCellExperiment` object
@@ -23,11 +70,26 @@ and an `eqtlgeno` dataframe are the two main inputs needed. The
 `eqtlgeno` dataframe consists of eQTL annotations (it must have cell
 state, gene, SNP, chromosome, and position columns at a minimum), and
 genotypes across individuals (columns) for every SNP (rows). The
-structure of an example `eqtlgeno` dataframe is given below.
+structure of an example `eqtlgeno` dataframe is also given below.
 
 ``` r
-data("example_sce")
-data("example_eqtlgeno")
+head(example_eqtlgeno)
+#> # A tibble: 6 × 45
+#>   cell_type gene_id      snp_id   CHR    POS SAMP1 SAMP2 SAMP3 SAMP4 SAMP5 SAMP6
+#>   <chr>     <chr>        <chr>  <dbl>  <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl>
+#> 1 cd4nc     ENSG0000002… 1:150…     1 1.50e8     0     0     0     0     0     1
+#> 2 cd8nc     ENSG0000002… 1:150…     1 1.50e8     2     2     1     1     1     2
+#> 3 cd4nc     ENSG0000002… 1:156…     1 1.57e8     0     0     0     0     1     0
+#> 4 cd4nc     ENSG0000002… 1:121…     1 1.22e7     2     2     1     1     1     0
+#> 5 cd8nc     ENSG0000002… 1:122…     1 1.23e7     2     1     1     2     1     2
+#> 6 nk        ENSG0000002… 1:122…     1 1.23e7     1     0     1     0     0     1
+#> # ℹ 34 more variables: SAMP7 <dbl>, SAMP8 <dbl>, SAMP9 <dbl>, SAMP10 <dbl>,
+#> #   SAMP11 <dbl>, SAMP12 <dbl>, SAMP13 <dbl>, SAMP14 <dbl>, SAMP15 <dbl>,
+#> #   SAMP16 <dbl>, SAMP17 <dbl>, SAMP18 <dbl>, SAMP19 <dbl>, SAMP20 <dbl>,
+#> #   SAMP21 <dbl>, SAMP22 <dbl>, SAMP23 <dbl>, SAMP24 <dbl>, SAMP25 <dbl>,
+#> #   SAMP26 <dbl>, SAMP27 <dbl>, SAMP28 <dbl>, SAMP29 <dbl>, SAMP30 <dbl>,
+#> #   SAMP31 <dbl>, SAMP32 <dbl>, SAMP33 <dbl>, SAMP34 <dbl>, SAMP35 <dbl>,
+#> #   SAMP36 <dbl>, SAMP37 <dbl>, SAMP38 <dbl>, SAMP39 <dbl>, SAMP40 <dbl>
 ```
 
 ``` r
@@ -39,7 +101,7 @@ data_list <- constructDataPop(
     sampid_vec = NULL,
     copula_variable = "cell_type",
     slot_name = "counts",
-    snp_model = "single",
+    snp_mode = "single",
     celltype_colname = "cell_type",
     feature_colname = "gene_id",
     snp_colname = "snp_id",
@@ -50,7 +112,7 @@ data_list <- constructDataPop(
     )
 ```
 
-## Step 2: fit marginal model
+### Step 2: fit marginal model
 
 Next, a marginal model is specified to fit each gene using the
 `fitMarginalPop` function.  
@@ -75,7 +137,7 @@ marginal_list <- fitMarginalPop(
     )
 ```
 
-## Step 3: fit a Gaussian copula
+### Step 3: fit a Gaussian copula
 
 The third step is to fit a Gaussian copula using the `fitCopulaPop`
 function.
@@ -97,7 +159,7 @@ copula_fit <- fitCopulaPop(
 RNGkind("Mersenne-Twister")  # reset
 ```
 
-## Step 4: extract parameters
+### Step 4: extract parameters
 
 The fourth step is to compute the mean, sigma, and zero probability
 parameters using the `extractParaPop` function.
@@ -117,7 +179,7 @@ para_new <- extractParaPop(
     )
 ```
 
-## Step 5: simulate counts
+### Step 5: simulate counts
 
 The fifth step is to simulate counts using the `simuNewPop` function.
 
@@ -142,7 +204,7 @@ newcount_mat <- simuNewPop(
     )
 ```
 
-## Step 6: create SingleCellExperiment object using simulated data
+### Step 6: create SingleCellExperiment object using simulated data
 
 After simulating the data, we can create a `SingleCellExperiment` object
 as follows.
@@ -156,7 +218,7 @@ names(assays(simu_sce)) <- "counts"
 rowData(simu_sce) <- rowData(example_sce)
 ```
 
-## Step 7: visualize using UMAP
+## Visualization
 
 The simulated data can be visualized using a UMAP plot as follows.
 
@@ -174,7 +236,7 @@ compare_figure <- scDesignPop::plotReducedDimPop(
 plot(compare_figure$p_umap)
 ```
 
-![](scDesignPop_files/figure-html/unnamed-chunk-10-1.png)
+![](scDesignPop_files/figure-html/unnamed-chunk-11-1.png)
 
 ## Session information
 
@@ -206,35 +268,35 @@ sessionInfo()
 #>  [5] GenomicRanges_1.50.2        GenomeInfoDb_1.34.9        
 #>  [7] IRanges_2.32.0              S4Vectors_0.36.2           
 #>  [9] BiocGenerics_0.44.0         MatrixGenerics_1.10.0      
-#> [11] matrixStats_1.1.0           scDesignPop_0.0.0.9009     
+#> [11] matrixStats_1.1.0           scDesignPop_0.0.0.9010     
 #> [13] BiocStyle_2.26.0           
 #> 
 #> loaded via a namespace (and not attached):
-#>  [1] sass_0.4.10            jsonlite_2.0.0         splines_4.2.3         
-#>  [4] RhpcBLASctl_0.23-42    bslib_0.9.0            Rdpack_2.6.4          
-#>  [7] assertthat_0.2.1       BiocManager_1.30.25    GenomeInfoDbData_1.2.9
-#> [10] yaml_2.3.10            numDeriv_2016.8-1.1    pillar_1.10.2         
-#> [13] lattice_0.22-6         glue_1.8.0             reformulas_0.4.1      
+#>  [1] viridis_0.6.5          sass_0.4.10            jsonlite_2.0.0        
+#>  [4] viridisLite_0.4.2      splines_4.2.3          RhpcBLASctl_0.23-42   
+#>  [7] bslib_0.9.0            assertthat_0.2.1       BiocManager_1.30.25   
+#> [10] GenomeInfoDbData_1.2.9 yaml_2.3.10            numDeriv_2016.8-1.1   
+#> [13] pillar_1.10.2          lattice_0.22-6         glue_1.8.0            
 #> [16] digest_0.6.37          RColorBrewer_1.1-3     XVector_0.38.0        
-#> [19] rbibutils_2.3          glmmTMB_1.1.13         minqa_1.2.8           
-#> [22] sandwich_3.1-1         htmltools_0.5.8.1      Matrix_1.6-5          
-#> [25] pkgconfig_2.0.3        bookdown_0.43          zlibbioc_1.44.0       
-#> [28] mvtnorm_1.3-3          scales_1.4.0           lme4_1.1-35.3         
-#> [31] tibble_3.2.1           mgcv_1.9-1             generics_0.1.4        
-#> [34] farver_2.1.2           cachem_1.1.0           withr_3.0.2           
-#> [37] pbapply_1.7-2          TMB_1.9.11             cli_3.6.5             
-#> [40] magrittr_2.0.3         evaluate_1.0.3         fs_1.6.6              
-#> [43] nlme_3.1-164           MASS_7.3-58.2          textshaping_0.4.0     
-#> [46] tools_4.2.3            lifecycle_1.0.4        irlba_2.3.5.1         
-#> [49] DelayedArray_0.24.0    compiler_4.2.3         pkgdown_2.2.0         
-#> [52] jquerylib_0.1.4        pbmcapply_1.5.1        systemfonts_1.2.3     
-#> [55] rlang_1.1.6            grid_4.2.3             RCurl_1.98-1.17       
-#> [58] nloptr_2.2.1           rstudioapi_0.17.1      RcppAnnoy_0.0.22      
-#> [61] htmlwidgets_1.6.4      labeling_0.4.3         bitops_1.0-9          
-#> [64] rmarkdown_2.27         boot_1.3-30            codetools_0.2-20      
-#> [67] gtable_0.3.6           R6_2.6.1               zoo_1.8-14            
-#> [70] knitr_1.50             dplyr_1.1.4            uwot_0.2.3            
-#> [73] fastmap_1.2.0          ragg_1.5.0             desc_1.4.3            
-#> [76] parallel_4.2.3         Rcpp_1.0.14            vctrs_0.6.5           
-#> [79] tidyselect_1.2.1       xfun_0.52
+#> [19] glmmTMB_1.1.9          minqa_1.2.8            htmltools_0.5.8.1     
+#> [22] Matrix_1.6-5           pkgconfig_2.0.3        bookdown_0.43         
+#> [25] zlibbioc_1.44.0        mvtnorm_1.3-3          scales_1.4.0          
+#> [28] lme4_1.1-35.3          tibble_3.2.1           mgcv_1.9-1            
+#> [31] generics_0.1.4         farver_2.1.2           withr_3.0.2           
+#> [34] cachem_1.1.0           pbapply_1.7-2          TMB_1.9.11            
+#> [37] cli_3.6.5              magrittr_2.0.3         evaluate_1.0.3        
+#> [40] fs_1.6.6               nlme_3.1-164           MASS_7.3-58.2         
+#> [43] textshaping_0.4.0      tools_4.2.3            lifecycle_1.0.4       
+#> [46] DelayedArray_0.24.0    irlba_2.3.5.1          compiler_4.2.3        
+#> [49] pkgdown_2.2.0          jquerylib_0.1.4        pbmcapply_1.5.1       
+#> [52] systemfonts_1.2.3      rlang_1.1.6            grid_4.2.3            
+#> [55] RCurl_1.98-1.17        nloptr_2.2.1           rstudioapi_0.17.1     
+#> [58] RcppAnnoy_0.0.22       htmlwidgets_1.6.4      labeling_0.4.3        
+#> [61] bitops_1.0-9           rmarkdown_2.27         boot_1.3-30           
+#> [64] codetools_0.2-20       gtable_0.3.6           R6_2.6.1              
+#> [67] gridExtra_2.3          knitr_1.50             dplyr_1.1.4           
+#> [70] utf8_1.2.5             fastmap_1.2.0          uwot_0.2.3            
+#> [73] ragg_1.5.0             desc_1.4.3             parallel_4.2.3        
+#> [76] Rcpp_1.0.14            vctrs_0.6.5            tidyselect_1.2.1      
+#> [79] xfun_0.52
 ```

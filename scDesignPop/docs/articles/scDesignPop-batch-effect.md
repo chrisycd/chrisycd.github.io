@@ -10,8 +10,51 @@ theme_set(theme_bw())
 
 ## Introduction
 
-scDesignPop can also model population-scale scRNA-seq data with batch
-information. The detailed tutorial is shown below.
+scDesignPop can model population-scale scRNA-seq data with batch
+covariates and enables simulation of datasets under user-specified batch
+effects, including scenarios in which batch effects are added or
+removed.
+
+## Library and data preparation
+
+Here, we use an example SingleCellExperiment object `example_sce` with
+1000 genes and 7811 cells and an example eQTL genotype dataframe
+`example_eqtlgeno` to demonstrate the main tutorial. These two objects
+contains the gene expression and SNP genotypes of 40 anonymized
+individuals while the eQTL genotype dataframe provides 2826 putative
+cell-type-specific eQTLs.
+
+``` r
+library(scDesignPop)
+library(SingleCellExperiment)
+library(SummarizedExperiment)
+library(ggplot2)
+
+data("example_sce")
+data("example_eqtlgeno")
+```
+
+The `example_sce` object also includes a pseudo-batch covariate, where
+batch labels are randomly assigned to the 40 individuals at the
+individual level and applied to all cells belonging to each individual.
+
+``` r
+colData(example_sce)
+#> DataFrame with 7811 rows and 5 columns
+#>            indiv cell_type       sex       age    batch
+#>      <character>  <factor> <integer> <integer> <factor>
+#> 1          SAMP1     cd4nc         2        65        1
+#> 2          SAMP1     cd4nc         2        65        1
+#> 3          SAMP1     cd4nc         2        65        1
+#> 4          SAMP1     cd4nc         2        65        1
+#> 5          SAMP1     cd4nc         2        65        1
+#> ...          ...       ...       ...       ...      ...
+#> 7807      SAMP14     monoc         1        87        1
+#> 7808      SAMP14     bmem          1        87        1
+#> 7809      SAMP14     bmem          1        87        1
+#> 7810      SAMP14     bmem          1        87        1
+#> 7811      SAMP14     bmem          1        87        1
+```
 
 ## Fitting batch effects
 
@@ -26,31 +69,6 @@ genotypes across individuals (columns) for every SNP (rows). The
 structure of an example `eqtlgeno` dataframe is given below.
 
 ``` r
-data("example_sce")
-data("example_eqtlgeno")
-```
-
-Here, the `example_sce` also has a batch column.
-
-``` r
-colData(example_sce)
-#> DataFrame with 7811 rows and 5 columns
-#>            indiv cell_type       sex       age    batch
-#>      <character>  <factor> <integer> <integer> <factor>
-#> 1          SAMP1     cd4nc         2        65        3
-#> 2          SAMP1     cd4nc         2        65        3
-#> 3          SAMP1     cd4nc         2        65        3
-#> 4          SAMP1     cd4nc         2        65        3
-#> 5          SAMP1     cd4nc         2        65        3
-#> ...          ...       ...       ...       ...      ...
-#> 7807      SAMP14     monoc         1        87        1
-#> 7808      SAMP14     bmem          1        87        1
-#> 7809      SAMP14     bmem          1        87        1
-#> 7810      SAMP14     bmem          1        87        1
-#> 7811      SAMP14     bmem          1        87        1
-```
-
-``` r
 data_list <- constructDataPop(
     sce = example_sce,
     eqtlgeno_df = example_eqtlgeno,
@@ -59,7 +77,7 @@ data_list <- constructDataPop(
     sampid_vec = NULL,
     copula_variable = "cell_type",
     slot_name = "counts",
-    snp_model = "single",
+    snp_mode = "single",
     celltype_colname = "cell_type",
     feature_colname = "gene_id",
     snp_colname = "snp_id",
@@ -76,7 +94,9 @@ Next, a marginal model is specified to fit each gene using the
 `fitMarginalPop` function.  
 Here we use a Negative Binominal as the parametric model using `"nb"`.
 Since we want to include the batch effect modeling, we specify
-`mean_formula = "(1|indiv) + cell_type + batch`.
+`mean_formula = "(1|indiv) + cell_type + batch`. Here, we use
+pseudo-batches to show how scDesignPop can model and alter the batch
+effects.
 
 ``` r
 marginal_list <- fitMarginalPop(
@@ -164,130 +184,18 @@ newcount_mat <- simuNewPop(
     )
 ```
 
-## Removing the batch effects
+### Step 6: create SingleCellExperiment object using simulated data
 
-### Step 1: set zero batch effect sizes in marginal models
-
-Check the rank of the batch effect sizes in the marginal distributions.
-Here, we take the gene `ENSG00000023902` as example since every gene are
-fitted using the same formula.
+After simulating the data, we can create a `SingleCellExperiment` object
+as follows.
 
 ``` r
-marginal_list$ENSG00000023902$fit
-#> Formula:          response ~ (1 | indiv) + cell_type + batch + `1:150133323` +  
-#>     `1:150133323`:cell_type
-#> Data: res_list[["dmat_df"]]
-#>       AIC       BIC    logLik -2*log(L)  df.resid 
-#>  8048.368  8138.891 -4011.184  8022.368      7798 
-#> Random-effects (co)variances:
-#> 
-#> Conditional model:
-#>  Groups Name        Std.Dev.
-#>  indiv  (Intercept) 0.1807  
-#> 
-#> Number of obs: 7811 / Conditional model: indiv, 40
-#> 
-#> Dispersion parameter for nbinom2 family (): 1.63 
-#> 
-#> Fixed Effects:
-#> 
-#> Conditional model:
-#>                   (Intercept)                cell_typemononc  
-#>                      -0.87229                        0.33417  
-#>                 cell_typebmem                 cell_typecd4nc  
-#>                      -0.69781                       -1.65119  
-#>                        batch2                         batch3  
-#>                      -0.34148                       -0.12831  
-#>                        batch4                  `1:150133323`  
-#>                      -0.11636                        0.18264  
-#> cell_typemononc:`1:150133323`    cell_typebmem:`1:150133323`  
-#>                      -0.16217                       -0.04084  
-#>  cell_typecd4nc:`1:150133323`  
-#>                      -0.11806
-```
+simu_sce <- SingleCellExperiment(list(counts = newcount_mat), 
+                                 colData = data_list[["new_covariate"]])
+names(assays(simu_sce)) <- "counts"
 
-After the ranks of the batch effects are obtained, set zero to the gene
-marginal models and check the summary report again.
-
-``` r
-marginal_list_null <- lapply(marginal_list, function(x) {
-  x$fit$fit$par[5:7] <- 0
-  x$fit$fit$parfull[5:7] <- 0
-  x$fit$sdr$par.fixed[5:7] <- 0
-  x
-})
-
-marginal_list_null$ENSG00000023902$fit
-#> Formula:          response ~ (1 | indiv) + cell_type + batch + `1:150133323` +  
-#>     `1:150133323`:cell_type
-#> Data: res_list[["dmat_df"]]
-#>       AIC       BIC    logLik -2*log(L)  df.resid 
-#>  8048.368  8138.891 -4011.184  8022.368      7798 
-#> Random-effects (co)variances:
-#> 
-#> Conditional model:
-#>  Groups Name        Std.Dev.
-#>  indiv  (Intercept) 0.1807  
-#> 
-#> Number of obs: 7811 / Conditional model: indiv, 40
-#> 
-#> Dispersion parameter for nbinom2 family (): 1.63 
-#> 
-#> Fixed Effects:
-#> 
-#> Conditional model:
-#>                   (Intercept)                cell_typemononc  
-#>                      -0.87229                        0.33417  
-#>                 cell_typebmem                 cell_typecd4nc  
-#>                      -0.69781                       -1.65119  
-#>                        batch2                         batch3  
-#>                       0.00000                        0.00000  
-#>                        batch4                  `1:150133323`  
-#>                       0.00000                        0.18264  
-#> cell_typemononc:`1:150133323`    cell_typebmem:`1:150133323`  
-#>                      -0.16217                       -0.04084  
-#>  cell_typecd4nc:`1:150133323`  
-#>                      -0.11806
-```
-
-### Step 2: re-extract the parameters
-
-``` r
-para_new_null <- extractParaPop(
-    sce = example_sce,
-    assay_use = "counts",
-    marginal_list = marginal_list_null,
-    n_cores = 2L,
-    family_use = "nb",
-    indiv_colname = "indiv",
-    new_covariate = data_list[["new_covariate"]],
-    new_eqtl_geno_list = data_list[["eqtl_geno_list"]],
-    data = data_list[["covariate"]],
-    parallelization = "pbmcmapply"
-    )
-```
-
-### Step 3: simulate counts with no batch effects
-
-``` r
-set.seed(123)
-
-newcount_mat_null <- simuNewPop(
-    sce = example_sce,
-    mean_mat = para_new_null[["mean_mat"]],
-    sigma_mat = para_new_null[["sigma_mat"]],
-    zero_mat = para_new_null[["zero_mat"]],
-    quantile_mat = NULL,
-    copula_list = copula_fit[["copula_list"]],
-    n_cores = 2L,
-    family_use = "nb",
-    nonnegative = TRUE,
-    input_data = data_list[["covariate"]],
-    new_covariate = data_list[["new_covariate"]],
-    important_feature = copula_fit[["important_feature"]],
-    filtered_gene = data_list[["filtered_gene"]],
-    parallelization = "pbmcmapply"
-    )
+# save gene meta data
+rowData(simu_sce) <- rowData(example_sce)
 ```
 
 ## Set new batch effects
@@ -303,33 +211,31 @@ marginal_list$ENSG00000023902$fit
 #> Formula:          response ~ (1 | indiv) + cell_type + batch + `1:150133323` +  
 #>     `1:150133323`:cell_type
 #> Data: res_list[["dmat_df"]]
-#>       AIC       BIC    logLik -2*log(L)  df.resid 
-#>  8048.368  8138.891 -4011.184  8022.368      7798 
+#>       AIC       BIC    logLik  df.resid 
+#>  8048.619  8125.215 -4013.309      7800 
 #> Random-effects (co)variances:
 #> 
 #> Conditional model:
 #>  Groups Name        Std.Dev.
-#>  indiv  (Intercept) 0.1807  
+#>  indiv  (Intercept) 0.1984  
 #> 
 #> Number of obs: 7811 / Conditional model: indiv, 40
 #> 
-#> Dispersion parameter for nbinom2 family (): 1.63 
+#> Dispersion parameter for nbinom2 family (): 1.64 
 #> 
 #> Fixed Effects:
 #> 
 #> Conditional model:
 #>                   (Intercept)                cell_typemononc  
-#>                      -0.87229                        0.33417  
+#>                      -0.95994                        0.33161  
 #>                 cell_typebmem                 cell_typecd4nc  
-#>                      -0.69781                       -1.65119  
-#>                        batch2                         batch3  
-#>                      -0.34148                       -0.12831  
-#>                        batch4                  `1:150133323`  
-#>                      -0.11636                        0.18264  
+#>                      -0.68688                       -1.64664  
+#>                        batch2                  `1:150133323`  
+#>                      -0.18556                        0.21056  
 #> cell_typemononc:`1:150133323`    cell_typebmem:`1:150133323`  
-#>                      -0.16217                       -0.04084  
+#>                      -0.15846                       -0.05042  
 #>  cell_typecd4nc:`1:150133323`  
-#>                      -0.11806
+#>                      -0.12240
 ```
 
 After the ranks of the batch effects are obtained, set a new value to
@@ -337,10 +243,10 @@ the gene marginal models and check the summary report again.
 
 ``` r
 marginal_list_diff <- lapply(marginal_list, function(x) {
-  val <- rnorm(3, mean = 5, sd = 2)
-  x$fit$fit$par[5:7] <- val
-  x$fit$fit$parfull[5:7] <- val
-  x$fit$sdr$par.fixed[5:7] <- val
+  val <- rnorm(1, mean = 10, sd = 2) # set zero for batch effect removal
+  x$fit$fit$par[5] <- val
+  x$fit$fit$parfull[5] <- val
+  x$fit$sdr$par.fixed[5] <- val
   x
 })
 
@@ -348,33 +254,31 @@ marginal_list_diff$ENSG00000023902$fit
 #> Formula:          response ~ (1 | indiv) + cell_type + batch + `1:150133323` +  
 #>     `1:150133323`:cell_type
 #> Data: res_list[["dmat_df"]]
-#>       AIC       BIC    logLik -2*log(L)  df.resid 
-#>  8048.368  8138.891 -4011.184  8022.368      7798 
+#>       AIC       BIC    logLik  df.resid 
+#>  8048.619  8125.215 -4013.309      7800 
 #> Random-effects (co)variances:
 #> 
 #> Conditional model:
 #>  Groups Name        Std.Dev.
-#>  indiv  (Intercept) 0.1807  
+#>  indiv  (Intercept) 0.1984  
 #> 
 #> Number of obs: 7811 / Conditional model: indiv, 40
 #> 
-#> Dispersion parameter for nbinom2 family (): 1.63 
+#> Dispersion parameter for nbinom2 family (): 1.64 
 #> 
 #> Fixed Effects:
 #> 
 #> Conditional model:
 #>                   (Intercept)                cell_typemononc  
-#>                      -0.87229                        0.33417  
+#>                      -0.95994                        0.33161  
 #>                 cell_typebmem                 cell_typecd4nc  
-#>                      -0.69781                       -1.65119  
-#>                        batch2                         batch3  
-#>                       1.00619                        5.68744  
-#>                        batch4                  `1:150133323`  
-#>                       3.15227                        0.18264  
+#>                      -0.68688                       -1.64664  
+#>                        batch2                  `1:150133323`  
+#>                       6.00619                        0.21056  
 #> cell_typemononc:`1:150133323`    cell_typebmem:`1:150133323`  
-#>                      -0.16217                       -0.04084  
+#>                      -0.15846                       -0.05042  
 #>  cell_typecd4nc:`1:150133323`  
-#>                      -0.11806
+#>                      -0.12240
 ```
 
 ### Step 2: re-extract the parameters
@@ -394,7 +298,7 @@ para_new_diff <- extractParaPop(
     )
 ```
 
-### Step 3: simulate counts with no batch effects
+### Step 3: simulate counts with batch effects
 
 ``` r
 set.seed(123)
@@ -416,6 +320,41 @@ newcount_mat_diff <- simuNewPop(
     parallelization = "pbmcmapply"
     )
 ```
+
+### Step 4: create SingleCellExperiment object using simulated data
+
+After simulating the data, we can create a `SingleCellExperiment` object
+as follows.
+
+``` r
+simu_sce_diff <- SingleCellExperiment(list(counts = newcount_mat_diff), 
+                                 colData = data_list[["new_covariate"]])
+names(assays(simu_sce_diff)) <- "counts"
+
+# save gene meta data
+rowData(simu_sce_diff) <- rowData(example_sce)
+```
+
+## Visualization
+
+The simulated data can be visualized using a UMAP plot as follows.
+
+``` r
+logcounts(simu_sce) <- log1p(counts(simu_sce))
+logcounts(simu_sce_diff) <- log1p(counts(simu_sce_diff))
+set.seed(123)
+compare_figure <- scDesignPop::plotReducedDimPop(
+    ref_sce = example_sce,
+    sce_list = list(simu_sce, simu_sce_diff), 
+    name_vec = c("Reference", "w/o batch effects", "w/ batch effects"),
+    assay_use = "logcounts", 
+    if_plot = TRUE, 
+    color_by = "batch", point_size = 0.1,
+    n_pc = 30)
+plot(compare_figure$p_umap)
+```
+
+![](scDesignPop-batch-effect_files/figure-html/unnamed-chunk-16-1.png)
 
 ## Session information
 
@@ -447,33 +386,34 @@ sessionInfo()
 #>  [5] GenomicRanges_1.50.2        GenomeInfoDb_1.34.9        
 #>  [7] IRanges_2.32.0              S4Vectors_0.36.2           
 #>  [9] BiocGenerics_0.44.0         MatrixGenerics_1.10.0      
-#> [11] matrixStats_1.1.0           scDesignPop_0.0.0.9009     
+#> [11] matrixStats_1.1.0           scDesignPop_0.0.0.9010     
 #> [13] BiocStyle_2.26.0           
 #> 
 #> loaded via a namespace (and not attached):
-#>  [1] sass_0.4.10            jsonlite_2.0.0         splines_4.2.3         
-#>  [4] bslib_0.9.0            Rdpack_2.6.4           assertthat_0.2.1      
-#>  [7] BiocManager_1.30.25    GenomeInfoDbData_1.2.9 yaml_2.3.10           
-#> [10] numDeriv_2016.8-1.1    pillar_1.10.2          lattice_0.22-6        
-#> [13] glue_1.8.0             reformulas_0.4.1       digest_0.6.37         
-#> [16] RColorBrewer_1.1-3     XVector_0.38.0         rbibutils_2.3         
-#> [19] glmmTMB_1.1.13         minqa_1.2.8            sandwich_3.1-1        
-#> [22] htmltools_0.5.8.1      Matrix_1.6-5           pkgconfig_2.0.3       
-#> [25] bookdown_0.43          zlibbioc_1.44.0        mvtnorm_1.3-3         
-#> [28] scales_1.4.0           lme4_1.1-35.3          tibble_3.2.1          
-#> [31] mgcv_1.9-1             generics_0.1.4         farver_2.1.2          
-#> [34] cachem_1.1.0           withr_3.0.2            pbapply_1.7-2         
-#> [37] TMB_1.9.11             cli_3.6.5              magrittr_2.0.3        
-#> [40] evaluate_1.0.3         fs_1.6.6               nlme_3.1-164          
-#> [43] MASS_7.3-58.2          textshaping_0.4.0      tools_4.2.3           
-#> [46] lifecycle_1.0.4        DelayedArray_0.24.0    compiler_4.2.3        
+#>  [1] viridis_0.6.5          sass_0.4.10            jsonlite_2.0.0        
+#>  [4] viridisLite_0.4.2      splines_4.2.3          RhpcBLASctl_0.23-42   
+#>  [7] bslib_0.9.0            assertthat_0.2.1       BiocManager_1.30.25   
+#> [10] GenomeInfoDbData_1.2.9 yaml_2.3.10            numDeriv_2016.8-1.1   
+#> [13] pillar_1.10.2          lattice_0.22-6         glue_1.8.0            
+#> [16] digest_0.6.37          RColorBrewer_1.1-3     XVector_0.38.0        
+#> [19] glmmTMB_1.1.9          minqa_1.2.8            htmltools_0.5.8.1     
+#> [22] Matrix_1.6-5           pkgconfig_2.0.3        bookdown_0.43         
+#> [25] zlibbioc_1.44.0        mvtnorm_1.3-3          scales_1.4.0          
+#> [28] lme4_1.1-35.3          tibble_3.2.1           mgcv_1.9-1            
+#> [31] generics_0.1.4         farver_2.1.2           withr_3.0.2           
+#> [34] cachem_1.1.0           pbapply_1.7-2          TMB_1.9.11            
+#> [37] cli_3.6.5              magrittr_2.0.3         evaluate_1.0.3        
+#> [40] fs_1.6.6               nlme_3.1-164           MASS_7.3-58.2         
+#> [43] textshaping_0.4.0      tools_4.2.3            lifecycle_1.0.4       
+#> [46] DelayedArray_0.24.0    irlba_2.3.5.1          compiler_4.2.3        
 #> [49] pkgdown_2.2.0          jquerylib_0.1.4        pbmcapply_1.5.1       
 #> [52] systemfonts_1.2.3      rlang_1.1.6            grid_4.2.3            
 #> [55] RCurl_1.98-1.17        nloptr_2.2.1           rstudioapi_0.17.1     
-#> [58] htmlwidgets_1.6.4      bitops_1.0-9           rmarkdown_2.27        
-#> [61] boot_1.3-30            gtable_0.3.6           R6_2.6.1              
-#> [64] zoo_1.8-14             knitr_1.50             dplyr_1.1.4           
-#> [67] fastmap_1.2.0          ragg_1.5.0             desc_1.4.3            
-#> [70] parallel_4.2.3         Rcpp_1.0.14            vctrs_0.6.5           
-#> [73] tidyselect_1.2.1       xfun_0.52
+#> [58] RcppAnnoy_0.0.22       htmlwidgets_1.6.4      labeling_0.4.3        
+#> [61] bitops_1.0-9           rmarkdown_2.27         boot_1.3-30           
+#> [64] codetools_0.2-20       gtable_0.3.6           R6_2.6.1              
+#> [67] gridExtra_2.3          knitr_1.50             dplyr_1.1.4           
+#> [70] fastmap_1.2.0          uwot_0.2.3             ragg_1.5.0            
+#> [73] desc_1.4.3             parallel_4.2.3         Rcpp_1.0.14           
+#> [76] vctrs_0.6.5            tidyselect_1.2.1       xfun_0.52
 ```

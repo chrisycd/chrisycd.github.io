@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">scDesignPop</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9009</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9010</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -40,7 +40,6 @@
     <li><a class="dropdown-item" href="../articles/scDesignPop-dynamic-eQTL.html">Model linear dynamic eQTL effects in continuous cell states</a></li>
     <li><a class="dropdown-item" href="../articles/scDesignPop-modify-eQTL-effects.html">Modify eQTL effect for eGenes / non-eGenes</a></li>
     <li><a class="dropdown-item" href="../articles/scDesignPop-power-analysis-ES-specification.html">Power analysis based on user specified eQTL effect sizes</a></li>
-    <li><a class="dropdown-item" href="../articles/scDesignPop-power-analysis-fitted.html">Power analysis based on a fitted scDesignPop marginal model</a></li>
     <li><a class="dropdown-item" href="../articles/scDesignPop-power-analysis-selected.html">Power analysis for selected genes</a></li>
     <li><a class="dropdown-item" href="../articles/scDesignPop-trans-eQTL.html">Modeling trans-eQTL effect using public data</a></li>
   </ul>
@@ -78,7 +77,7 @@ Cen</h4>
 Los Angeles<br><a class="author_email" href="mailto:#"></a><a href="mailto:yihuicen@g.ucla.edu" class="email">yihuicen@g.ucla.edu</a>
       </address>
                   
-            <h4 data-toc-skip class="date">23 January 2026</h4>
+            <h4 data-toc-skip class="date">13 February 2026</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/chrisycd/scDesignPop/blob/HEAD/vignettes/scDesignPop-trans-eQTL.Rmd"><code>vignettes/scDesignPop-trans-eQTL.Rmd</code></a></small>
       <div class="d-none name"><code>scDesignPop-trans-eQTL.Rmd</code></div>
@@ -101,66 +100,75 @@ pre {
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
-<p>scDesignPop allows users to specify eQTL pairs, thus providing the
-capability to also provide ground truth for trans eQTL studies.</p>
+<p>scDesignPop supports user-defined eQTL pairs, making it
+straightforward to extend the framework to trans-eQTL studies with known
+ground truth.</p>
 </div>
 <div class="section level2">
-<h2 id="step-0-prepare-the-eqtl-genotype-dataframe-as-input">Step 0: prepare the eQTL genotype dataframe as input<a class="anchor" aria-label="anchor" href="#step-0-prepare-the-eqtl-genotype-dataframe-as-input"></a>
+<h2 id="library-and-data-preparation">Library and data preparation<a class="anchor" aria-label="anchor" href="#library-and-data-preparation"></a>
 </h2>
+<div class="section level3">
+<h3 id="prepare-the-eqtl-genotype-dataframe-as-input">prepare the eQTL genotype dataframe as input<a class="anchor" aria-label="anchor" href="#prepare-the-eqtl-genotype-dataframe-as-input"></a>
+</h3>
 <p>Here, we take the trans-eQTL list from eQTLGen phase 1 (<a href="https://www.eqtlgen.org/trans-eqtls.html" class="external-link uri">https://www.eqtlgen.org/trans-eqtls.html</a>) as an example
 to show the scDesignPop’s flexibility in eQTL ground truth settings. The
 download link of the trans-eQTL list is <a href="https://download.gcc.rug.nl/downloads/eqtlgen/trans-eqtl/2018-09-04-trans-eQTLsFDR0.05-CohortInfoRemoved-BonferroniAdded.txt.gz" class="external-link uri">https://download.gcc.rug.nl/downloads/eqtlgen/trans-eqtl/2018-09-04-trans-eQTLsFDR0.05-CohortInfoRemoved-BonferroniAdded.txt.gz</a>.</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="fu">wget</span> https://download.gcc.rug.nl/downloads/eqtlgen/trans-eqtl/2018-09-04-trans-eQTLsFDR0.05-CohortInfoRemoved-BonferroniAdded.txt.gz</span>
-<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a><span class="co">#&gt; --2026-01-23 17:58:42--  https://download.gcc.rug.nl/downloads/eqtlgen/trans-eqtl/2018-09-04-trans-eQTLsFDR0.05-CohortInfoRemoved-BonferroniAdded.txt.gz</span></span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a><span class="co">#&gt; --2026-02-13 01:24:58--  https://download.gcc.rug.nl/downloads/eqtlgen/trans-eqtl/2018-09-04-trans-eQTLsFDR0.05-CohortInfoRemoved-BonferroniAdded.txt.gz</span></span>
 <span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a><span class="co">#&gt; Resolving download.gcc.rug.nl (download.gcc.rug.nl)... 195.169.22.66</span></span>
 <span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a><span class="co">#&gt; Connecting to download.gcc.rug.nl (download.gcc.rug.nl)|195.169.22.66|:443... connected.</span></span>
 <span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a><span class="co">#&gt; HTTP request sent, awaiting response... 200 OK</span></span>
 <span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a><span class="co">#&gt; Length: 1839918 (1.8M) [application/octet-stream]</span></span>
-<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a><span class="co">#&gt; Saving to: ‘2018-09-04-trans-eQTLsFDR0.05-CohortInfoRemoved-BonferroniAdded.txt.gz.7’</span></span>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a><span class="co">#&gt; Saving to: ‘2018-09-04-trans-eQTLsFDR0.05-CohortInfoRemoved-BonferroniAdded.txt.gz.12’</span></span>
 <span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a><span class="co">#&gt;      0K .......... .......... .......... .......... ..........  2%  165K 11s</span></span>
-<span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a><span class="co">#&gt;     50K .......... .......... .......... .......... ..........  5%  330K 8s</span></span>
-<span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a><span class="co">#&gt;    100K .......... .......... .......... .......... ..........  8% 74.6M 5s</span></span>
-<span id="cb2-12"><a href="#cb2-12" tabindex="-1"></a><span class="co">#&gt;    150K .......... .......... .......... .......... .......... 11% 1.20M 4s</span></span>
-<span id="cb2-13"><a href="#cb2-13" tabindex="-1"></a><span class="co">#&gt;    200K .......... .......... .......... .......... .......... 13%  449K 4s</span></span>
-<span id="cb2-14"><a href="#cb2-14" tabindex="-1"></a><span class="co">#&gt;    250K .......... .......... .......... .......... .......... 16% 91.4M 3s</span></span>
-<span id="cb2-15"><a href="#cb2-15" tabindex="-1"></a><span class="co">#&gt;    300K .......... .......... .......... .......... .......... 19% 81.3M 3s</span></span>
-<span id="cb2-16"><a href="#cb2-16" tabindex="-1"></a><span class="co">#&gt;    350K .......... .......... .......... .......... .......... 22% 77.6M 2s</span></span>
-<span id="cb2-17"><a href="#cb2-17" tabindex="-1"></a><span class="co">#&gt;    400K .......... .......... .......... .......... .......... 25% 1.24M 2s</span></span>
-<span id="cb2-18"><a href="#cb2-18" tabindex="-1"></a><span class="co">#&gt;    450K .......... .......... .......... .......... .......... 27%  451K 2s</span></span>
-<span id="cb2-19"><a href="#cb2-19" tabindex="-1"></a><span class="co">#&gt;    500K .......... .......... .......... .......... .......... 30% 70.0M 2s</span></span>
-<span id="cb2-20"><a href="#cb2-20" tabindex="-1"></a><span class="co">#&gt;    550K .......... .......... .......... .......... .......... 33%  106M 2s</span></span>
-<span id="cb2-21"><a href="#cb2-21" tabindex="-1"></a><span class="co">#&gt;    600K .......... .......... .......... .......... .......... 36%  109M 1s</span></span>
-<span id="cb2-22"><a href="#cb2-22" tabindex="-1"></a><span class="co">#&gt;    650K .......... .......... .......... .......... .......... 38% 94.3M 1s</span></span>
-<span id="cb2-23"><a href="#cb2-23" tabindex="-1"></a><span class="co">#&gt;    700K .......... .......... .......... .......... .......... 41%  126M 1s</span></span>
-<span id="cb2-24"><a href="#cb2-24" tabindex="-1"></a><span class="co">#&gt;    750K .......... .......... .......... .......... .......... 44%  130M 1s</span></span>
-<span id="cb2-25"><a href="#cb2-25" tabindex="-1"></a><span class="co">#&gt;    800K .......... .......... .......... .......... .......... 47% 1.29M 1s</span></span>
-<span id="cb2-26"><a href="#cb2-26" tabindex="-1"></a><span class="co">#&gt;    850K .......... .......... .......... .......... .......... 50% 99.2M 1s</span></span>
-<span id="cb2-27"><a href="#cb2-27" tabindex="-1"></a><span class="co">#&gt;    900K .......... .......... .......... .......... .......... 52%  454K 1s</span></span>
-<span id="cb2-28"><a href="#cb2-28" tabindex="-1"></a><span class="co">#&gt;    950K .......... .......... .......... .......... .......... 55% 72.0M 1s</span></span>
-<span id="cb2-29"><a href="#cb2-29" tabindex="-1"></a><span class="co">#&gt;   1000K .......... .......... .......... .......... .......... 58%  102M 1s</span></span>
-<span id="cb2-30"><a href="#cb2-30" tabindex="-1"></a><span class="co">#&gt;   1050K .......... .......... .......... .......... .......... 61% 76.8M 1s</span></span>
-<span id="cb2-31"><a href="#cb2-31" tabindex="-1"></a><span class="co">#&gt;   1100K .......... .......... .......... .......... .......... 64%  151M 1s</span></span>
-<span id="cb2-32"><a href="#cb2-32" tabindex="-1"></a><span class="co">#&gt;   1150K .......... .......... .......... .......... .......... 66% 99.1M 0s</span></span>
-<span id="cb2-33"><a href="#cb2-33" tabindex="-1"></a><span class="co">#&gt;   1200K .......... .......... .......... .......... .......... 69% 57.0M 0s</span></span>
-<span id="cb2-34"><a href="#cb2-34" tabindex="-1"></a><span class="co">#&gt;   1250K .......... .......... .......... .......... .......... 72%  171M 0s</span></span>
-<span id="cb2-35"><a href="#cb2-35" tabindex="-1"></a><span class="co">#&gt;   1300K .......... .......... .......... .......... .......... 75%  196M 0s</span></span>
-<span id="cb2-36"><a href="#cb2-36" tabindex="-1"></a><span class="co">#&gt;   1350K .......... .......... .......... .......... .......... 77%  176M 0s</span></span>
-<span id="cb2-37"><a href="#cb2-37" tabindex="-1"></a><span class="co">#&gt;   1400K .......... .......... .......... .......... .......... 80% 55.5M 0s</span></span>
-<span id="cb2-38"><a href="#cb2-38" tabindex="-1"></a><span class="co">#&gt;   1450K .......... .......... .......... .......... .......... 83%  327K 0s</span></span>
-<span id="cb2-39"><a href="#cb2-39" tabindex="-1"></a><span class="co">#&gt;   1500K .......... .......... .......... .......... .......... 86% 82.5M 0s</span></span>
-<span id="cb2-40"><a href="#cb2-40" tabindex="-1"></a><span class="co">#&gt;   1550K .......... .......... .......... .......... .......... 89%  255M 0s</span></span>
-<span id="cb2-41"><a href="#cb2-41" tabindex="-1"></a><span class="co">#&gt;   1600K .......... .......... .......... .......... .......... 91% 1.40M 0s</span></span>
-<span id="cb2-42"><a href="#cb2-42" tabindex="-1"></a><span class="co">#&gt;   1650K .......... .......... .......... .......... .......... 94%  131M 0s</span></span>
-<span id="cb2-43"><a href="#cb2-43" tabindex="-1"></a><span class="co">#&gt;   1700K .......... .......... .......... .......... .......... 97%  117M 0s</span></span>
-<span id="cb2-44"><a href="#cb2-44" tabindex="-1"></a><span class="co">#&gt;   1750K .......... .......... .......... .......... ......    100%  277M=1.1s</span></span>
+<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a><span class="co">#&gt;      0K .......... .......... .......... .......... ..........  2%  177K 10s</span></span>
+<span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a><span class="co">#&gt;     50K .......... .......... .......... .......... ..........  5%  329K 7s</span></span>
+<span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a><span class="co">#&gt;    100K .......... .......... .......... .......... ..........  8% 61.5M 5s</span></span>
+<span id="cb2-12"><a href="#cb2-12" tabindex="-1"></a><span class="co">#&gt;    150K .......... .......... .......... .......... .......... 11% 2.37M 4s</span></span>
+<span id="cb2-13"><a href="#cb2-13" tabindex="-1"></a><span class="co">#&gt;    200K .......... .......... .......... .......... .......... 13%  382K 4s</span></span>
+<span id="cb2-14"><a href="#cb2-14" tabindex="-1"></a><span class="co">#&gt;    250K .......... .......... .......... .......... .......... 16% 68.6M 3s</span></span>
+<span id="cb2-15"><a href="#cb2-15" tabindex="-1"></a><span class="co">#&gt;    300K .......... .......... .......... .......... .......... 19% 85.3M 2s</span></span>
+<span id="cb2-16"><a href="#cb2-16" tabindex="-1"></a><span class="co">#&gt;    350K .......... .......... .......... .......... .......... 22%  107M 2s</span></span>
+<span id="cb2-17"><a href="#cb2-17" tabindex="-1"></a><span class="co">#&gt;    400K .......... .......... .......... .......... .......... 25% 2.48M 2s</span></span>
+<span id="cb2-18"><a href="#cb2-18" tabindex="-1"></a><span class="co">#&gt;    450K .......... .......... .......... .......... .......... 27%  382K 2s</span></span>
+<span id="cb2-19"><a href="#cb2-19" tabindex="-1"></a><span class="co">#&gt;    500K .......... .......... .......... .......... .......... 30% 84.8M 2s</span></span>
+<span id="cb2-20"><a href="#cb2-20" tabindex="-1"></a><span class="co">#&gt;    550K .......... .......... .......... .......... .......... 33%  141M 1s</span></span>
+<span id="cb2-21"><a href="#cb2-21" tabindex="-1"></a><span class="co">#&gt;    600K .......... .......... .......... .......... .......... 36% 84.5M 1s</span></span>
+<span id="cb2-22"><a href="#cb2-22" tabindex="-1"></a><span class="co">#&gt;    650K .......... .......... .......... .......... .......... 38%  103M 1s</span></span>
+<span id="cb2-23"><a href="#cb2-23" tabindex="-1"></a><span class="co">#&gt;    700K .......... .......... .......... .......... .......... 41%  112M 1s</span></span>
+<span id="cb2-24"><a href="#cb2-24" tabindex="-1"></a><span class="co">#&gt;    750K .......... .......... .......... .......... .......... 44%  129M 1s</span></span>
+<span id="cb2-25"><a href="#cb2-25" tabindex="-1"></a><span class="co">#&gt;    800K .......... .......... .......... .......... .......... 47% 2.69M 1s</span></span>
+<span id="cb2-26"><a href="#cb2-26" tabindex="-1"></a><span class="co">#&gt;    850K .......... .......... .......... .......... .......... 50%  122M 1s</span></span>
+<span id="cb2-27"><a href="#cb2-27" tabindex="-1"></a><span class="co">#&gt;    900K .......... .......... .......... .......... .......... 52%  383K 1s</span></span>
+<span id="cb2-28"><a href="#cb2-28" tabindex="-1"></a><span class="co">#&gt;    950K .......... .......... .......... .......... .......... 55%  123M 1s</span></span>
+<span id="cb2-29"><a href="#cb2-29" tabindex="-1"></a><span class="co">#&gt;   1000K .......... .......... .......... .......... .......... 58% 89.0M 1s</span></span>
+<span id="cb2-30"><a href="#cb2-30" tabindex="-1"></a><span class="co">#&gt;   1050K .......... .......... .......... .......... .......... 61%  136M 1s</span></span>
+<span id="cb2-31"><a href="#cb2-31" tabindex="-1"></a><span class="co">#&gt;   1100K .......... .......... .......... .......... .......... 64%  131M 1s</span></span>
+<span id="cb2-32"><a href="#cb2-32" tabindex="-1"></a><span class="co">#&gt;   1150K .......... .......... .......... .......... .......... 66% 94.2M 0s</span></span>
+<span id="cb2-33"><a href="#cb2-33" tabindex="-1"></a><span class="co">#&gt;   1200K .......... .......... .......... .......... .......... 69%  119M 0s</span></span>
+<span id="cb2-34"><a href="#cb2-34" tabindex="-1"></a><span class="co">#&gt;   1250K .......... .......... .......... .......... .......... 72%  136M 0s</span></span>
+<span id="cb2-35"><a href="#cb2-35" tabindex="-1"></a><span class="co">#&gt;   1300K .......... .......... .......... .......... .......... 75%  130M 0s</span></span>
+<span id="cb2-36"><a href="#cb2-36" tabindex="-1"></a><span class="co">#&gt;   1350K .......... .......... .......... .......... .......... 77% 80.2M 0s</span></span>
+<span id="cb2-37"><a href="#cb2-37" tabindex="-1"></a><span class="co">#&gt;   1400K .......... .......... .......... .......... .......... 80%  143K 0s</span></span>
+<span id="cb2-38"><a href="#cb2-38" tabindex="-1"></a><span class="co">#&gt;   1450K .......... .......... .......... .......... .......... 83%  110K 0s</span></span>
+<span id="cb2-39"><a href="#cb2-39" tabindex="-1"></a><span class="co">#&gt;   1500K .......... .......... .......... .......... .......... 86%  329K 0s</span></span>
+<span id="cb2-40"><a href="#cb2-40" tabindex="-1"></a><span class="co">#&gt;   1550K .......... .......... .......... .......... .......... 89%  329K 0s</span></span>
+<span id="cb2-41"><a href="#cb2-41" tabindex="-1"></a><span class="co">#&gt;   1600K .......... .......... .......... .......... .......... 91%  329K 0s</span></span>
+<span id="cb2-42"><a href="#cb2-42" tabindex="-1"></a><span class="co">#&gt;   1650K .......... .......... .......... .......... .......... 94%  329K 0s</span></span>
+<span id="cb2-43"><a href="#cb2-43" tabindex="-1"></a><span class="co">#&gt;   1700K .......... .......... .......... .......... .......... 97% 93.6M 0s</span></span>
+<span id="cb2-44"><a href="#cb2-44" tabindex="-1"></a><span class="co">#&gt;   1750K .......... .......... .......... .......... ......    100%  170M=2.3s</span></span>
 <span id="cb2-45"><a href="#cb2-45" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-46"><a href="#cb2-46" tabindex="-1"></a><span class="co">#&gt; 2026-01-23 17:58:44 (1.59 MB/s) - ‘2018-09-04-trans-eQTLsFDR0.05-CohortInfoRemoved-BonferroniAdded.txt.gz.7’ saved [1839918/1839918]</span></span></code></pre></div>
+<span id="cb2-46"><a href="#cb2-46" tabindex="-1"></a><span class="co">#&gt; 2026-02-13 01:25:01 (778 KB/s) - ‘2018-09-04-trans-eQTLsFDR0.05-CohortInfoRemoved-BonferroniAdded.txt.gz.12’ saved [1839918/1839918]</span></span></code></pre></div>
 <p>Then, we reformat this trans-eQTL list into the required eQTL
 dataframe as follows,</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-datatable.com" class="external-link">data.table</a></span><span class="op">)</span></span>
-<span><span class="va">transeqtl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="st">"2018-09-04-trans-eQTLsFDR0.05-CohortInfoRemoved-BonferroniAdded.txt.gz"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/chrisycd/scDesignPop">scDesignPop</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">SingleCellExperiment</span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://bioconductor.org/packages/SummarizedExperiment" class="external-link">SummarizedExperiment</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-datatable.com" class="external-link">data.table</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">transeqtl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="st">"2018-09-04-trans-eQTLsFDR0.05-CohortInfoRemoved-BonferroniAdded.txt.gz"</span><span class="op">)</span></span>
 <span><span class="va">transeqtl</span> <span class="op">&lt;-</span> <span class="va">transeqtl</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Gene"</span>,<span class="st">"SNP"</span>,<span class="st">"SNPChr"</span>,<span class="st">"SNPPos"</span><span class="op">)</span><span class="op">]</span></span>
 <span><span class="va">transeqtl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="st">"bin"</span>, <span class="va">transeqtl</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">transeqtl</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"cell_type"</span>,<span class="st">"gene_id"</span>,<span class="st">"snp_id"</span>,<span class="st">"CHR"</span>,<span class="st">"POS"</span><span class="op">)</span></span>
@@ -248,9 +256,13 @@ in the <code>example_eqtlgeno</code></p>
 <span><span class="co">#&gt; 132:      1      1      2      1      0      1</span></span>
 <span><span class="co">#&gt; 133:      1      1      0      0      2      2</span></span></code></pre></div>
 </div>
+</div>
 <div class="section level2">
-<h2 id="step-1-construct-a-data-list">Step 1: construct a data list<a class="anchor" aria-label="anchor" href="#step-1-construct-a-data-list"></a>
+<h2 id="modeling-and-simulation">Modeling and simulation<a class="anchor" aria-label="anchor" href="#modeling-and-simulation"></a>
 </h2>
+<div class="section level3">
+<h3 id="step-1-construct-a-data-list">Step 1: construct a data list<a class="anchor" aria-label="anchor" href="#step-1-construct-a-data-list"></a>
+</h3>
 <p>To run scDesignPop, a list of data is required as input. This is done
 using the <code>constructDataPop</code> function. A
 <code>SingleCellExperiment</code> object and an <code>eqtlgeno</code>
@@ -274,7 +286,7 @@ across individuals (columns) for every SNP (rows). Here, we use
 <span>    sampid_vec <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>    copula_variable <span class="op">=</span> <span class="st">"cell_type"</span>,</span>
 <span>    slot_name <span class="op">=</span> <span class="st">"counts"</span>,</span>
-<span>    snp_model <span class="op">=</span> <span class="st">"single"</span>,</span>
+<span>    snp_mode <span class="op">=</span> <span class="st">"single"</span>,</span>
 <span>    celltype_colname <span class="op">=</span> <span class="st">"cell_type"</span>,</span>
 <span>    feature_colname <span class="op">=</span> <span class="st">"gene_id"</span>,</span>
 <span>    snp_colname <span class="op">=</span> <span class="st">"snp_id"</span>,</span>
@@ -284,9 +296,9 @@ across individuals (columns) for every SNP (rows). Here, we use
 <span>    prune_thres <span class="op">=</span> <span class="fl">0.9</span></span>
 <span>    <span class="op">)</span></span></code></pre></div>
 </div>
-<div class="section level2">
-<h2 id="step-2-fit-marginal-model">Step 2: fit marginal model<a class="anchor" aria-label="anchor" href="#step-2-fit-marginal-model"></a>
-</h2>
+<div class="section level3">
+<h3 id="step-2-fit-marginal-model">Step 2: fit marginal model<a class="anchor" aria-label="anchor" href="#step-2-fit-marginal-model"></a>
+</h3>
 <p>Next, a marginal model is specified to fit each gene using the
 <code>fitMarginalPop</code> function.<br>
 Here we use a Negative Binominal as the parametric model using
@@ -309,9 +321,9 @@ Here we use a Negative Binominal as the parametric model using
 <span>    data_maxsize <span class="op">=</span> <span class="fl">1</span></span>
 <span>    <span class="op">)</span></span></code></pre></div>
 </div>
-<div class="section level2">
-<h2 id="step-3-fit-a-gaussian-copula">Step 3: fit a Gaussian copula<a class="anchor" aria-label="anchor" href="#step-3-fit-a-gaussian-copula"></a>
-</h2>
+<div class="section level3">
+<h3 id="step-3-fit-a-gaussian-copula">Step 3: fit a Gaussian copula<a class="anchor" aria-label="anchor" href="#step-3-fit-a-gaussian-copula"></a>
+</h3>
 <p>The third step is to fit a Gaussian copula using the
 <code>fitCopulaPop</code> function.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
@@ -330,9 +342,9 @@ Here we use a Negative Binominal as the parametric model using
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">RNGkind</a></span><span class="op">(</span><span class="st">"Mersenne-Twister"</span><span class="op">)</span>  <span class="co"># reset</span></span></code></pre></div>
 </div>
-<div class="section level2">
-<h2 id="step-4-extract-parameters">Step 4: extract parameters<a class="anchor" aria-label="anchor" href="#step-4-extract-parameters"></a>
-</h2>
+<div class="section level3">
+<h3 id="step-4-extract-parameters">Step 4: extract parameters<a class="anchor" aria-label="anchor" href="#step-4-extract-parameters"></a>
+</h3>
 <p>The fourth step is to compute the mean, sigma, and zero probability
 parameters using the <code>extractParaPop</code> function.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
@@ -349,9 +361,9 @@ parameters using the <code>extractParaPop</code> function.</p>
 <span>    parallelization <span class="op">=</span> <span class="st">"pbmcmapply"</span></span>
 <span>    <span class="op">)</span></span></code></pre></div>
 </div>
-<div class="section level2">
-<h2 id="step-5-simulate-counts">Step 5: simulate counts<a class="anchor" aria-label="anchor" href="#step-5-simulate-counts"></a>
-</h2>
+<div class="section level3">
+<h3 id="step-5-simulate-counts">Step 5: simulate counts<a class="anchor" aria-label="anchor" href="#step-5-simulate-counts"></a>
+</h3>
 <p>The fifth step is to simulate counts using the
 <code>simuNewPop</code> function.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
@@ -374,9 +386,9 @@ parameters using the <code>extractParaPop</code> function.</p>
 <span>    parallelization <span class="op">=</span> <span class="st">"pbmcmapply"</span></span>
 <span>    <span class="op">)</span></span></code></pre></div>
 </div>
-<div class="section level2">
-<h2 id="step-6-create-singlecellexperiment-object-using-simulated-data">Step 6: create SingleCellExperiment object using simulated data<a class="anchor" aria-label="anchor" href="#step-6-create-singlecellexperiment-object-using-simulated-data"></a>
-</h2>
+<div class="section level3">
+<h3 id="step-6-create-singlecellexperiment-object-using-simulated-data">Step 6: create SingleCellExperiment object using simulated data<a class="anchor" aria-label="anchor" href="#step-6-create-singlecellexperiment-object-using-simulated-data"></a>
+</h3>
 <p>After simulating the data, we can create a
 <code>SingleCellExperiment</code> object as follows.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
@@ -398,6 +410,7 @@ parameters using the <code>extractParaPop</code> function.</p>
 <span><span class="co">#&gt; reducedDimNames(0):</span></span>
 <span><span class="co">#&gt; mainExpName: NULL</span></span>
 <span><span class="co">#&gt; altExpNames(0):</span></span></code></pre></div>
+</div>
 </div>
 <div class="section level2">
 <h2 id="session-information">Session information<a class="anchor" aria-label="anchor" href="#session-information"></a>
@@ -431,35 +444,35 @@ parameters using the <code>extractParaPop</code> function.</p>
 <span><span class="co">#&gt;  [7] GenomeInfoDb_1.34.9         IRanges_2.32.0             </span></span>
 <span><span class="co">#&gt;  [9] S4Vectors_0.36.2            BiocGenerics_0.44.0        </span></span>
 <span><span class="co">#&gt; [11] MatrixGenerics_1.10.0       matrixStats_1.1.0          </span></span>
-<span><span class="co">#&gt; [13] scDesignPop_0.0.0.9009      BiocStyle_2.26.0           </span></span>
+<span><span class="co">#&gt; [13] scDesignPop_0.0.0.9010      BiocStyle_2.26.0           </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; loaded via a namespace (and not attached):</span></span>
-<span><span class="co">#&gt;  [1] sass_0.4.10            jsonlite_2.0.0         splines_4.2.3         </span></span>
-<span><span class="co">#&gt;  [4] R.utils_2.13.0         bslib_0.9.0            Rdpack_2.6.4          </span></span>
-<span><span class="co">#&gt;  [7] assertthat_0.2.1       BiocManager_1.30.25    GenomeInfoDbData_1.2.9</span></span>
-<span><span class="co">#&gt; [10] yaml_2.3.10            numDeriv_2016.8-1.1    pillar_1.10.2         </span></span>
-<span><span class="co">#&gt; [13] lattice_0.22-6         glue_1.8.0             reformulas_0.4.1      </span></span>
-<span><span class="co">#&gt; [16] digest_0.6.37          rbibutils_2.3          RColorBrewer_1.1-3    </span></span>
-<span><span class="co">#&gt; [19] XVector_0.38.0         glmmTMB_1.1.13         minqa_1.2.8           </span></span>
-<span><span class="co">#&gt; [22] sandwich_3.1-1         htmltools_0.5.8.1      Matrix_1.6-5          </span></span>
-<span><span class="co">#&gt; [25] R.oo_1.27.1            pkgconfig_2.0.3        bookdown_0.43         </span></span>
-<span><span class="co">#&gt; [28] zlibbioc_1.44.0        mvtnorm_1.3-3          scales_1.4.0          </span></span>
-<span><span class="co">#&gt; [31] lme4_1.1-35.3          tibble_3.2.1           mgcv_1.9-1            </span></span>
-<span><span class="co">#&gt; [34] generics_0.1.4         farver_2.1.2           cachem_1.1.0          </span></span>
-<span><span class="co">#&gt; [37] withr_3.0.2            pbapply_1.7-2          TMB_1.9.11            </span></span>
-<span><span class="co">#&gt; [40] cli_3.6.5              magrittr_2.0.3         evaluate_1.0.3        </span></span>
-<span><span class="co">#&gt; [43] R.methodsS3_1.8.2      fs_1.6.6               nlme_3.1-164          </span></span>
-<span><span class="co">#&gt; [46] MASS_7.3-58.2          textshaping_0.4.0      tools_4.2.3           </span></span>
-<span><span class="co">#&gt; [49] lifecycle_1.0.4        DelayedArray_0.24.0    compiler_4.2.3        </span></span>
+<span><span class="co">#&gt;  [1] viridis_0.6.5          sass_0.4.10            jsonlite_2.0.0        </span></span>
+<span><span class="co">#&gt;  [4] viridisLite_0.4.2      splines_4.2.3          R.utils_2.13.0        </span></span>
+<span><span class="co">#&gt;  [7] RhpcBLASctl_0.23-42    bslib_0.9.0            assertthat_0.2.1      </span></span>
+<span><span class="co">#&gt; [10] BiocManager_1.30.25    GenomeInfoDbData_1.2.9 yaml_2.3.10           </span></span>
+<span><span class="co">#&gt; [13] numDeriv_2016.8-1.1    pillar_1.10.2          lattice_0.22-6        </span></span>
+<span><span class="co">#&gt; [16] glue_1.8.0             digest_0.6.37          RColorBrewer_1.1-3    </span></span>
+<span><span class="co">#&gt; [19] XVector_0.38.0         glmmTMB_1.1.9          minqa_1.2.8           </span></span>
+<span><span class="co">#&gt; [22] R.oo_1.27.1            htmltools_0.5.8.1      Matrix_1.6-5          </span></span>
+<span><span class="co">#&gt; [25] pkgconfig_2.0.3        bookdown_0.43          zlibbioc_1.44.0       </span></span>
+<span><span class="co">#&gt; [28] mvtnorm_1.3-3          scales_1.4.0           lme4_1.1-35.3         </span></span>
+<span><span class="co">#&gt; [31] tibble_3.2.1           mgcv_1.9-1             generics_0.1.4        </span></span>
+<span><span class="co">#&gt; [34] farver_2.1.2           withr_3.0.2            cachem_1.1.0          </span></span>
+<span><span class="co">#&gt; [37] pbapply_1.7-2          TMB_1.9.11             cli_3.6.5             </span></span>
+<span><span class="co">#&gt; [40] magrittr_2.0.3         evaluate_1.0.3         R.methodsS3_1.8.2     </span></span>
+<span><span class="co">#&gt; [43] fs_1.6.6               nlme_3.1-164           MASS_7.3-58.2         </span></span>
+<span><span class="co">#&gt; [46] textshaping_0.4.0      tools_4.2.3            lifecycle_1.0.4       </span></span>
+<span><span class="co">#&gt; [49] DelayedArray_0.24.0    irlba_2.3.5.1          compiler_4.2.3        </span></span>
 <span><span class="co">#&gt; [52] pkgdown_2.2.0          jquerylib_0.1.4        pbmcapply_1.5.1       </span></span>
 <span><span class="co">#&gt; [55] systemfonts_1.2.3      rlang_1.1.6            grid_4.2.3            </span></span>
 <span><span class="co">#&gt; [58] RCurl_1.98-1.17        nloptr_2.2.1           rstudioapi_0.17.1     </span></span>
 <span><span class="co">#&gt; [61] htmlwidgets_1.6.4      bitops_1.0-9           rmarkdown_2.27        </span></span>
 <span><span class="co">#&gt; [64] boot_1.3-30            gtable_0.3.6           R6_2.6.1              </span></span>
-<span><span class="co">#&gt; [67] zoo_1.8-14             knitr_1.50             dplyr_1.1.4           </span></span>
-<span><span class="co">#&gt; [70] fastmap_1.2.0          ragg_1.5.0             desc_1.4.3            </span></span>
-<span><span class="co">#&gt; [73] parallel_4.2.3         Rcpp_1.0.14            vctrs_0.6.5           </span></span>
-<span><span class="co">#&gt; [76] tidyselect_1.2.1       xfun_0.52</span></span></code></pre></div>
+<span><span class="co">#&gt; [67] gridExtra_2.3          knitr_1.50             dplyr_1.1.4           </span></span>
+<span><span class="co">#&gt; [70] fastmap_1.2.0          uwot_0.2.3             ragg_1.5.0            </span></span>
+<span><span class="co">#&gt; [73] desc_1.4.3             parallel_4.2.3         Rcpp_1.0.14           </span></span>
+<span><span class="co">#&gt; [76] vctrs_0.6.5            tidyselect_1.2.1       xfun_0.52</span></span></code></pre></div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

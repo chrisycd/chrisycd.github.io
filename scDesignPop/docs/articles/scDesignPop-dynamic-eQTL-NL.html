@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">scDesignPop</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9009</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9010</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -40,7 +40,6 @@
     <li><a class="dropdown-item" href="../articles/scDesignPop-dynamic-eQTL.html">Model linear dynamic eQTL effects in continuous cell states</a></li>
     <li><a class="dropdown-item" href="../articles/scDesignPop-modify-eQTL-effects.html">Modify eQTL effect for eGenes / non-eGenes</a></li>
     <li><a class="dropdown-item" href="../articles/scDesignPop-power-analysis-ES-specification.html">Power analysis based on user specified eQTL effect sizes</a></li>
-    <li><a class="dropdown-item" href="../articles/scDesignPop-power-analysis-fitted.html">Power analysis based on a fitted scDesignPop marginal model</a></li>
     <li><a class="dropdown-item" href="../articles/scDesignPop-power-analysis-selected.html">Power analysis for selected genes</a></li>
     <li><a class="dropdown-item" href="../articles/scDesignPop-trans-eQTL.html">Modeling trans-eQTL effect using public data</a></li>
   </ul>
@@ -78,7 +77,7 @@ Cen</h4>
 Los Angeles<br><a class="author_email" href="mailto:#"></a><a href="mailto:yihuicen@g.ucla.edu" class="email">yihuicen@g.ucla.edu</a>
       </address>
                   
-            <h4 data-toc-skip class="date">23 January 2026</h4>
+            <h4 data-toc-skip class="date">13 February 2026</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/chrisycd/scDesignPop/blob/HEAD/vignettes/scDesignPop-dynamic-eQTL-NL.Rmd"><code>vignettes/scDesignPop-dynamic-eQTL-NL.Rmd</code></a></small>
       <div class="d-none name"><code>scDesignPop-dynamic-eQTL-NL.Rmd</code></div>
@@ -99,25 +98,67 @@ pre {
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://bioconductor.org/packages/scater/" class="external-link">scater</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme_get.html" class="external-link">theme_set</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <div class="section level2">
-<h2 id="step-1-construct-a-data-list">Step 1: construct a data list<a class="anchor" aria-label="anchor" href="#step-1-construct-a-data-list"></a>
+<h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
 <p>scDesignPop can also be extended to other eQTL effects. Here we show
 how scDesignPop can also model nonlinear dynamic eQTL effects in
-continuous cell states to mimick the real data better. To run
-scDesignPop, a list of data is required as input. This is done using the
-<code>constructDataPop</code> function. A
+continuous cell states to mimick the real data better.</p>
+</div>
+<div class="section level2">
+<h2 id="library-and-data-preparation">Library and data preparation<a class="anchor" aria-label="anchor" href="#library-and-data-preparation"></a>
+</h2>
+<p>Here, we use a subset of the B cells from OneK1K cohort as example.
+We load an example SingleCellExperiment object <code>example_sce</code>
+with 817 genes and 3726 cells and an example eQTL genotype dataframe
+<code>example_eqtlgeno</code> to demonstrate the main tutorial. These
+two objects contains the gene expression and SNP genotypes of 100
+anonymized individuals while the eQTL genotype dataframe provides 2406
+putative cell-type-specific eQTLs. For non linear dynamic eQTL modeling,
+we prepare a squared pseudotim column
+<code>slingPseudotime_1_sq</code>.</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/chrisycd/scDesignPop">scDesignPop</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">SingleCellExperiment</span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://bioconductor.org/packages/SummarizedExperiment" class="external-link">SummarizedExperiment</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://bioconductor.org/packages/scater/" class="external-link">scater</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"example_sce_Bcell"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"example_eqtlgeno_Bcell"</span><span class="op">)</span></span>
+<span><span class="va">col_Bcell</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></span><span class="op">(</span><span class="va">example_sce_Bcell</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></span><span class="op">(</span><span class="va">example_sce_Bcell</span><span class="op">)</span><span class="op">$</span><span class="va">slingPseudotime_1_sq</span> <span class="op">&lt;-</span> <span class="va">col_Bcell</span><span class="op">$</span><span class="va">slingPseudotime_1</span><span class="op">^</span><span class="fl">2</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></span><span class="op">(</span><span class="va">example_sce_Bcell</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; DataFrame with 6 rows and 6 columns</span></span>
+<span><span class="co">#&gt;                    cell_type    indiv      sex       age slingPseudotime_1</span></span>
+<span><span class="co">#&gt;                     &lt;factor&gt; &lt;factor&gt; &lt;factor&gt; &lt;integer&gt;         &lt;numeric&gt;</span></span>
+<span><span class="co">#&gt; AAAGATGGTTATGCGT-1      bin    SAMP68        1        69          0.215705</span></span>
+<span><span class="co">#&gt; AACTCAGGTCCGCTGA-1      bin    SAMP68        1        69          0.835651</span></span>
+<span><span class="co">#&gt; AAGTCTGTCGTACGGC-1      bin    SAMP68        1        69          0.532256</span></span>
+<span><span class="co">#&gt; ACACCGGCACCCTATC-1      bin    SAMP68        1        69          0.423183</span></span>
+<span><span class="co">#&gt; ACGCCGAGTCAGAGGT-1      bmem   SAMP68        1        69          0.268401</span></span>
+<span><span class="co">#&gt; ACTGAGTCAGGATCGA-1      bin    SAMP68        1        69          0.480905</span></span>
+<span><span class="co">#&gt;                    slingPseudotime_1_sq</span></span>
+<span><span class="co">#&gt;                               &lt;numeric&gt;</span></span>
+<span><span class="co">#&gt; AAAGATGGTTATGCGT-1            0.0465288</span></span>
+<span><span class="co">#&gt; AACTCAGGTCCGCTGA-1            0.6983129</span></span>
+<span><span class="co">#&gt; AAGTCTGTCGTACGGC-1            0.2832960</span></span>
+<span><span class="co">#&gt; ACACCGGCACCCTATC-1            0.1790840</span></span>
+<span><span class="co">#&gt; ACGCCGAGTCAGAGGT-1            0.0720393</span></span>
+<span><span class="co">#&gt; ACTGAGTCAGGATCGA-1            0.2312694</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="modeling-and-simulation">Modeling and simulation<a class="anchor" aria-label="anchor" href="#modeling-and-simulation"></a>
+</h2>
+<div class="section level3">
+<h3 id="step-1-construct-a-data-list">Step 1: construct a data list<a class="anchor" aria-label="anchor" href="#step-1-construct-a-data-list"></a>
+</h3>
+<p>To run scDesignPop, a list of data is required as input. This is done
+using the <code>constructDataPop</code> function. A
 <code>SingleCellExperiment</code> object and an <code>eqtlgeno</code>
 dataframe are the two main inputs needed. The <code>eqtlgeno</code>
 dataframe consists of eQTL annotations (it must have cell state, gene,
 SNP, chromosome, and position columns at a minimum), and genotypes
 across individuals (columns) for every SNP (rows). The structure of an
-example <code>eqtlgeno</code> dataframe is given below. Here, we use a
-subset of the B cells from OneK1K cohort as example.</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"example_sce_Bcell"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"example_eqtlgeno_Bcell"</span><span class="op">)</span></span>
-<span><span class="va">col_Bcell</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></span><span class="op">(</span><span class="va">example_sce_Bcell</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></span><span class="op">(</span><span class="va">example_sce_Bcell</span><span class="op">)</span><span class="op">$</span><span class="va">slingPseudotime_1_sq</span> <span class="op">&lt;-</span> <span class="va">col_Bcell</span><span class="op">$</span><span class="va">slingPseudotime_1</span><span class="op">^</span><span class="fl">2</span></span></code></pre></div>
+example <code>eqtlgeno</code> dataframe is given below.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">data_list</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/constructDataPop.html">constructDataPop</a></span><span class="op">(</span></span>
 <span>    sce <span class="op">=</span> <span class="va">example_sce_Bcell</span>,</span>
@@ -128,7 +169,7 @@ subset of the B cells from OneK1K cohort as example.</p>
 <span>    copula_variable <span class="op">=</span> <span class="st">"slingPseudotime_1"</span>,</span>
 <span>    n_quantiles <span class="op">=</span> <span class="fl">10</span>,</span>
 <span>    slot_name <span class="op">=</span> <span class="st">"counts"</span>,</span>
-<span>    snp_model <span class="op">=</span> <span class="st">"single"</span>,</span>
+<span>    snp_mode <span class="op">=</span> <span class="st">"single"</span>,</span>
 <span>    time_colname <span class="op">=</span> <span class="st">"slingPseudotime_1"</span>,</span>
 <span>    celltype_colname <span class="op">=</span> <span class="st">"cell_type"</span>,</span>
 <span>    feature_colname <span class="op">=</span> <span class="st">"gene_id"</span>,</span>
@@ -139,9 +180,9 @@ subset of the B cells from OneK1K cohort as example.</p>
 <span>    prune_thres <span class="op">=</span> <span class="fl">0.9</span></span>
 <span>    <span class="op">)</span></span></code></pre></div>
 </div>
-<div class="section level2">
-<h2 id="step-2-fit-marginal-model">Step 2: fit marginal model<a class="anchor" aria-label="anchor" href="#step-2-fit-marginal-model"></a>
-</h2>
+<div class="section level3">
+<h3 id="step-2-fit-marginal-model">Step 2: fit marginal model<a class="anchor" aria-label="anchor" href="#step-2-fit-marginal-model"></a>
+</h3>
 <p>Next, a marginal model is specified to fit each gene using the
 <code>fitMarginalPop</code> function.<br>
 Here we use a Negative Binominal as the parametric model using
@@ -164,9 +205,9 @@ Here we use a Negative Binominal as the parametric model using
 <span>    data_maxsize <span class="op">=</span> <span class="fl">1</span></span>
 <span>    <span class="op">)</span></span></code></pre></div>
 </div>
-<div class="section level2">
-<h2 id="step-3-fit-a-gaussian-copula">Step 3: fit a Gaussian copula<a class="anchor" aria-label="anchor" href="#step-3-fit-a-gaussian-copula"></a>
-</h2>
+<div class="section level3">
+<h3 id="step-3-fit-a-gaussian-copula">Step 3: fit a Gaussian copula<a class="anchor" aria-label="anchor" href="#step-3-fit-a-gaussian-copula"></a>
+</h3>
 <p>The third step is to fit a Gaussian copula using the
 <code>fitCopulaPop</code> function.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
@@ -185,9 +226,9 @@ Here we use a Negative Binominal as the parametric model using
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">RNGkind</a></span><span class="op">(</span><span class="st">"Mersenne-Twister"</span><span class="op">)</span>  <span class="co"># reset</span></span></code></pre></div>
 </div>
-<div class="section level2">
-<h2 id="step-4-extract-parameters">Step 4: extract parameters<a class="anchor" aria-label="anchor" href="#step-4-extract-parameters"></a>
-</h2>
+<div class="section level3">
+<h3 id="step-4-extract-parameters">Step 4: extract parameters<a class="anchor" aria-label="anchor" href="#step-4-extract-parameters"></a>
+</h3>
 <p>The fourth step is to compute the mean, sigma, and zero probability
 parameters using the <code>extractParaPop</code> function.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
@@ -204,9 +245,9 @@ parameters using the <code>extractParaPop</code> function.</p>
 <span>    parallelization <span class="op">=</span> <span class="st">"pbmcmapply"</span></span>
 <span>    <span class="op">)</span></span></code></pre></div>
 </div>
-<div class="section level2">
-<h2 id="step-5-simulate-counts">Step 5: simulate counts<a class="anchor" aria-label="anchor" href="#step-5-simulate-counts"></a>
-</h2>
+<div class="section level3">
+<h3 id="step-5-simulate-counts">Step 5: simulate counts<a class="anchor" aria-label="anchor" href="#step-5-simulate-counts"></a>
+</h3>
 <p>The fifth step is to simulate counts using the
 <code>simuNewPop</code> function.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
@@ -229,9 +270,9 @@ parameters using the <code>extractParaPop</code> function.</p>
 <span>    parallelization <span class="op">=</span> <span class="st">"pbmcmapply"</span></span>
 <span>    <span class="op">)</span></span></code></pre></div>
 </div>
-<div class="section level2">
-<h2 id="step-6-create-singlecellexperiment-object-using-simulated-data">Step 6: create SingleCellExperiment object using simulated data<a class="anchor" aria-label="anchor" href="#step-6-create-singlecellexperiment-object-using-simulated-data"></a>
-</h2>
+<div class="section level3">
+<h3 id="step-6-create-singlecellexperiment-object-using-simulated-data">Step 6: create SingleCellExperiment object using simulated data<a class="anchor" aria-label="anchor" href="#step-6-create-singlecellexperiment-object-using-simulated-data"></a>
+</h3>
 <p>After simulating the data, we can create a
 <code>SingleCellExperiment</code> object as follows.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
@@ -242,11 +283,11 @@ parameters using the <code>extractParaPop</code> function.</p>
 <span><span class="co"># save gene meta data</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">rowData</a></span><span class="op">(</span><span class="va">simu_sce_Bcell</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">rowData</a></span><span class="op">(</span><span class="va">example_sce_Bcell</span><span class="op">)</span></span></code></pre></div>
 </div>
+</div>
 <div class="section level2">
-<h2 id="step-7-visualize-using-phate">Step 7: visualize using PHATE<a class="anchor" aria-label="anchor" href="#step-7-visualize-using-phate"></a>
+<h2 id="visualization-using-phate">Visualization using PHATE<a class="anchor" aria-label="anchor" href="#visualization-using-phate"></a>
 </h2>
-<p>The simulated data can be visualized using a UMAP plot as
-follows.</p>
+<p>The simulated data can be visualized using PHATE dimensions.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">phateR</span><span class="op">)</span></span>
@@ -257,26 +298,26 @@ follows.</p>
 <span><span class="co">#&gt;   Running PHATE on 3726 observations and 817 variables.</span></span>
 <span><span class="co">#&gt;   Calculating graph and diffusion operator...</span></span>
 <span><span class="co">#&gt;     Calculating PCA...</span></span>
-<span><span class="co">#&gt;     Calculated PCA in 0.50 seconds.</span></span>
+<span><span class="co">#&gt;     Calculated PCA in 0.28 seconds.</span></span>
 <span><span class="co">#&gt;     Calculating KNN search...</span></span>
-<span><span class="co">#&gt;     Calculated KNN search in 1.03 seconds.</span></span>
+<span><span class="co">#&gt;     Calculated KNN search in 0.97 seconds.</span></span>
 <span><span class="co">#&gt;     Calculating affinities...</span></span>
 <span><span class="co">#&gt;     Calculated affinities in 0.03 seconds.</span></span>
-<span><span class="co">#&gt;   Calculated graph and diffusion operator in 1.57 seconds.</span></span>
+<span><span class="co">#&gt;   Calculated graph and diffusion operator in 1.28 seconds.</span></span>
 <span><span class="co">#&gt;   Calculating landmark operator...</span></span>
 <span><span class="co">#&gt;     Calculating SVD...</span></span>
-<span><span class="co">#&gt;     Calculated SVD in 0.45 seconds.</span></span>
+<span><span class="co">#&gt;     Calculated SVD in 0.23 seconds.</span></span>
 <span><span class="co">#&gt;     Calculating KMeans...</span></span>
-<span><span class="co">#&gt;     Calculated KMeans in 8.25 seconds.</span></span>
-<span><span class="co">#&gt;   Calculated landmark operator in 9.23 seconds.</span></span>
+<span><span class="co">#&gt;     Calculated KMeans in 3.76 seconds.</span></span>
+<span><span class="co">#&gt;   Calculated landmark operator in 4.42 seconds.</span></span>
 <span><span class="co">#&gt;   Calculating optimal t...</span></span>
 <span><span class="co">#&gt;     Automatically selected t = 18</span></span>
-<span><span class="co">#&gt;   Calculated optimal t in 1.09 seconds.</span></span>
+<span><span class="co">#&gt;   Calculated optimal t in 0.76 seconds.</span></span>
 <span><span class="co">#&gt;   Calculating diffusion potential...</span></span>
-<span><span class="co">#&gt;   Calculated diffusion potential in 0.22 seconds.</span></span>
+<span><span class="co">#&gt;   Calculated diffusion potential in 0.12 seconds.</span></span>
 <span><span class="co">#&gt;   Calculating metric MDS...</span></span>
-<span><span class="co">#&gt;   Calculated metric MDS in 4.57 seconds.</span></span>
-<span><span class="co">#&gt; Calculated PHATE in 16.68 seconds.</span></span>
+<span><span class="co">#&gt;   Calculated metric MDS in 3.64 seconds.</span></span>
+<span><span class="co">#&gt; Calculated PHATE in 10.22 seconds.</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/SingleCellExperiment/man/reducedDims.html" class="external-link">reducedDims</a></span><span class="op">(</span><span class="va">example_sce_Bcell</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu">SimpleList</span><span class="op">(</span>PHATE <span class="op">=</span> <span class="va">ph</span><span class="op">$</span><span class="va">embedding</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># run PHATE for simulated data</span></span>
@@ -285,26 +326,26 @@ follows.</p>
 <span><span class="co">#&gt;   Running PHATE on 3726 observations and 817 variables.</span></span>
 <span><span class="co">#&gt;   Calculating graph and diffusion operator...</span></span>
 <span><span class="co">#&gt;     Calculating PCA...</span></span>
-<span><span class="co">#&gt;     Calculated PCA in 0.45 seconds.</span></span>
+<span><span class="co">#&gt;     Calculated PCA in 0.26 seconds.</span></span>
 <span><span class="co">#&gt;     Calculating KNN search...</span></span>
-<span><span class="co">#&gt;     Calculated KNN search in 1.01 seconds.</span></span>
+<span><span class="co">#&gt;     Calculated KNN search in 0.85 seconds.</span></span>
 <span><span class="co">#&gt;     Calculating affinities...</span></span>
-<span><span class="co">#&gt;     Calculated affinities in 0.02 seconds.</span></span>
-<span><span class="co">#&gt;   Calculated graph and diffusion operator in 1.48 seconds.</span></span>
+<span><span class="co">#&gt;     Calculated affinities in 0.01 seconds.</span></span>
+<span><span class="co">#&gt;   Calculated graph and diffusion operator in 1.13 seconds.</span></span>
 <span><span class="co">#&gt;   Calculating landmark operator...</span></span>
 <span><span class="co">#&gt;     Calculating SVD...</span></span>
-<span><span class="co">#&gt;     Calculated SVD in 0.32 seconds.</span></span>
+<span><span class="co">#&gt;     Calculated SVD in 0.23 seconds.</span></span>
 <span><span class="co">#&gt;     Calculating KMeans...</span></span>
-<span><span class="co">#&gt;     Calculated KMeans in 8.19 seconds.</span></span>
-<span><span class="co">#&gt;   Calculated landmark operator in 9.14 seconds.</span></span>
+<span><span class="co">#&gt;     Calculated KMeans in 4.42 seconds.</span></span>
+<span><span class="co">#&gt;   Calculated landmark operator in 5.10 seconds.</span></span>
 <span><span class="co">#&gt;   Calculating optimal t...</span></span>
-<span><span class="co">#&gt;     Automatically selected t = 15</span></span>
-<span><span class="co">#&gt;   Calculated optimal t in 1.13 seconds.</span></span>
+<span><span class="co">#&gt;     Automatically selected t = 16</span></span>
+<span><span class="co">#&gt;   Calculated optimal t in 0.72 seconds.</span></span>
 <span><span class="co">#&gt;   Calculating diffusion potential...</span></span>
-<span><span class="co">#&gt;   Calculated diffusion potential in 0.23 seconds.</span></span>
+<span><span class="co">#&gt;   Calculated diffusion potential in 0.11 seconds.</span></span>
 <span><span class="co">#&gt;   Calculating metric MDS...</span></span>
-<span><span class="co">#&gt;   Calculated metric MDS in 4.37 seconds.</span></span>
-<span><span class="co">#&gt; Calculated PHATE in 16.34 seconds.</span></span>
+<span><span class="co">#&gt;   Calculated metric MDS in 3.50 seconds.</span></span>
+<span><span class="co">#&gt; Calculated PHATE in 10.56 seconds.</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/SingleCellExperiment/man/reducedDims.html" class="external-link">reducedDims</a></span><span class="op">(</span><span class="va">simu_sce_Bcell</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu">SimpleList</span><span class="op">(</span>PHATE <span class="op">=</span> <span class="va">ph_simu</span><span class="op">$</span><span class="va">embedding</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># visualize</span></span>
@@ -367,60 +408,59 @@ follows.</p>
 <span><span class="co">#&gt;  [9] GenomicRanges_1.50.2        GenomeInfoDb_1.34.9        </span></span>
 <span><span class="co">#&gt; [11] IRanges_2.32.0              S4Vectors_0.36.2           </span></span>
 <span><span class="co">#&gt; [13] BiocGenerics_0.44.0         MatrixGenerics_1.10.0      </span></span>
-<span><span class="co">#&gt; [15] matrixStats_1.1.0           scDesignPop_0.0.0.9009     </span></span>
+<span><span class="co">#&gt; [15] matrixStats_1.1.0           scDesignPop_0.0.0.9010     </span></span>
 <span><span class="co">#&gt; [17] BiocStyle_2.26.0           </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; loaded via a namespace (and not attached):</span></span>
-<span><span class="co">#&gt;   [1] ggbeeswarm_0.7.2          minqa_1.2.8              </span></span>
-<span><span class="co">#&gt;   [3] rprojroot_2.1.1           XVector_0.38.0           </span></span>
-<span><span class="co">#&gt;   [5] BiocNeighbors_1.16.0      fs_1.6.6                 </span></span>
-<span><span class="co">#&gt;   [7] rstudioapi_0.17.1         glmmTMB_1.1.13           </span></span>
-<span><span class="co">#&gt;   [9] farver_2.1.2              ggrepel_0.9.5            </span></span>
-<span><span class="co">#&gt;  [11] mvtnorm_1.3-3             codetools_0.2-20         </span></span>
-<span><span class="co">#&gt;  [13] splines_4.2.3             sparseMatrixStats_1.10.0 </span></span>
-<span><span class="co">#&gt;  [15] cachem_1.1.0              knitr_1.50               </span></span>
-<span><span class="co">#&gt;  [17] jsonlite_2.0.0            nloptr_2.2.1             </span></span>
-<span><span class="co">#&gt;  [19] Cairo_1.6-2               png_0.1-8                </span></span>
-<span><span class="co">#&gt;  [21] BiocManager_1.30.25       compiler_4.2.3           </span></span>
-<span><span class="co">#&gt;  [23] assertthat_0.2.1          fastmap_1.2.0            </span></span>
-<span><span class="co">#&gt;  [25] cli_3.6.5                 BiocSingular_1.14.0      </span></span>
-<span><span class="co">#&gt;  [27] htmltools_0.5.8.1         tools_4.2.3              </span></span>
-<span><span class="co">#&gt;  [29] rsvd_1.0.5                gtable_0.3.6             </span></span>
-<span><span class="co">#&gt;  [31] glue_1.8.0                GenomeInfoDbData_1.2.9   </span></span>
-<span><span class="co">#&gt;  [33] dplyr_1.1.4               rappdirs_0.3.3           </span></span>
-<span><span class="co">#&gt;  [35] Rcpp_1.0.14               jquerylib_0.1.4          </span></span>
-<span><span class="co">#&gt;  [37] pkgdown_2.2.0             vctrs_0.6.5              </span></span>
-<span><span class="co">#&gt;  [39] nlme_3.1-164              DelayedMatrixStats_1.20.0</span></span>
-<span><span class="co">#&gt;  [41] xfun_0.52                 rbibutils_2.3            </span></span>
-<span><span class="co">#&gt;  [43] beachmat_2.14.2           lme4_1.1-35.3            </span></span>
-<span><span class="co">#&gt;  [45] lifecycle_1.0.4           irlba_2.3.5.1            </span></span>
-<span><span class="co">#&gt;  [47] zlibbioc_1.44.0           MASS_7.3-58.2            </span></span>
-<span><span class="co">#&gt;  [49] zoo_1.8-14                scales_1.4.0             </span></span>
-<span><span class="co">#&gt;  [51] ragg_1.5.0                parallel_4.2.3           </span></span>
-<span><span class="co">#&gt;  [53] sandwich_3.1-1            TMB_1.9.11               </span></span>
-<span><span class="co">#&gt;  [55] RColorBrewer_1.1-3        yaml_2.3.10              </span></span>
-<span><span class="co">#&gt;  [57] memoise_2.0.1             reticulate_1.42.0        </span></span>
-<span><span class="co">#&gt;  [59] pbapply_1.7-2             gridExtra_2.3            </span></span>
-<span><span class="co">#&gt;  [61] ggrastr_1.0.2             sass_0.4.10              </span></span>
-<span><span class="co">#&gt;  [63] desc_1.4.3                ScaledMatrix_1.6.0       </span></span>
-<span><span class="co">#&gt;  [65] boot_1.3-30               BiocParallel_1.32.6      </span></span>
-<span><span class="co">#&gt;  [67] Rdpack_2.6.4              rlang_1.1.6              </span></span>
-<span><span class="co">#&gt;  [69] pkgconfig_2.0.3           systemfonts_1.2.3        </span></span>
-<span><span class="co">#&gt;  [71] bitops_1.0-9              evaluate_1.0.3           </span></span>
-<span><span class="co">#&gt;  [73] lattice_0.22-6            patchwork_1.2.0          </span></span>
-<span><span class="co">#&gt;  [75] htmlwidgets_1.6.4         labeling_0.4.3           </span></span>
-<span><span class="co">#&gt;  [77] tidyselect_1.2.1          here_1.0.1               </span></span>
-<span><span class="co">#&gt;  [79] magrittr_2.0.3            bookdown_0.43            </span></span>
-<span><span class="co">#&gt;  [81] R6_2.6.1                  reformulas_0.4.1         </span></span>
-<span><span class="co">#&gt;  [83] generics_0.1.4            DelayedArray_0.24.0      </span></span>
-<span><span class="co">#&gt;  [85] pillar_1.10.2             withr_3.0.2              </span></span>
-<span><span class="co">#&gt;  [87] mgcv_1.9-1                RCurl_1.98-1.17          </span></span>
-<span><span class="co">#&gt;  [89] tibble_3.2.1              rmarkdown_2.27           </span></span>
-<span><span class="co">#&gt;  [91] viridis_0.6.5             grid_4.2.3               </span></span>
-<span><span class="co">#&gt;  [93] digest_0.6.37             pbmcapply_1.5.1          </span></span>
-<span><span class="co">#&gt;  [95] numDeriv_2016.8-1.1       textshaping_0.4.0        </span></span>
-<span><span class="co">#&gt;  [97] beeswarm_0.4.0            viridisLite_0.4.2        </span></span>
-<span><span class="co">#&gt;  [99] vipor_0.4.7               bslib_0.9.0</span></span></code></pre></div>
+<span><span class="co">#&gt;  [1] nlme_3.1-164              bitops_1.0-9             </span></span>
+<span><span class="co">#&gt;  [3] fs_1.6.6                  RColorBrewer_1.1-3       </span></span>
+<span><span class="co">#&gt;  [5] rprojroot_2.1.1           numDeriv_2016.8-1.1      </span></span>
+<span><span class="co">#&gt;  [7] tools_4.2.3               TMB_1.9.11               </span></span>
+<span><span class="co">#&gt;  [9] bslib_0.9.0               R6_2.6.1                 </span></span>
+<span><span class="co">#&gt; [11] irlba_2.3.5.1             vipor_0.4.7              </span></span>
+<span><span class="co">#&gt; [13] uwot_0.2.3                mgcv_1.9-1               </span></span>
+<span><span class="co">#&gt; [15] withr_3.0.2               ggrastr_1.0.2            </span></span>
+<span><span class="co">#&gt; [17] tidyselect_1.2.1          gridExtra_2.3            </span></span>
+<span><span class="co">#&gt; [19] compiler_4.2.3            textshaping_0.4.0        </span></span>
+<span><span class="co">#&gt; [21] cli_3.6.5                 BiocNeighbors_1.16.0     </span></span>
+<span><span class="co">#&gt; [23] Cairo_1.6-2               desc_1.4.3               </span></span>
+<span><span class="co">#&gt; [25] DelayedArray_0.24.0       labeling_0.4.3           </span></span>
+<span><span class="co">#&gt; [27] bookdown_0.43             sass_0.4.10              </span></span>
+<span><span class="co">#&gt; [29] scales_1.4.0              mvtnorm_1.3-3            </span></span>
+<span><span class="co">#&gt; [31] pbapply_1.7-2             rappdirs_0.3.3           </span></span>
+<span><span class="co">#&gt; [33] pkgdown_2.2.0             systemfonts_1.2.3        </span></span>
+<span><span class="co">#&gt; [35] digest_0.6.37             minqa_1.2.8              </span></span>
+<span><span class="co">#&gt; [37] rmarkdown_2.27            XVector_0.38.0           </span></span>
+<span><span class="co">#&gt; [39] RhpcBLASctl_0.23-42       pkgconfig_2.0.3          </span></span>
+<span><span class="co">#&gt; [41] htmltools_0.5.8.1         lme4_1.1-35.3            </span></span>
+<span><span class="co">#&gt; [43] sparseMatrixStats_1.10.0  fastmap_1.2.0            </span></span>
+<span><span class="co">#&gt; [45] htmlwidgets_1.6.4         rlang_1.1.6              </span></span>
+<span><span class="co">#&gt; [47] rstudioapi_0.17.1         DelayedMatrixStats_1.20.0</span></span>
+<span><span class="co">#&gt; [49] jquerylib_0.1.4           farver_2.1.2             </span></span>
+<span><span class="co">#&gt; [51] generics_0.1.4            jsonlite_2.0.0           </span></span>
+<span><span class="co">#&gt; [53] BiocParallel_1.32.6       dplyr_1.1.4              </span></span>
+<span><span class="co">#&gt; [55] RCurl_1.98-1.17           magrittr_2.0.3           </span></span>
+<span><span class="co">#&gt; [57] BiocSingular_1.14.0       GenomeInfoDbData_1.2.9   </span></span>
+<span><span class="co">#&gt; [59] patchwork_1.2.0           ggbeeswarm_0.7.2         </span></span>
+<span><span class="co">#&gt; [61] Rcpp_1.0.14               reticulate_1.42.0        </span></span>
+<span><span class="co">#&gt; [63] viridis_0.6.5             lifecycle_1.0.4          </span></span>
+<span><span class="co">#&gt; [65] yaml_2.3.10               MASS_7.3-58.2            </span></span>
+<span><span class="co">#&gt; [67] zlibbioc_1.44.0           grid_4.2.3               </span></span>
+<span><span class="co">#&gt; [69] ggrepel_0.9.5             parallel_4.2.3           </span></span>
+<span><span class="co">#&gt; [71] lattice_0.22-6            beachmat_2.14.2          </span></span>
+<span><span class="co">#&gt; [73] splines_4.2.3             knitr_1.50               </span></span>
+<span><span class="co">#&gt; [75] pillar_1.10.2             boot_1.3-30              </span></span>
+<span><span class="co">#&gt; [77] codetools_0.2-20          ScaledMatrix_1.6.0       </span></span>
+<span><span class="co">#&gt; [79] glue_1.8.0                evaluate_1.0.3           </span></span>
+<span><span class="co">#&gt; [81] BiocManager_1.30.25       png_0.1-8                </span></span>
+<span><span class="co">#&gt; [83] vctrs_0.6.5               nloptr_2.2.1             </span></span>
+<span><span class="co">#&gt; [85] gtable_0.3.6              assertthat_0.2.1         </span></span>
+<span><span class="co">#&gt; [87] cachem_1.1.0              xfun_0.52                </span></span>
+<span><span class="co">#&gt; [89] rsvd_1.0.5                ragg_1.5.0               </span></span>
+<span><span class="co">#&gt; [91] viridisLite_0.4.2         tibble_3.2.1             </span></span>
+<span><span class="co">#&gt; [93] pbmcapply_1.5.1           glmmTMB_1.1.9            </span></span>
+<span><span class="co">#&gt; [95] memoise_2.0.1             beeswarm_0.4.0           </span></span>
+<span><span class="co">#&gt; [97] here_1.0.1</span></span></code></pre></div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

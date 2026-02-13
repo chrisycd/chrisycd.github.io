@@ -8,26 +8,64 @@ library(scater)
 theme_set(theme_bw())
 ```
 
-## Step 1: construct a data list
+## Introduction
 
 scDesignPop can also be extended to other eQTL effects. Here we show how
 scDesignPop can also model nonlinear dynamic eQTL effects in continuous
-cell states to mimick the real data better. To run scDesignPop, a list
-of data is required as input. This is done using the `constructDataPop`
-function. A `SingleCellExperiment` object and an `eqtlgeno` dataframe
-are the two main inputs needed. The `eqtlgeno` dataframe consists of
-eQTL annotations (it must have cell state, gene, SNP, chromosome, and
-position columns at a minimum), and genotypes across individuals
-(columns) for every SNP (rows). The structure of an example `eqtlgeno`
-dataframe is given below. Here, we use a subset of the B cells from
-OneK1K cohort as example.
+cell states to mimick the real data better.
+
+## Library and data preparation
+
+Here, we use a subset of the B cells from OneK1K cohort as example. We
+load an example SingleCellExperiment object `example_sce` with 817 genes
+and 3726 cells and an example eQTL genotype dataframe `example_eqtlgeno`
+to demonstrate the main tutorial. These two objects contains the gene
+expression and SNP genotypes of 100 anonymized individuals while the
+eQTL genotype dataframe provides 2406 putative cell-type-specific eQTLs.
+For non linear dynamic eQTL modeling, we prepare a squared pseudotim
+column `slingPseudotime_1_sq`.
 
 ``` r
+library(scDesignPop)
+library(SingleCellExperiment)
+library(SummarizedExperiment)
+library(scater)
+
 data("example_sce_Bcell")
 data("example_eqtlgeno_Bcell")
 col_Bcell <- colData(example_sce_Bcell)
 colData(example_sce_Bcell)$slingPseudotime_1_sq <- col_Bcell$slingPseudotime_1^2
+head(colData(example_sce_Bcell))
+#> DataFrame with 6 rows and 6 columns
+#>                    cell_type    indiv      sex       age slingPseudotime_1
+#>                     <factor> <factor> <factor> <integer>         <numeric>
+#> AAAGATGGTTATGCGT-1      bin    SAMP68        1        69          0.215705
+#> AACTCAGGTCCGCTGA-1      bin    SAMP68        1        69          0.835651
+#> AAGTCTGTCGTACGGC-1      bin    SAMP68        1        69          0.532256
+#> ACACCGGCACCCTATC-1      bin    SAMP68        1        69          0.423183
+#> ACGCCGAGTCAGAGGT-1      bmem   SAMP68        1        69          0.268401
+#> ACTGAGTCAGGATCGA-1      bin    SAMP68        1        69          0.480905
+#>                    slingPseudotime_1_sq
+#>                               <numeric>
+#> AAAGATGGTTATGCGT-1            0.0465288
+#> AACTCAGGTCCGCTGA-1            0.6983129
+#> AAGTCTGTCGTACGGC-1            0.2832960
+#> ACACCGGCACCCTATC-1            0.1790840
+#> ACGCCGAGTCAGAGGT-1            0.0720393
+#> ACTGAGTCAGGATCGA-1            0.2312694
 ```
+
+## Modeling and simulation
+
+### Step 1: construct a data list
+
+To run scDesignPop, a list of data is required as input. This is done
+using the `constructDataPop` function. A `SingleCellExperiment` object
+and an `eqtlgeno` dataframe are the two main inputs needed. The
+`eqtlgeno` dataframe consists of eQTL annotations (it must have cell
+state, gene, SNP, chromosome, and position columns at a minimum), and
+genotypes across individuals (columns) for every SNP (rows). The
+structure of an example `eqtlgeno` dataframe is given below.
 
 ``` r
 data_list <- constructDataPop(
@@ -39,7 +77,7 @@ data_list <- constructDataPop(
     copula_variable = "slingPseudotime_1",
     n_quantiles = 10,
     slot_name = "counts",
-    snp_model = "single",
+    snp_mode = "single",
     time_colname = "slingPseudotime_1",
     celltype_colname = "cell_type",
     feature_colname = "gene_id",
@@ -51,7 +89,7 @@ data_list <- constructDataPop(
     )
 ```
 
-## Step 2: fit marginal model
+### Step 2: fit marginal model
 
 Next, a marginal model is specified to fit each gene using the
 `fitMarginalPop` function.  
@@ -76,7 +114,7 @@ marginal_list <- fitMarginalPop(
     )
 ```
 
-## Step 3: fit a Gaussian copula
+### Step 3: fit a Gaussian copula
 
 The third step is to fit a Gaussian copula using the `fitCopulaPop`
 function.
@@ -98,7 +136,7 @@ copula_fit <- fitCopulaPop(
 RNGkind("Mersenne-Twister")  # reset
 ```
 
-## Step 4: extract parameters
+### Step 4: extract parameters
 
 The fourth step is to compute the mean, sigma, and zero probability
 parameters using the `extractParaPop` function.
@@ -118,7 +156,7 @@ para_new <- extractParaPop(
     )
 ```
 
-## Step 5: simulate counts
+### Step 5: simulate counts
 
 The fifth step is to simulate counts using the `simuNewPop` function.
 
@@ -143,7 +181,7 @@ newcount_mat <- simuNewPop(
     )
 ```
 
-## Step 6: create SingleCellExperiment object using simulated data
+### Step 6: create SingleCellExperiment object using simulated data
 
 After simulating the data, we can create a `SingleCellExperiment` object
 as follows.
@@ -157,9 +195,9 @@ names(assays(simu_sce_Bcell)) <- "counts"
 rowData(simu_sce_Bcell) <- rowData(example_sce_Bcell)
 ```
 
-## Step 7: visualize using PHATE
+## Visualization using PHATE
 
-The simulated data can be visualized using a UMAP plot as follows.
+The simulated data can be visualized using PHATE dimensions.
 
 ``` r
 library(ggplot2)
@@ -171,26 +209,26 @@ ph <- phate(t(counts(example_sce_Bcell)))
 #>   Running PHATE on 3726 observations and 817 variables.
 #>   Calculating graph and diffusion operator...
 #>     Calculating PCA...
-#>     Calculated PCA in 0.50 seconds.
+#>     Calculated PCA in 0.28 seconds.
 #>     Calculating KNN search...
-#>     Calculated KNN search in 1.03 seconds.
+#>     Calculated KNN search in 0.97 seconds.
 #>     Calculating affinities...
 #>     Calculated affinities in 0.03 seconds.
-#>   Calculated graph and diffusion operator in 1.57 seconds.
+#>   Calculated graph and diffusion operator in 1.28 seconds.
 #>   Calculating landmark operator...
 #>     Calculating SVD...
-#>     Calculated SVD in 0.45 seconds.
+#>     Calculated SVD in 0.23 seconds.
 #>     Calculating KMeans...
-#>     Calculated KMeans in 8.25 seconds.
-#>   Calculated landmark operator in 9.23 seconds.
+#>     Calculated KMeans in 3.76 seconds.
+#>   Calculated landmark operator in 4.42 seconds.
 #>   Calculating optimal t...
 #>     Automatically selected t = 18
-#>   Calculated optimal t in 1.09 seconds.
+#>   Calculated optimal t in 0.76 seconds.
 #>   Calculating diffusion potential...
-#>   Calculated diffusion potential in 0.22 seconds.
+#>   Calculated diffusion potential in 0.12 seconds.
 #>   Calculating metric MDS...
-#>   Calculated metric MDS in 4.57 seconds.
-#> Calculated PHATE in 16.68 seconds.
+#>   Calculated metric MDS in 3.64 seconds.
+#> Calculated PHATE in 10.22 seconds.
 reducedDims(example_sce_Bcell) <- SimpleList(PHATE = ph$embedding)
 
 # run PHATE for simulated data
@@ -199,26 +237,26 @@ ph_simu <- phate(t(counts(simu_sce_Bcell)))
 #>   Running PHATE on 3726 observations and 817 variables.
 #>   Calculating graph and diffusion operator...
 #>     Calculating PCA...
-#>     Calculated PCA in 0.45 seconds.
+#>     Calculated PCA in 0.26 seconds.
 #>     Calculating KNN search...
-#>     Calculated KNN search in 1.01 seconds.
+#>     Calculated KNN search in 0.85 seconds.
 #>     Calculating affinities...
-#>     Calculated affinities in 0.02 seconds.
-#>   Calculated graph and diffusion operator in 1.48 seconds.
+#>     Calculated affinities in 0.01 seconds.
+#>   Calculated graph and diffusion operator in 1.13 seconds.
 #>   Calculating landmark operator...
 #>     Calculating SVD...
-#>     Calculated SVD in 0.32 seconds.
+#>     Calculated SVD in 0.23 seconds.
 #>     Calculating KMeans...
-#>     Calculated KMeans in 8.19 seconds.
-#>   Calculated landmark operator in 9.14 seconds.
+#>     Calculated KMeans in 4.42 seconds.
+#>   Calculated landmark operator in 5.10 seconds.
 #>   Calculating optimal t...
-#>     Automatically selected t = 15
-#>   Calculated optimal t in 1.13 seconds.
+#>     Automatically selected t = 16
+#>   Calculated optimal t in 0.72 seconds.
 #>   Calculating diffusion potential...
-#>   Calculated diffusion potential in 0.23 seconds.
+#>   Calculated diffusion potential in 0.11 seconds.
 #>   Calculating metric MDS...
-#>   Calculated metric MDS in 4.37 seconds.
-#> Calculated PHATE in 16.34 seconds.
+#>   Calculated metric MDS in 3.50 seconds.
+#> Calculated PHATE in 10.56 seconds.
 reducedDims(simu_sce_Bcell) <- SimpleList(PHATE = ph_simu$embedding)
 
 # visualize
@@ -282,58 +320,57 @@ sessionInfo()
 #>  [9] GenomicRanges_1.50.2        GenomeInfoDb_1.34.9        
 #> [11] IRanges_2.32.0              S4Vectors_0.36.2           
 #> [13] BiocGenerics_0.44.0         MatrixGenerics_1.10.0      
-#> [15] matrixStats_1.1.0           scDesignPop_0.0.0.9009     
+#> [15] matrixStats_1.1.0           scDesignPop_0.0.0.9010     
 #> [17] BiocStyle_2.26.0           
 #> 
 #> loaded via a namespace (and not attached):
-#>   [1] ggbeeswarm_0.7.2          minqa_1.2.8              
-#>   [3] rprojroot_2.1.1           XVector_0.38.0           
-#>   [5] BiocNeighbors_1.16.0      fs_1.6.6                 
-#>   [7] rstudioapi_0.17.1         glmmTMB_1.1.13           
-#>   [9] farver_2.1.2              ggrepel_0.9.5            
-#>  [11] mvtnorm_1.3-3             codetools_0.2-20         
-#>  [13] splines_4.2.3             sparseMatrixStats_1.10.0 
-#>  [15] cachem_1.1.0              knitr_1.50               
-#>  [17] jsonlite_2.0.0            nloptr_2.2.1             
-#>  [19] Cairo_1.6-2               png_0.1-8                
-#>  [21] BiocManager_1.30.25       compiler_4.2.3           
-#>  [23] assertthat_0.2.1          fastmap_1.2.0            
-#>  [25] cli_3.6.5                 BiocSingular_1.14.0      
-#>  [27] htmltools_0.5.8.1         tools_4.2.3              
-#>  [29] rsvd_1.0.5                gtable_0.3.6             
-#>  [31] glue_1.8.0                GenomeInfoDbData_1.2.9   
-#>  [33] dplyr_1.1.4               rappdirs_0.3.3           
-#>  [35] Rcpp_1.0.14               jquerylib_0.1.4          
-#>  [37] pkgdown_2.2.0             vctrs_0.6.5              
-#>  [39] nlme_3.1-164              DelayedMatrixStats_1.20.0
-#>  [41] xfun_0.52                 rbibutils_2.3            
-#>  [43] beachmat_2.14.2           lme4_1.1-35.3            
-#>  [45] lifecycle_1.0.4           irlba_2.3.5.1            
-#>  [47] zlibbioc_1.44.0           MASS_7.3-58.2            
-#>  [49] zoo_1.8-14                scales_1.4.0             
-#>  [51] ragg_1.5.0                parallel_4.2.3           
-#>  [53] sandwich_3.1-1            TMB_1.9.11               
-#>  [55] RColorBrewer_1.1-3        yaml_2.3.10              
-#>  [57] memoise_2.0.1             reticulate_1.42.0        
-#>  [59] pbapply_1.7-2             gridExtra_2.3            
-#>  [61] ggrastr_1.0.2             sass_0.4.10              
-#>  [63] desc_1.4.3                ScaledMatrix_1.6.0       
-#>  [65] boot_1.3-30               BiocParallel_1.32.6      
-#>  [67] Rdpack_2.6.4              rlang_1.1.6              
-#>  [69] pkgconfig_2.0.3           systemfonts_1.2.3        
-#>  [71] bitops_1.0-9              evaluate_1.0.3           
-#>  [73] lattice_0.22-6            patchwork_1.2.0          
-#>  [75] htmlwidgets_1.6.4         labeling_0.4.3           
-#>  [77] tidyselect_1.2.1          here_1.0.1               
-#>  [79] magrittr_2.0.3            bookdown_0.43            
-#>  [81] R6_2.6.1                  reformulas_0.4.1         
-#>  [83] generics_0.1.4            DelayedArray_0.24.0      
-#>  [85] pillar_1.10.2             withr_3.0.2              
-#>  [87] mgcv_1.9-1                RCurl_1.98-1.17          
-#>  [89] tibble_3.2.1              rmarkdown_2.27           
-#>  [91] viridis_0.6.5             grid_4.2.3               
-#>  [93] digest_0.6.37             pbmcapply_1.5.1          
-#>  [95] numDeriv_2016.8-1.1       textshaping_0.4.0        
-#>  [97] beeswarm_0.4.0            viridisLite_0.4.2        
-#>  [99] vipor_0.4.7               bslib_0.9.0
+#>  [1] nlme_3.1-164              bitops_1.0-9             
+#>  [3] fs_1.6.6                  RColorBrewer_1.1-3       
+#>  [5] rprojroot_2.1.1           numDeriv_2016.8-1.1      
+#>  [7] tools_4.2.3               TMB_1.9.11               
+#>  [9] bslib_0.9.0               R6_2.6.1                 
+#> [11] irlba_2.3.5.1             vipor_0.4.7              
+#> [13] uwot_0.2.3                mgcv_1.9-1               
+#> [15] withr_3.0.2               ggrastr_1.0.2            
+#> [17] tidyselect_1.2.1          gridExtra_2.3            
+#> [19] compiler_4.2.3            textshaping_0.4.0        
+#> [21] cli_3.6.5                 BiocNeighbors_1.16.0     
+#> [23] Cairo_1.6-2               desc_1.4.3               
+#> [25] DelayedArray_0.24.0       labeling_0.4.3           
+#> [27] bookdown_0.43             sass_0.4.10              
+#> [29] scales_1.4.0              mvtnorm_1.3-3            
+#> [31] pbapply_1.7-2             rappdirs_0.3.3           
+#> [33] pkgdown_2.2.0             systemfonts_1.2.3        
+#> [35] digest_0.6.37             minqa_1.2.8              
+#> [37] rmarkdown_2.27            XVector_0.38.0           
+#> [39] RhpcBLASctl_0.23-42       pkgconfig_2.0.3          
+#> [41] htmltools_0.5.8.1         lme4_1.1-35.3            
+#> [43] sparseMatrixStats_1.10.0  fastmap_1.2.0            
+#> [45] htmlwidgets_1.6.4         rlang_1.1.6              
+#> [47] rstudioapi_0.17.1         DelayedMatrixStats_1.20.0
+#> [49] jquerylib_0.1.4           farver_2.1.2             
+#> [51] generics_0.1.4            jsonlite_2.0.0           
+#> [53] BiocParallel_1.32.6       dplyr_1.1.4              
+#> [55] RCurl_1.98-1.17           magrittr_2.0.3           
+#> [57] BiocSingular_1.14.0       GenomeInfoDbData_1.2.9   
+#> [59] patchwork_1.2.0           ggbeeswarm_0.7.2         
+#> [61] Rcpp_1.0.14               reticulate_1.42.0        
+#> [63] viridis_0.6.5             lifecycle_1.0.4          
+#> [65] yaml_2.3.10               MASS_7.3-58.2            
+#> [67] zlibbioc_1.44.0           grid_4.2.3               
+#> [69] ggrepel_0.9.5             parallel_4.2.3           
+#> [71] lattice_0.22-6            beachmat_2.14.2          
+#> [73] splines_4.2.3             knitr_1.50               
+#> [75] pillar_1.10.2             boot_1.3-30              
+#> [77] codetools_0.2-20          ScaledMatrix_1.6.0       
+#> [79] glue_1.8.0                evaluate_1.0.3           
+#> [81] BiocManager_1.30.25       png_0.1-8                
+#> [83] vctrs_0.6.5               nloptr_2.2.1             
+#> [85] gtable_0.3.6              assertthat_0.2.1         
+#> [87] cachem_1.1.0              xfun_0.52                
+#> [89] rsvd_1.0.5                ragg_1.5.0               
+#> [91] viridisLite_0.4.2         tibble_3.2.1             
+#> [93] pbmcapply_1.5.1           glmmTMB_1.1.9            
+#> [95] memoise_2.0.1             beeswarm_0.4.0           
+#> [97] here_1.0.1
 ```

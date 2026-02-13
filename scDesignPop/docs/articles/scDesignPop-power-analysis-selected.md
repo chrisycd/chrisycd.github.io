@@ -3,13 +3,17 @@
 ## Introduction
 
 scDesignPop provides power analysis tools at cell-type-specific level.
-The tutorial here is about how to conduct the power analysis for
-selected genes using the expression count data.
+The tutorial here provides two options to perform power analyis using
+scDesignPop: 1) first fit the marginal models for selected genes and
+then conduct power analysis or 2) conduct the power analysis directly on
+the previous marginal models if users have already done synthetic
+dataset generation. For the second option, users can skip the Library
+and data preparation and Fitting the marginal model sections.
 
 ## Library and data preparation
 
-Given raw count data, scDesignPop can also perform simulation-based
-power analysis for a specific gene-SNP pair across cell types from the
+Given raw count data, scDesignPop can perform simulation-based power
+analysis for a specific gene-SNP pair across cell types from the
 expression count data. A list of data is required as input. This is done
 using the `constructDataPop` function. A `SingleCellExperiment` object
 and an `eqtlgeno` dataframe are the two main inputs needed. The
@@ -21,6 +25,7 @@ structure of an example `eqtlgeno` dataframe is given below.
 ``` r
 library(scDesignPop)
 library(SingleCellExperiment)
+
 data("example_sce")
 data("example_eqtlgeno")
 example_sce_sel <- example_sce[c("ENSG00000163221","ENSG00000135218"),]
@@ -37,7 +42,7 @@ data_list_sel <- constructDataPop(
     sampid_vec = NULL,
     copula_variable = "cell_type",
     slot_name = "counts",
-    snp_model = "single",
+    snp_mode = "single",
     celltype_colname = "cell_type",
     feature_colname = "gene_id",
     snp_colname = "snp_id",
@@ -98,6 +103,39 @@ calculate power with a higher resolution. Using `power_nsim = 100` in
 default or smaller values can reduce the computation time cost.
 
 ``` r
+summary(marginal_list_sel[["ENSG00000163221"]]$fit)
+#>  Family: nbinom2  ( log )
+#> Formula:          
+#> response ~ (1 | indiv) + cell_type + `1:153337943` + `1:153337943`:cell_type
+#> Data: res_list[["dmat_df"]]
+#> 
+#>      AIC      BIC   logLik deviance df.resid 
+#>  11088.7  11158.3  -5534.4  11068.7     7801 
+#> 
+#> Random effects:
+#> 
+#> Conditional model:
+#>  Groups Name        Variance Std.Dev.
+#>  indiv  (Intercept) 0.08141  0.2853  
+#> Number of obs: 7811, groups:  indiv, 40
+#> 
+#> Dispersion parameter for nbinom2 family (): 1.15 
+#> 
+#> Conditional model:
+#>                               Estimate Std. Error z value Pr(>|z|)    
+#> (Intercept)                    1.80392    0.07763  23.237   <2e-16 ***
+#> cell_typemononc               -4.65391    0.22215 -20.949   <2e-16 ***
+#> cell_typebmem                 -5.96487    0.31401 -18.996   <2e-16 ***
+#> cell_typecd4nc                -6.44683    0.22816 -28.256   <2e-16 ***
+#> `1:153337943`                 -0.02273    0.08603  -0.264    0.792    
+#> cell_typemononc:`1:153337943` -0.15160    0.27980  -0.542    0.588    
+#> cell_typebmem:`1:153337943`   -0.55004    0.39328  -1.399    0.162    
+#> cell_typecd4nc:`1:153337943`  -0.16812    0.29164  -0.576    0.564    
+#> ---
+#> Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+```
+
+``` r
 set.seed(123)
 power_data <- runPowerAnalysis(marginal_list = marginal_list_sel,
                                marginal_model = "nb",
@@ -143,7 +181,7 @@ visualizePowerCurve(power_result = power_data,
                     snpid = "1:153337943")
 ```
 
-![](scDesignPop-power-analysis-selected_files/figure-html/unnamed-chunk-6-1.png)
+![](scDesignPop-power-analysis-selected_files/figure-html/unnamed-chunk-7-1.png)
 
 By swaping the x and y axis, we can show the result in a different way.
 
@@ -157,7 +195,7 @@ visualizePowerCurve(power_result = power_data,
                     snpid = "1:153337943")
 ```
 
-![](scDesignPop-power-analysis-selected_files/figure-html/unnamed-chunk-7-1.png)
+![](scDesignPop-power-analysis-selected_files/figure-html/unnamed-chunk-8-1.png)
 
 To better visualize the optimal study design, alternatively, power
 results can be shown in heatmaps across different study designs using
@@ -176,4 +214,4 @@ visualizePowerHeatmap(power_result = power_data,
                       base_size    = 12)
 ```
 
-![](scDesignPop-power-analysis-selected_files/figure-html/unnamed-chunk-8-1.png)
+![](scDesignPop-power-analysis-selected_files/figure-html/unnamed-chunk-9-1.png)

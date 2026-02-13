@@ -5,12 +5,12 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Modify eQTL effect for eGenes / non-eGenes • scDesignPop</title>
+<title>Parallelization options in scDesignPop • scDesignPop</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Modify eQTL effect for eGenes / non-eGenes">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Parallelization options in scDesignPop">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">scDesignPop</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9010</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9009</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -39,6 +39,7 @@
     <li><a class="dropdown-item" href="../articles/scDesignPop-dynamic-eQTL-NL.html">Model nonlinear dynamic eQTL effects in continuous cell states</a></li>
     <li><a class="dropdown-item" href="../articles/scDesignPop-dynamic-eQTL.html">Model linear dynamic eQTL effects in continuous cell states</a></li>
     <li><a class="dropdown-item" href="../articles/scDesignPop-modify-eQTL-effects.html">Modify eQTL effect for eGenes / non-eGenes</a></li>
+    <li><a class="dropdown-item" href="../articles/scDesignPop-parallelization.html">Parallelization options in scDesignPop</a></li>
     <li><a class="dropdown-item" href="../articles/scDesignPop-power-analysis-ES-specification.html">Power analysis based on user specified eQTL effect sizes</a></li>
     <li><a class="dropdown-item" href="../articles/scDesignPop-power-analysis-selected.html">Power analysis for selected genes</a></li>
     <li><a class="dropdown-item" href="../articles/scDesignPop-trans-eQTL.html">Modeling trans-eQTL effect using public data</a></li>
@@ -63,7 +64,7 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
 
-      <h1>Modify eQTL effect for eGenes / non-eGenes</h1>
+      <h1>Parallelization options in scDesignPop</h1>
                         <h4 data-toc-skip class="author">Chris Dong</h4>
             <address class="author_afil">
       Department of Statistics and Data Science, University of
@@ -77,10 +78,10 @@ Cen</h4>
 Los Angeles<br><a class="author_email" href="mailto:#"></a><a href="mailto:yihuicen@g.ucla.edu" class="email">yihuicen@g.ucla.edu</a>
       </address>
                   
-            <h4 data-toc-skip class="date">13 February 2026</h4>
+            <h4 data-toc-skip class="date">8 February 2026</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/chrisycd/scDesignPop/blob/HEAD/vignettes/scDesignPop-modify-eQTL-effects.Rmd"><code>vignettes/scDesignPop-modify-eQTL-effects.Rmd</code></a></small>
-      <div class="d-none name"><code>scDesignPop-modify-eQTL-effects.Rmd</code></div>
+      <small class="dont-index">Source: <a href="https://github.com/chrisycd/scDesignPop/blob/HEAD/vignettes/scDesignPop-parallelization.Rmd"><code>vignettes/scDesignPop-parallelization.Rmd</code></a></small>
+      <div class="d-none name"><code>scDesignPop-parallelization.Rmd</code></div>
     </div>
 
     
@@ -94,9 +95,11 @@ pre {
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
-<p>scDesignPop enables user-specified modification of eQTL effect sizes,
-allowing systematic benchmarking of various eQTL mapping methods with
-different ground truth.</p>
+<p>scDesignPop provides four different parallelization options:
+“pbmcapply”, “future.apply”, “parallel”, “biocparallel”. In this
+tutorial, we take <code><a href="../reference/fitMarginalPop.html">fitMarginalPop()</a></code> function as example, to
+show how parameter should be specifed for each of the parallel
+options.</p>
 </div>
 <div class="section level2">
 <h2 id="library-and-data-preparation">Library and data preparation<a class="anchor" aria-label="anchor" href="#library-and-data-preparation"></a>
@@ -175,100 +178,6 @@ provides 2826 putative cell-type-specific eQTLs.</p>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"example_sce"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"example_eqtlgeno"</span><span class="op">)</span></span></code></pre></div>
-</div>
-<div class="section level2">
-<h2 id="model-fitting">Model fitting<a class="anchor" aria-label="anchor" href="#model-fitting"></a>
-</h2>
-<div class="section level3">
-<h3 id="step-1-construct-a-data-list">Step 1: construct a data list<a class="anchor" aria-label="anchor" href="#step-1-construct-a-data-list"></a>
-</h3>
-<p>To run scDesignPop, a list of data is required as input. This is done
-using the <code>constructDataPop</code> function. A
-<code>SingleCellExperiment</code> object and an <code>eqtlgeno</code>
-dataframe are the two main inputs needed. The <code>eqtlgeno</code>
-dataframe consists of eQTL annotations (it must have cell state, gene,
-SNP, chromosome, and position columns at a minimum), and genotypes
-across individuals (columns) for every SNP (rows). The structure of an
-example <code>eqtlgeno</code> dataframe is given below.</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">data_list</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/constructDataPop.html">constructDataPop</a></span><span class="op">(</span></span>
-<span>    sce <span class="op">=</span> <span class="va">example_sce</span>,</span>
-<span>    eqtlgeno_df <span class="op">=</span> <span class="va">example_eqtlgeno</span>,</span>
-<span>    new_covariate <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></span><span class="op">(</span><span class="va">example_sce</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>    overlap_features <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>    sampid_vec <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>    copula_variable <span class="op">=</span> <span class="st">"cell_type"</span>,</span>
-<span>    slot_name <span class="op">=</span> <span class="st">"counts"</span>,</span>
-<span>    snp_mode <span class="op">=</span> <span class="st">"single"</span>,</span>
-<span>    celltype_colname <span class="op">=</span> <span class="st">"cell_type"</span>,</span>
-<span>    feature_colname <span class="op">=</span> <span class="st">"gene_id"</span>,</span>
-<span>    snp_colname <span class="op">=</span> <span class="st">"snp_id"</span>,</span>
-<span>    loc_colname <span class="op">=</span> <span class="st">"POS"</span>,</span>
-<span>    chrom_colname <span class="op">=</span> <span class="st">"CHR"</span>,</span>
-<span>    indiv_colname <span class="op">=</span> <span class="st">"indiv"</span>,</span>
-<span>    prune_thres <span class="op">=</span> <span class="fl">0.9</span></span>
-<span>    <span class="op">)</span></span>
-<span><span class="co">#&gt; Constructing eqtlgeno list...</span></span></code></pre></div>
-</div>
-<div class="section level3">
-<h3 id="step-2-fit-marginal-model">Step 2: fit marginal model<a class="anchor" aria-label="anchor" href="#step-2-fit-marginal-model"></a>
-</h3>
-<p>Next, a marginal model is specified to fit each gene using the
-<code>fitMarginalPop</code> function.<br>
-Here we use a Negative Binominal as the parametric model using
-<code>"nb"</code>, and we specify
-<code>mean_formula = "(1|indiv) + cell_type</code>.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">marginal_list_sel</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fitMarginalPop.html">fitMarginalPop</a></span><span class="op">(</span></span>
-<span>    data_list <span class="op">=</span> <span class="va">data_list</span>,</span>
-<span>    mean_formula <span class="op">=</span> <span class="st">"(1|indiv) + cell_type"</span>,</span>
-<span>    model_family <span class="op">=</span> <span class="st">"nb"</span>,</span>
-<span>    interact_colnames <span class="op">=</span> <span class="st">"cell_type"</span>,</span>
-<span>    parallelization <span class="op">=</span> <span class="st">"pbmcapply"</span>,</span>
-<span>    n_threads <span class="op">=</span> <span class="fl">20L</span>,</span>
-<span>    loc_colname <span class="op">=</span> <span class="st">"POS"</span>,</span>
-<span>    snp_colname <span class="op">=</span> <span class="st">"snp_id"</span>,</span>
-<span>    celltype_colname <span class="op">=</span> <span class="st">"cell_type"</span>,</span>
-<span>    indiv_colname <span class="op">=</span> <span class="st">"indiv"</span>,</span>
-<span>    filter_snps <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>    snpvar_thres <span class="op">=</span> <span class="fl">0</span>,</span>
-<span>    force_formula <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>    data_maxsize <span class="op">=</span> <span class="fl">1</span></span>
-<span>    <span class="op">)</span></span></code></pre></div>
-</div>
-</div>
-<div class="section level2">
-<h2 id="modifying-eqtl-effects">Modifying eQTL effects<a class="anchor" aria-label="anchor" href="#modifying-eqtl-effects"></a>
-</h2>
-<p>To modify the eQTL effects fitted, we use the
-<code>modifyMarginalModels</code> function.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">marginal_mod</span> <span class="op">&lt;-</span> <span class="fu">scDesignPop</span><span class="fu">::</span><span class="fu"><a href="../reference/modifyMarginalModels.html">modifyMarginalModels</a></span><span class="op">(</span></span>
-<span>  marginal_list <span class="op">=</span> <span class="va">marginal_list_sel</span><span class="op">[</span><span class="st">"ENSG00000163221"</span><span class="op">]</span>,</span>
-<span>  eqtlgeno_list <span class="op">=</span> <span class="va">data_list</span><span class="op">[[</span><span class="st">"eqtl_geno_list"</span><span class="op">]</span><span class="op">]</span>,</span>
-<span>  features <span class="op">=</span> <span class="st">"ENSG00000163221"</span>,</span>
-<span>  celltype <span class="op">=</span> <span class="st">"cd4nc"</span>,</span>
-<span>  mean_log2fc <span class="op">=</span> <span class="fl">0</span>,</span>
-<span>  eqtl_log2fc <span class="op">=</span> <span class="fl">2</span>,</span>
-<span>  neg_ctrl <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  mean_baseline <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  eqtl_baseline <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  mean_baseline_only <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  eqtl_baseline_only <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  disp_scaling <span class="op">=</span> <span class="st">"linear"</span>,</span>
-<span>  celltype_colname <span class="op">=</span> <span class="st">"cell_type"</span>,</span>
-<span>  snp_colname <span class="op">=</span> <span class="st">"snp_id"</span>,</span>
-<span>  verbose <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  debug <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  mod_scale <span class="op">=</span> <span class="st">"link"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Modifying parameters for ENSG00000163221 in cd4nc celltype...</span></span>
-<span><span class="co">#&gt; Per-allele link-scale eQTL effect: -0.19084 ===&gt; 0.00000</span></span>
-<span><span class="co">#&gt; celltype effect: -6.44683 ===&gt; new value: -6.63767</span></span>
-<span><span class="co">#&gt; interaction effect: -0.16812 ===&gt; new value: 0.02273</span></span>
-<span><span class="co">#&gt; &lt;&lt; Setting conditional means to be negative controls (no eQTL effect) &gt;&gt;</span></span>
-<span><span class="co">#&gt; conditional means at geno 0,1,2: 0.00963, 0.00796, 0.00657 ===&gt; 0.00796, 0.00796, 0.00796</span></span>
-<span><span class="co">#&gt; eQTL slope between geno 1 and 0: -0.00167 ===&gt; new value: 0.00000</span></span>
-<span><span class="co">#&gt; Phi parameter: 1.14919 ===&gt; new value: 1.14919</span></span></code></pre></div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
