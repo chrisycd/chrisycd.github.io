@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">scDesignPop</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9010</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9012</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -39,6 +39,7 @@
     <li><a class="dropdown-item" href="../articles/scDesignPop-dynamic-eQTL-NL.html">Model nonlinear dynamic eQTL effects in continuous cell states</a></li>
     <li><a class="dropdown-item" href="../articles/scDesignPop-dynamic-eQTL.html">Model linear dynamic eQTL effects in continuous cell states</a></li>
     <li><a class="dropdown-item" href="../articles/scDesignPop-modify-eQTL-effects.html">Modify eQTL effect for eGenes / non-eGenes</a></li>
+    <li><a class="dropdown-item" href="../articles/scDesignPop-parallelization-reproducibility.html">Parallel computing and reproducibility in scDesignPop</a></li>
     <li><a class="dropdown-item" href="../articles/scDesignPop-power-analysis-ES-specification.html">Power analysis based on user specified eQTL effect sizes</a></li>
     <li><a class="dropdown-item" href="../articles/scDesignPop-power-analysis-selected.html">Power analysis for selected genes</a></li>
     <li><a class="dropdown-item" href="../articles/scDesignPop-trans-eQTL.html">Modeling trans-eQTL effect using public data</a></li>
@@ -49,7 +50,7 @@
 <li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json">
 </form></li>
-<li class="nav-item"><a class="nav-link" href="https://github.com/chrisycd/scDesignPop/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/chrisycd/scDesignPop/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
       </ul>
 </div>
 
@@ -77,9 +78,9 @@ Cen</h4>
 Los Angeles<br><a class="author_email" href="mailto:#"></a><a href="mailto:yihuicen@g.ucla.edu" class="email">yihuicen@g.ucla.edu</a>
       </address>
                   
-            <h4 data-toc-skip class="date">13 February 2026</h4>
+            <h4 data-toc-skip class="date">28 May 2026</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/chrisycd/scDesignPop/blob/HEAD/vignettes/scDesignPop-celltype-prop-modeling.Rmd"><code>vignettes/scDesignPop-celltype-prop-modeling.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/chrisycd/scDesignPop/blob/HEAD/vignettes/scDesignPop-celltype-prop-modeling.Rmd" class="external-link"><code>vignettes/scDesignPop-celltype-prop-modeling.Rmd</code></a></small>
       <div class="d-none name"><code>scDesignPop-celltype-prop-modeling.Rmd</code></div>
     </div>
 
@@ -107,71 +108,12 @@ genotype PCs of the training <code>example_sce</code> data and those of
 the new simulated individuals.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">SingleCellExperiment</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Loading required package: SummarizedExperiment</span></span>
-<span><span class="co">#&gt; Loading required package: MatrixGenerics</span></span>
-<span><span class="co">#&gt; Loading required package: matrixStats</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Attaching package: 'MatrixGenerics'</span></span>
-<span><span class="co">#&gt; The following objects are masked from 'package:matrixStats':</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;     colAlls, colAnyNAs, colAnys, colAvgsPerRowSet, colCollapse,</span></span>
-<span><span class="co">#&gt;     colCounts, colCummaxs, colCummins, colCumprods, colCumsums,</span></span>
-<span><span class="co">#&gt;     colDiffs, colIQRDiffs, colIQRs, colLogSumExps, colMadDiffs,</span></span>
-<span><span class="co">#&gt;     colMads, colMaxs, colMeans2, colMedians, colMins, colOrderStats,</span></span>
-<span><span class="co">#&gt;     colProds, colQuantiles, colRanges, colRanks, colSdDiffs, colSds,</span></span>
-<span><span class="co">#&gt;     colSums2, colTabulates, colVarDiffs, colVars, colWeightedMads,</span></span>
-<span><span class="co">#&gt;     colWeightedMeans, colWeightedMedians, colWeightedSds,</span></span>
-<span><span class="co">#&gt;     colWeightedVars, rowAlls, rowAnyNAs, rowAnys, rowAvgsPerColSet,</span></span>
-<span><span class="co">#&gt;     rowCollapse, rowCounts, rowCummaxs, rowCummins, rowCumprods,</span></span>
-<span><span class="co">#&gt;     rowCumsums, rowDiffs, rowIQRDiffs, rowIQRs, rowLogSumExps,</span></span>
-<span><span class="co">#&gt;     rowMadDiffs, rowMads, rowMaxs, rowMeans2, rowMedians, rowMins,</span></span>
-<span><span class="co">#&gt;     rowOrderStats, rowProds, rowQuantiles, rowRanges, rowRanks,</span></span>
-<span><span class="co">#&gt;     rowSdDiffs, rowSds, rowSums2, rowTabulates, rowVarDiffs, rowVars,</span></span>
-<span><span class="co">#&gt;     rowWeightedMads, rowWeightedMeans, rowWeightedMedians,</span></span>
-<span><span class="co">#&gt;     rowWeightedSds, rowWeightedVars</span></span>
-<span><span class="co">#&gt; Loading required package: GenomicRanges</span></span>
-<span><span class="co">#&gt; Loading required package: stats4</span></span>
-<span><span class="co">#&gt; Loading required package: BiocGenerics</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Attaching package: 'BiocGenerics'</span></span>
-<span><span class="co">#&gt; The following objects are masked from 'package:stats':</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;     IQR, mad, sd, var, xtabs</span></span>
-<span><span class="co">#&gt; The following objects are masked from 'package:base':</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;     anyDuplicated, aperm, append, as.data.frame, basename, cbind,</span></span>
-<span><span class="co">#&gt;     colnames, dirname, do.call, duplicated, eval, evalq, Filter, Find,</span></span>
-<span><span class="co">#&gt;     get, grep, grepl, intersect, is.unsorted, lapply, Map, mapply,</span></span>
-<span><span class="co">#&gt;     match, mget, order, paste, pmax, pmax.int, pmin, pmin.int,</span></span>
-<span><span class="co">#&gt;     Position, rank, rbind, Reduce, rownames, sapply, setdiff, sort,</span></span>
-<span><span class="co">#&gt;     table, tapply, union, unique, unsplit, which.max, which.min</span></span>
-<span><span class="co">#&gt; Loading required package: S4Vectors</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Attaching package: 'S4Vectors'</span></span>
-<span><span class="co">#&gt; The following objects are masked from 'package:base':</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;     expand.grid, I, unname</span></span>
-<span><span class="co">#&gt; Loading required package: IRanges</span></span>
-<span><span class="co">#&gt; Loading required package: GenomeInfoDb</span></span>
-<span><span class="co">#&gt; Loading required package: Biobase</span></span>
-<span><span class="co">#&gt; Welcome to Bioconductor</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;     Vignettes contain introductory material; view with</span></span>
-<span><span class="co">#&gt;     'browseVignettes()'. To cite Bioconductor, see</span></span>
-<span><span class="co">#&gt;     'citation("Biobase")', and for packages 'citation("pkgname")'.</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Attaching package: 'Biobase'</span></span>
-<span><span class="co">#&gt; The following object is masked from 'package:MatrixGenerics':</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;     rowMedians</span></span>
-<span><span class="co">#&gt; The following objects are masked from 'package:matrixStats':</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;     anyMissing, rowMedians</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/chrisycd/scDesignPop">scDesignPop</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/chrisycd/scDesignPop" class="external-link">scDesignPop</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"example_sce"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"example_genopc_train"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"example_genopc_new"</span><span class="op">)</span></span>
-<span><span class="va">othercov_new</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">example_genopc_new</span>, <span class="va">indiv</span><span class="op">)</span></span>
+<span><span class="va">othercov_new</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">example_genopc_new</span>, <span class="va">indiv</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">example_genopc_train</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 31</span></span></span>
@@ -212,16 +154,17 @@ individuals with a log-normal distribution. Here,
 individual ids in both the <code>colData(example_sce)</code> and
 <code>genopc_train</code>. We use <code>celltype_colname</code> to
 specify the column name for the cell states or cell types in
-<code>colData(example_sce)</code>.</p>
+<code>colData(example_sce)</code>. Here, we input
+<code>othercov_new</code> to specify individual ids of the simulated
+test data.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span></span>
-<span><span class="va">simu_cellprop_list</span> <span class="op">&lt;-</span> <span class="fu">scDesignPop</span><span class="fu">::</span><span class="fu"><a href="../reference/simuCellProportion.html">simuCellProportion</a></span><span class="op">(</span></span>
+<span><span class="va">simu_cellprop_list</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/simuCellProportion.html">simuCellProportion</a></span><span class="op">(</span></span>
 <span>  sce <span class="op">=</span> <span class="va">example_sce</span>,</span>
 <span>  genoPC <span class="op">=</span> <span class="va">example_genopc_train</span>,</span>
 <span>  new_genoPC <span class="op">=</span> <span class="va">example_genopc_new</span>,</span>
 <span>  new_othercov <span class="op">=</span> <span class="va">othercov_new</span>,</span>
 <span>  PCnum <span class="op">=</span> <span class="fl">30L</span>,</span>
-<span>  cov_colnames <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  indiv_colname <span class="op">=</span> <span class="st">"indiv"</span>,</span>
 <span>  celltype_colname <span class="op">=</span> <span class="st">"cell_type"</span>,</span>
 <span>  cn_model_family <span class="op">=</span> <span class="st">"lognormal"</span>,    <span class="co"># cell number model</span></span>
@@ -239,12 +182,12 @@ given to the <code>new_covariate</code> parameter in function
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">simu_cellprop_list</span><span class="op">[[</span><span class="st">"simu_cov"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
 <span><span class="co">#&gt;                    cell_type     indiv</span></span>
-<span><span class="co">#&gt; simcell1_NEW_SAMP1     monoc NEW_SAMP1</span></span>
-<span><span class="co">#&gt; simcell2_NEW_SAMP1     monoc NEW_SAMP1</span></span>
-<span><span class="co">#&gt; simcell3_NEW_SAMP1     monoc NEW_SAMP1</span></span>
-<span><span class="co">#&gt; simcell4_NEW_SAMP1     monoc NEW_SAMP1</span></span>
-<span><span class="co">#&gt; simcell5_NEW_SAMP1     monoc NEW_SAMP1</span></span>
-<span><span class="co">#&gt; simcell6_NEW_SAMP1     monoc NEW_SAMP1</span></span></code></pre></div>
+<span><span class="co">#&gt; simcell1_NEW_SAMP1      bmem NEW_SAMP1</span></span>
+<span><span class="co">#&gt; simcell2_NEW_SAMP1      bmem NEW_SAMP1</span></span>
+<span><span class="co">#&gt; simcell3_NEW_SAMP1      bmem NEW_SAMP1</span></span>
+<span><span class="co">#&gt; simcell4_NEW_SAMP1      bmem NEW_SAMP1</span></span>
+<span><span class="co">#&gt; simcell5_NEW_SAMP1      bmem NEW_SAMP1</span></span>
+<span><span class="co">#&gt; simcell6_NEW_SAMP2      bmem NEW_SAMP2</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="visualizing-the-cell-type-proportion-structures">Visualizing the cell type proportion structures<a class="anchor" aria-label="anchor" href="#visualizing-the-cell-type-proportion-structures"></a>
@@ -266,14 +209,14 @@ types of the given data.</p>
 <span><span class="op">)</span></span>
 <span></span>
 <span></span>
-<span><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu">scDesignPop</span><span class="fu">::</span><span class="fu"><a href="../reference/plotCellProp.html">plotCellProp</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></span><span class="op">(</span><span class="va">example_sce</span><span class="op">)</span>, </span>
+<span><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plotCellProp.html">plotCellProp</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></span><span class="op">(</span><span class="va">example_sce</span><span class="op">)</span>, </span>
 <span>                   title <span class="op">=</span> <span class="st">"Original 40 individuals"</span>,</span>
 <span>                   color_vec <span class="op">=</span> <span class="va">color_vec</span>, </span>
 <span>                   celltype_colname <span class="op">=</span> <span class="st">"cell_type"</span>,</span>
 <span>                   indiv_colname <span class="op">=</span> <span class="st">"indiv"</span>,</span>
 <span>                   width <span class="op">=</span> <span class="fl">1</span>, linewidth <span class="op">=</span> <span class="fl">0.02</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu">scDesignPop</span><span class="fu">::</span><span class="fu"><a href="../reference/plotCellProp.html">plotCellProp</a></span><span class="op">(</span><span class="va">simu_cellprop_list</span><span class="op">[[</span><span class="st">"simu_cov"</span><span class="op">]</span><span class="op">]</span>, </span>
+<span><span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plotCellProp.html">plotCellProp</a></span><span class="op">(</span><span class="va">simu_cellprop_list</span><span class="op">[[</span><span class="st">"simu_cov"</span><span class="op">]</span><span class="op">]</span>, </span>
 <span>                   title <span class="op">=</span> <span class="st">"Simulated 982 individuals"</span>,</span>
 <span>                   color_vec <span class="op">=</span> <span class="va">color_vec</span>, </span>
 <span>                   celltype_colname <span class="op">=</span> <span class="st">"cell_type"</span>,</span>
@@ -283,6 +226,66 @@ types of the given data.</p>
 <span></span>
 <span><span class="fu">cowplot</span><span class="fu">::</span><span class="fu"><a href="https://wilkelab.org/cowplot/reference/plot_grid.html" class="external-link">plot_grid</a></span><span class="op">(</span><span class="va">p1</span>, <span class="va">p2</span><span class="op">)</span></span></code></pre></div>
 <p><img src="scDesignPop-celltype-prop-modeling_files/figure-html/unnamed-chunk-5-1.png" class="r-plt" width="700"></p>
+</div>
+<div class="section level2">
+<h2 id="session-information">Session information<a class="anchor" aria-label="anchor" href="#session-information"></a>
+</h2>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; R version 4.2.3 (2023-03-15)</span></span>
+<span><span class="co">#&gt; Platform: x86_64-pc-linux-gnu (64-bit)</span></span>
+<span><span class="co">#&gt; Running under: Ubuntu 22.04.5 LTS</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Matrix products: default</span></span>
+<span><span class="co">#&gt; BLAS:   /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3</span></span>
+<span><span class="co">#&gt; LAPACK: /usr/lib/x86_64-linux-gnu/openblas-pthread/libopenblasp-r0.3.20.so</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; locale:</span></span>
+<span><span class="co">#&gt;  [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              </span></span>
+<span><span class="co">#&gt;  [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    </span></span>
+<span><span class="co">#&gt;  [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   </span></span>
+<span><span class="co">#&gt;  [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 </span></span>
+<span><span class="co">#&gt;  [9] LC_ADDRESS=C               LC_TELEPHONE=C            </span></span>
+<span><span class="co">#&gt; [11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; attached base packages:</span></span>
+<span><span class="co">#&gt; [1] stats4    stats     graphics  grDevices utils     datasets  methods  </span></span>
+<span><span class="co">#&gt; [8] base     </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; other attached packages:</span></span>
+<span><span class="co">#&gt;  [1] cowplot_1.1.3               dplyr_1.1.4                </span></span>
+<span><span class="co">#&gt;  [3] scDesignPop_0.0.0.9012      SingleCellExperiment_1.20.1</span></span>
+<span><span class="co">#&gt;  [5] SummarizedExperiment_1.28.0 Biobase_2.58.0             </span></span>
+<span><span class="co">#&gt;  [7] GenomicRanges_1.50.2        GenomeInfoDb_1.34.9        </span></span>
+<span><span class="co">#&gt;  [9] IRanges_2.32.0              S4Vectors_0.36.2           </span></span>
+<span><span class="co">#&gt; [11] BiocGenerics_0.44.0         MatrixGenerics_1.10.0      </span></span>
+<span><span class="co">#&gt; [13] matrixStats_1.1.0           BiocStyle_2.26.0           </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; loaded via a namespace (and not attached):</span></span>
+<span><span class="co">#&gt;  [1] sass_0.4.10            jsonlite_2.0.0         splines_4.2.3         </span></span>
+<span><span class="co">#&gt;  [4] bslib_0.9.0            assertthat_0.2.1       MGLM_0.2.1            </span></span>
+<span><span class="co">#&gt;  [7] BiocManager_1.30.25    GenomeInfoDbData_1.2.9 yaml_2.3.10           </span></span>
+<span><span class="co">#&gt; [10] numDeriv_2016.8-1.1    pillar_1.10.2          lattice_0.22-6        </span></span>
+<span><span class="co">#&gt; [13] glue_1.8.0             digest_0.6.37          RColorBrewer_1.1-3    </span></span>
+<span><span class="co">#&gt; [16] XVector_0.38.0         glmmTMB_1.1.9          minqa_1.2.8           </span></span>
+<span><span class="co">#&gt; [19] htmltools_0.5.8.1      Matrix_1.6-5           pkgconfig_2.0.3       </span></span>
+<span><span class="co">#&gt; [22] bookdown_0.43          zlibbioc_1.44.0        scales_1.4.0          </span></span>
+<span><span class="co">#&gt; [25] lme4_1.1-35.3          tibble_3.2.1           mgcv_1.9-1            </span></span>
+<span><span class="co">#&gt; [28] generics_0.1.4         farver_2.1.2           ggplot2_3.5.2         </span></span>
+<span><span class="co">#&gt; [31] cachem_1.1.0           withr_3.0.2            TMB_1.9.11            </span></span>
+<span><span class="co">#&gt; [34] cli_3.6.5              magrittr_2.0.3         evaluate_1.0.3        </span></span>
+<span><span class="co">#&gt; [37] fs_1.6.6               nlme_3.1-164           MASS_7.3-58.2         </span></span>
+<span><span class="co">#&gt; [40] textshaping_0.4.0      tools_4.2.3            lifecycle_1.0.4       </span></span>
+<span><span class="co">#&gt; [43] DelayedArray_0.24.0    irlba_2.3.5.1          compiler_4.2.3        </span></span>
+<span><span class="co">#&gt; [46] pkgdown_2.2.0          jquerylib_0.1.4        systemfonts_1.2.3     </span></span>
+<span><span class="co">#&gt; [49] rlang_1.1.6            grid_4.2.3             RCurl_1.98-1.17       </span></span>
+<span><span class="co">#&gt; [52] nloptr_2.2.1           rstudioapi_0.17.1      htmlwidgets_1.6.4     </span></span>
+<span><span class="co">#&gt; [55] labeling_0.4.3         bitops_1.0-9           rmarkdown_2.27        </span></span>
+<span><span class="co">#&gt; [58] boot_1.3-30            gtable_0.3.6           R6_2.6.1              </span></span>
+<span><span class="co">#&gt; [61] knitr_1.50             fastmap_1.2.0          uwot_0.2.3            </span></span>
+<span><span class="co">#&gt; [64] utf8_1.2.5             ragg_1.5.0             desc_1.4.3            </span></span>
+<span><span class="co">#&gt; [67] parallel_4.2.3         Rcpp_1.0.14            vctrs_0.6.5           </span></span>
+<span><span class="co">#&gt; [70] tidyselect_1.2.1       xfun_0.52</span></span></code></pre></div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

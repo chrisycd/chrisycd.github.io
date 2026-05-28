@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">scDesignPop</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9010</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9012</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -39,6 +39,7 @@
     <li><a class="dropdown-item" href="../articles/scDesignPop-dynamic-eQTL-NL.html">Model nonlinear dynamic eQTL effects in continuous cell states</a></li>
     <li><a class="dropdown-item" href="../articles/scDesignPop-dynamic-eQTL.html">Model linear dynamic eQTL effects in continuous cell states</a></li>
     <li><a class="dropdown-item" href="../articles/scDesignPop-modify-eQTL-effects.html">Modify eQTL effect for eGenes / non-eGenes</a></li>
+    <li><a class="dropdown-item" href="../articles/scDesignPop-parallelization-reproducibility.html">Parallel computing and reproducibility in scDesignPop</a></li>
     <li><a class="dropdown-item" href="../articles/scDesignPop-power-analysis-ES-specification.html">Power analysis based on user specified eQTL effect sizes</a></li>
     <li><a class="dropdown-item" href="../articles/scDesignPop-power-analysis-selected.html">Power analysis for selected genes</a></li>
     <li><a class="dropdown-item" href="../articles/scDesignPop-trans-eQTL.html">Modeling trans-eQTL effect using public data</a></li>
@@ -49,7 +50,7 @@
 <li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json">
 </form></li>
-<li class="nav-item"><a class="nav-link" href="https://github.com/chrisycd/scDesignPop/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/chrisycd/scDesignPop/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
       </ul>
 </div>
 
@@ -77,9 +78,9 @@ Cen</h4>
 Los Angeles<br><a class="author_email" href="mailto:#"></a><a href="mailto:yihuicen@g.ucla.edu" class="email">yihuicen@g.ucla.edu</a>
       </address>
                   
-            <h4 data-toc-skip class="date">13 February 2026</h4>
+            <h4 data-toc-skip class="date">28 May 2026</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/chrisycd/scDesignPop/blob/HEAD/vignettes/scDesignPop-modify-eQTL-effects.Rmd"><code>vignettes/scDesignPop-modify-eQTL-effects.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/chrisycd/scDesignPop/blob/HEAD/vignettes/scDesignPop-modify-eQTL-effects.Rmd" class="external-link"><code>vignettes/scDesignPop-modify-eQTL-effects.Rmd</code></a></small>
       <div class="d-none name"><code>scDesignPop-modify-eQTL-effects.Rmd</code></div>
     </div>
 
@@ -94,82 +95,30 @@ pre {
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
-<p>scDesignPop enables user-specified modification of eQTL effect sizes,
-allowing systematic benchmarking of various eQTL mapping methods with
-different ground truth.</p>
+<p>scDesignPop enables users to modify the estimated cell-type-specific
+eQTL effect sizes and generate realistic scRNA-seq data with altered
+ground truths. Such data allow downstream tasks such as systematic
+benchmarking various eQTL mapping methods with different ground
+truths.</p>
 </div>
 <div class="section level2">
-<h2 id="library-and-data-preparation">Library and data preparation<a class="anchor" aria-label="anchor" href="#library-and-data-preparation"></a>
+<h2 id="load-libraries-and-data">Load libraries and data<a class="anchor" aria-label="anchor" href="#load-libraries-and-data"></a>
 </h2>
 <p>Here, we use an example SingleCellExperiment object
-<code>example_sce</code> with 1000 genes and 7811 cells and an example
-eQTL genotype dataframe <code>example_eqtlgeno</code> to demonstrate the
-tutorial. These two objects contains the gene expression and SNP
-genotypes of 40 anonymized individuals while the eQTL genotype dataframe
-provides 2826 putative cell-type-specific eQTLs.</p>
+<code>example_sce</code> with
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>982</mn><annotation encoding="application/x-tex">982</annotation></semantics></math>
+genes and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>7998</mn><annotation encoding="application/x-tex">7998</annotation></semantics></math>
+cells and an example eQTL genotype dataframe
+<code>example_eqtlgeno</code> to demonstrate the tutorial. These two
+objects contains the gene expression and SNP genotypes of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>40</mn><annotation encoding="application/x-tex">40</annotation></semantics></math>
+anonymized individuals while the eQTL genotype dataframe provides
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2792</mn><annotation encoding="application/x-tex">2792</annotation></semantics></math>
+putative cell-type-specific eQTLs.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/chrisycd/scDesignPop">scDesignPop</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/chrisycd/scDesignPop" class="external-link">scDesignPop</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">SingleCellExperiment</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Loading required package: SummarizedExperiment</span></span>
-<span><span class="co">#&gt; Loading required package: MatrixGenerics</span></span>
-<span><span class="co">#&gt; Loading required package: matrixStats</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Attaching package: 'MatrixGenerics'</span></span>
-<span><span class="co">#&gt; The following objects are masked from 'package:matrixStats':</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;     colAlls, colAnyNAs, colAnys, colAvgsPerRowSet, colCollapse,</span></span>
-<span><span class="co">#&gt;     colCounts, colCummaxs, colCummins, colCumprods, colCumsums,</span></span>
-<span><span class="co">#&gt;     colDiffs, colIQRDiffs, colIQRs, colLogSumExps, colMadDiffs,</span></span>
-<span><span class="co">#&gt;     colMads, colMaxs, colMeans2, colMedians, colMins, colOrderStats,</span></span>
-<span><span class="co">#&gt;     colProds, colQuantiles, colRanges, colRanks, colSdDiffs, colSds,</span></span>
-<span><span class="co">#&gt;     colSums2, colTabulates, colVarDiffs, colVars, colWeightedMads,</span></span>
-<span><span class="co">#&gt;     colWeightedMeans, colWeightedMedians, colWeightedSds,</span></span>
-<span><span class="co">#&gt;     colWeightedVars, rowAlls, rowAnyNAs, rowAnys, rowAvgsPerColSet,</span></span>
-<span><span class="co">#&gt;     rowCollapse, rowCounts, rowCummaxs, rowCummins, rowCumprods,</span></span>
-<span><span class="co">#&gt;     rowCumsums, rowDiffs, rowIQRDiffs, rowIQRs, rowLogSumExps,</span></span>
-<span><span class="co">#&gt;     rowMadDiffs, rowMads, rowMaxs, rowMeans2, rowMedians, rowMins,</span></span>
-<span><span class="co">#&gt;     rowOrderStats, rowProds, rowQuantiles, rowRanges, rowRanks,</span></span>
-<span><span class="co">#&gt;     rowSdDiffs, rowSds, rowSums2, rowTabulates, rowVarDiffs, rowVars,</span></span>
-<span><span class="co">#&gt;     rowWeightedMads, rowWeightedMeans, rowWeightedMedians,</span></span>
-<span><span class="co">#&gt;     rowWeightedSds, rowWeightedVars</span></span>
-<span><span class="co">#&gt; Loading required package: GenomicRanges</span></span>
-<span><span class="co">#&gt; Loading required package: stats4</span></span>
-<span><span class="co">#&gt; Loading required package: BiocGenerics</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Attaching package: 'BiocGenerics'</span></span>
-<span><span class="co">#&gt; The following objects are masked from 'package:stats':</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;     IQR, mad, sd, var, xtabs</span></span>
-<span><span class="co">#&gt; The following objects are masked from 'package:base':</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;     anyDuplicated, aperm, append, as.data.frame, basename, cbind,</span></span>
-<span><span class="co">#&gt;     colnames, dirname, do.call, duplicated, eval, evalq, Filter, Find,</span></span>
-<span><span class="co">#&gt;     get, grep, grepl, intersect, is.unsorted, lapply, Map, mapply,</span></span>
-<span><span class="co">#&gt;     match, mget, order, paste, pmax, pmax.int, pmin, pmin.int,</span></span>
-<span><span class="co">#&gt;     Position, rank, rbind, Reduce, rownames, sapply, setdiff, sort,</span></span>
-<span><span class="co">#&gt;     table, tapply, union, unique, unsplit, which.max, which.min</span></span>
-<span><span class="co">#&gt; Loading required package: S4Vectors</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Attaching package: 'S4Vectors'</span></span>
-<span><span class="co">#&gt; The following objects are masked from 'package:base':</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;     expand.grid, I, unname</span></span>
-<span><span class="co">#&gt; Loading required package: IRanges</span></span>
-<span><span class="co">#&gt; Loading required package: GenomeInfoDb</span></span>
-<span><span class="co">#&gt; Loading required package: Biobase</span></span>
-<span><span class="co">#&gt; Welcome to Bioconductor</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;     Vignettes contain introductory material; view with</span></span>
-<span><span class="co">#&gt;     'browseVignettes()'. To cite Bioconductor, see</span></span>
-<span><span class="co">#&gt;     'citation("Biobase")', and for packages 'citation("pkgname")'.</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Attaching package: 'Biobase'</span></span>
-<span><span class="co">#&gt; The following object is masked from 'package:MatrixGenerics':</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;     rowMedians</span></span>
-<span><span class="co">#&gt; The following objects are masked from 'package:matrixStats':</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;     anyMissing, rowMedians</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://bioconductor.org/packages/SummarizedExperiment" class="external-link">SummarizedExperiment</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
 <span></span>
@@ -195,19 +144,11 @@ example <code>eqtlgeno</code> dataframe is given below.</p>
 <span>    sce <span class="op">=</span> <span class="va">example_sce</span>,</span>
 <span>    eqtlgeno_df <span class="op">=</span> <span class="va">example_eqtlgeno</span>,</span>
 <span>    new_covariate <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></span><span class="op">(</span><span class="va">example_sce</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>    overlap_features <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>    sampid_vec <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>    copula_variable <span class="op">=</span> <span class="st">"cell_type"</span>,</span>
 <span>    slot_name <span class="op">=</span> <span class="st">"counts"</span>,</span>
-<span>    snp_mode <span class="op">=</span> <span class="st">"single"</span>,</span>
-<span>    celltype_colname <span class="op">=</span> <span class="st">"cell_type"</span>,</span>
-<span>    feature_colname <span class="op">=</span> <span class="st">"gene_id"</span>,</span>
-<span>    snp_colname <span class="op">=</span> <span class="st">"snp_id"</span>,</span>
-<span>    loc_colname <span class="op">=</span> <span class="st">"POS"</span>,</span>
-<span>    chrom_colname <span class="op">=</span> <span class="st">"CHR"</span>,</span>
-<span>    indiv_colname <span class="op">=</span> <span class="st">"indiv"</span>,</span>
-<span>    prune_thres <span class="op">=</span> <span class="fl">0.9</span></span>
+<span>    snp_mode <span class="op">=</span> <span class="st">"single"</span></span>
 <span>    <span class="op">)</span></span>
+<span><span class="co">#&gt; slot_name argument is deprecated and will be removed in a future update.Please use assay_use instead.</span></span>
 <span><span class="co">#&gt; Constructing eqtlgeno list...</span></span></code></pre></div>
 </div>
 <div class="section level3">
@@ -215,60 +156,279 @@ example <code>eqtlgeno</code> dataframe is given below.</p>
 </h3>
 <p>Next, a marginal model is specified to fit each gene using the
 <code>fitMarginalPop</code> function.<br>
-Here we use a Negative Binominal as the parametric model using
-<code>"nb"</code>, and we specify
-<code>mean_formula = "(1|indiv) + cell_type</code>.</p>
+Here we use a Negative Binominal mixed model using <code>"nb"</code>
+option. We specify <code>"(1|indiv) + cell_type"</code> for the mean
+formula, where <code>(1|indiv)</code> specifies the random intercept
+using <code>indiv</code> as variable.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">marginal_list_sel</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fitMarginalPop.html">fitMarginalPop</a></span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="va">marginal_list</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fitMarginalPop.html">fitMarginalPop</a></span><span class="op">(</span></span>
 <span>    data_list <span class="op">=</span> <span class="va">data_list</span>,</span>
 <span>    mean_formula <span class="op">=</span> <span class="st">"(1|indiv) + cell_type"</span>,</span>
 <span>    model_family <span class="op">=</span> <span class="st">"nb"</span>,</span>
 <span>    interact_colnames <span class="op">=</span> <span class="st">"cell_type"</span>,</span>
-<span>    parallelization <span class="op">=</span> <span class="st">"pbmcapply"</span>,</span>
-<span>    n_threads <span class="op">=</span> <span class="fl">20L</span>,</span>
-<span>    loc_colname <span class="op">=</span> <span class="st">"POS"</span>,</span>
-<span>    snp_colname <span class="op">=</span> <span class="st">"snp_id"</span>,</span>
-<span>    celltype_colname <span class="op">=</span> <span class="st">"cell_type"</span>,</span>
-<span>    indiv_colname <span class="op">=</span> <span class="st">"indiv"</span>,</span>
-<span>    filter_snps <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>    snpvar_thres <span class="op">=</span> <span class="fl">0</span>,</span>
-<span>    force_formula <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>    data_maxsize <span class="op">=</span> <span class="fl">1</span></span>
+<span>    parallelization <span class="op">=</span> <span class="st">"parallel"</span>,</span>
+<span>    n_threads <span class="op">=</span> <span class="fl">20L</span></span>
+<span>    <span class="op">)</span></span>
+<span><span class="co">#&gt; n_threads argument is deprecated and will be removed in a future update.Please use n_cores instead.</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="step-3-fit-a-gaussian-copula">Step 3: fit a Gaussian copula<a class="anchor" aria-label="anchor" href="#step-3-fit-a-gaussian-copula"></a>
+</h3>
+<p>The third step is to fit a Gaussian copula using the
+<code>fitCopulaPop</code> function.</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">123</span>, kind <span class="op">=</span> <span class="st">"L'Ecuyer-CMRG"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">copula_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fitCopulaPop.html">fitCopulaPop</a></span><span class="op">(</span></span>
+<span>    sce <span class="op">=</span> <span class="va">example_sce</span>,</span>
+<span>    assay_use <span class="op">=</span> <span class="st">"counts"</span>,</span>
+<span>    input_data <span class="op">=</span> <span class="va">data_list</span><span class="op">[[</span><span class="st">"covariate"</span><span class="op">]</span><span class="op">]</span>,</span>
+<span>    marginal_list <span class="op">=</span> <span class="va">marginal_list</span>,</span>
+<span>    family_use <span class="op">=</span> <span class="st">"nb"</span>,</span>
+<span>    copula <span class="op">=</span> <span class="st">"gaussian"</span>,</span>
+<span>    n_cores <span class="op">=</span> <span class="fl">2L</span>,</span>
+<span>    parallelization <span class="op">=</span> <span class="st">"parallel"</span></span>
+<span>    <span class="op">)</span></span>
+<span><span class="co">#&gt; Convert Residuals to Multivariate Gaussian</span></span>
+<span><span class="co">#&gt; Converting End</span></span>
+<span><span class="co">#&gt; Copula group 1 starts</span></span>
+<span><span class="co">#&gt; Copula group 3 starts</span></span>
+<span><span class="co">#&gt; Copula group 4 starts</span></span>
+<span><span class="co">#&gt; Copula group 2 starts</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">RNGkind</a></span><span class="op">(</span><span class="st">"Mersenne-Twister"</span><span class="op">)</span>  <span class="co"># reset</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="step-4--modify-cell-typse-specific-eqtl-effect">Step 4. modify cell-typse-specific eQTL effect<a class="anchor" aria-label="anchor" href="#step-4--modify-cell-typse-specific-eqtl-effect"></a>
+</h3>
+<p>To define a cell-type-specific eQTL gene (eGene), we modify modify
+the fitted parameters using the <code>modifyMarginalModels</code>
+function. Here, we increase the cell-type-specific eQTL effect size for
+<code>ENSG00000169385</code> gene by a
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>log</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">\log2</annotation></semantics></math>-fold-change
+relative to the fitted value using <code>eqtl_log2fc = 2</code> in
+<code>monoc</code> cell type.</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">marginal_mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/modifyMarginalModels.html">modifyMarginalModels</a></span><span class="op">(</span></span>
+<span>    marginal_list <span class="op">=</span> <span class="va">marginal_list</span>,</span>
+<span>    eqtlgeno_list <span class="op">=</span> <span class="va">data_list</span><span class="op">[[</span><span class="st">"eqtl_geno_list"</span><span class="op">]</span><span class="op">]</span>,</span>
+<span>    features <span class="op">=</span> <span class="st">"ENSG00000169385"</span>,</span>
+<span>    celltype <span class="op">=</span> <span class="st">"monoc"</span>,</span>
+<span>    eqtl_log2fc <span class="op">=</span> <span class="fl">2</span>,</span>
+<span>    mod_scale <span class="op">=</span> <span class="st">"link"</span></span>
+<span>    <span class="op">)</span></span>
+<span><span class="co">#&gt; Modifying parameters for ENSG00000169385 in monoc celltype...</span></span>
+<span><span class="co">#&gt; Per-allele link-scale eQTL effect: 0.31073 ===&gt; 1.24294</span></span>
+<span><span class="co">#&gt; celltype effect: 36.65121 ===&gt; new value: 35.71900</span></span>
+<span><span class="co">#&gt; interaction effect: -16.10368 ===&gt; new value: -15.17148</span></span>
+<span><span class="co">#&gt; conditional means at geno 0,1,2: 0.18964, 0.25875, 0.35305 ===&gt; 0.07466, 0.25875, 0.89679</span></span>
+<span><span class="co">#&gt; eQTL slope between geno 1 and 0: 0.06911 ===&gt; new value: 0.18409</span></span>
+<span><span class="co">#&gt; Phi parameter: 0.48371 ===&gt; new value: 0.48371</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="step-5-extract-parameters">Step 5: extract parameters<a class="anchor" aria-label="anchor" href="#step-5-extract-parameters"></a>
+</h3>
+<p>The fifth step is to compute the mean, sigma, and zero probability
+parameters using the <code>extractParaPop</code> function.</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">para_new</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/extractParaPop.html">extractParaPop</a></span><span class="op">(</span></span>
+<span>    sce <span class="op">=</span> <span class="va">example_sce</span>,</span>
+<span>    assay_use <span class="op">=</span> <span class="st">"counts"</span>,</span>
+<span>    marginal_list <span class="op">=</span> <span class="va">marginal_mod</span><span class="op">[[</span><span class="st">"marginal_list"</span><span class="op">]</span><span class="op">]</span>,</span>
+<span>    n_cores <span class="op">=</span> <span class="fl">8L</span>,</span>
+<span>    family_use <span class="op">=</span> <span class="st">"nb"</span>,</span>
+<span>    new_covariate <span class="op">=</span> <span class="va">data_list</span><span class="op">[[</span><span class="st">"new_covariate"</span><span class="op">]</span><span class="op">]</span>,</span>
+<span>    new_eqtl_geno_list <span class="op">=</span> <span class="va">data_list</span><span class="op">[[</span><span class="st">"eqtl_geno_list"</span><span class="op">]</span><span class="op">]</span>,</span>
+<span>    data <span class="op">=</span> <span class="va">data_list</span><span class="op">[[</span><span class="st">"covariate"</span><span class="op">]</span><span class="op">]</span>,</span>
+<span>    parallelization <span class="op">=</span> <span class="st">"parallel"</span></span>
 <span>    <span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="step-6-simulate-counts">Step 6: simulate counts<a class="anchor" aria-label="anchor" href="#step-6-simulate-counts"></a>
+</h3>
+<p>The sixth step is to simulate counts using the
+<code>simuNewPop</code> function.</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">123</span>, kind <span class="op">=</span> <span class="st">"L'Ecuyer-CMRG"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">newcount_mat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/simuNewPop.html">simuNewPop</a></span><span class="op">(</span></span>
+<span>    sce <span class="op">=</span> <span class="va">example_sce</span>,</span>
+<span>    mean_mat <span class="op">=</span> <span class="va">para_new</span><span class="op">[[</span><span class="st">"mean_mat"</span><span class="op">]</span><span class="op">]</span>,</span>
+<span>    sigma_mat <span class="op">=</span> <span class="va">para_new</span><span class="op">[[</span><span class="st">"sigma_mat"</span><span class="op">]</span><span class="op">]</span>,</span>
+<span>    zero_mat <span class="op">=</span> <span class="va">para_new</span><span class="op">[[</span><span class="st">"zero_mat"</span><span class="op">]</span><span class="op">]</span>,</span>
+<span>    copula_list <span class="op">=</span> <span class="va">copula_fit</span><span class="op">[[</span><span class="st">"copula_list"</span><span class="op">]</span><span class="op">]</span>,</span>
+<span>    n_cores <span class="op">=</span> <span class="fl">2L</span>,</span>
+<span>    family_use <span class="op">=</span> <span class="st">"nb"</span>,</span>
+<span>    input_data <span class="op">=</span> <span class="va">data_list</span><span class="op">[[</span><span class="st">"covariate"</span><span class="op">]</span><span class="op">]</span>,</span>
+<span>    new_covariate <span class="op">=</span> <span class="va">data_list</span><span class="op">[[</span><span class="st">"new_covariate"</span><span class="op">]</span><span class="op">]</span>,</span>
+<span>    important_feature <span class="op">=</span> <span class="va">copula_fit</span><span class="op">[[</span><span class="st">"important_feature"</span><span class="op">]</span><span class="op">]</span>,</span>
+<span>    filtered_gene <span class="op">=</span> <span class="va">data_list</span><span class="op">[[</span><span class="st">"filtered_gene"</span><span class="op">]</span><span class="op">]</span>,</span>
+<span>    parallelization <span class="op">=</span> <span class="st">"parallel"</span></span>
+<span>    <span class="op">)</span></span>
+<span><span class="co">#&gt; Use Copula to sample a multivariate quantile matrix</span></span>
+<span><span class="co">#&gt; Sample Copula group 1 starts</span></span>
+<span><span class="co">#&gt; Sample Copula group 3 starts</span></span>
+<span><span class="co">#&gt; Sample Copula group 4 starts</span></span>
+<span><span class="co">#&gt; Sample Copula group 2 starts</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">RNGkind</a></span><span class="op">(</span><span class="st">"Mersenne-Twister"</span><span class="op">)</span>  <span class="co"># reset</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="step-7-create-singlecellexperiment-object-using-simulated-data">Step 7: create SingleCellExperiment object using simulated data<a class="anchor" aria-label="anchor" href="#step-7-create-singlecellexperiment-object-using-simulated-data"></a>
+</h3>
+<p>After simulating the data, we create a
+<code>SingleCellExperiment</code> object as follows.</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">simu_sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/SingleCellExperiment/man/SingleCellExperiment.html" class="external-link">SingleCellExperiment</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>counts <span class="op">=</span> <span class="va">newcount_mat</span><span class="op">)</span>,</span>
+<span>                                 colData <span class="op">=</span> <span class="va">data_list</span><span class="op">[[</span><span class="st">"new_covariate"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
-<h2 id="modifying-eqtl-effects">Modifying eQTL effects<a class="anchor" aria-label="anchor" href="#modifying-eqtl-effects"></a>
+<h2 id="create-pseudobulk-expression-data">Create pseudobulk expression data<a class="anchor" aria-label="anchor" href="#create-pseudobulk-expression-data"></a>
 </h2>
-<p>To modify the eQTL effects fitted, we use the
-<code>modifyMarginalModels</code> function.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">marginal_mod</span> <span class="op">&lt;-</span> <span class="fu">scDesignPop</span><span class="fu">::</span><span class="fu"><a href="../reference/modifyMarginalModels.html">modifyMarginalModels</a></span><span class="op">(</span></span>
-<span>  marginal_list <span class="op">=</span> <span class="va">marginal_list_sel</span><span class="op">[</span><span class="st">"ENSG00000163221"</span><span class="op">]</span>,</span>
-<span>  eqtlgeno_list <span class="op">=</span> <span class="va">data_list</span><span class="op">[[</span><span class="st">"eqtl_geno_list"</span><span class="op">]</span><span class="op">]</span>,</span>
-<span>  features <span class="op">=</span> <span class="st">"ENSG00000163221"</span>,</span>
-<span>  celltype <span class="op">=</span> <span class="st">"cd4nc"</span>,</span>
-<span>  mean_log2fc <span class="op">=</span> <span class="fl">0</span>,</span>
-<span>  eqtl_log2fc <span class="op">=</span> <span class="fl">2</span>,</span>
-<span>  neg_ctrl <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  mean_baseline <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  eqtl_baseline <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  mean_baseline_only <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  eqtl_baseline_only <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  disp_scaling <span class="op">=</span> <span class="st">"linear"</span>,</span>
-<span>  celltype_colname <span class="op">=</span> <span class="st">"cell_type"</span>,</span>
-<span>  snp_colname <span class="op">=</span> <span class="st">"snp_id"</span>,</span>
-<span>  verbose <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  debug <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  mod_scale <span class="op">=</span> <span class="st">"link"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Modifying parameters for ENSG00000163221 in cd4nc celltype...</span></span>
-<span><span class="co">#&gt; Per-allele link-scale eQTL effect: -0.19084 ===&gt; 0.00000</span></span>
-<span><span class="co">#&gt; celltype effect: -6.44683 ===&gt; new value: -6.63767</span></span>
-<span><span class="co">#&gt; interaction effect: -0.16812 ===&gt; new value: 0.02273</span></span>
-<span><span class="co">#&gt; &lt;&lt; Setting conditional means to be negative controls (no eQTL effect) &gt;&gt;</span></span>
-<span><span class="co">#&gt; conditional means at geno 0,1,2: 0.00963, 0.00796, 0.00657 ===&gt; 0.00796, 0.00796, 0.00796</span></span>
-<span><span class="co">#&gt; eQTL slope between geno 1 and 0: -0.00167 ===&gt; new value: 0.00000</span></span>
-<span><span class="co">#&gt; Phi parameter: 1.14919 ===&gt; new value: 1.14919</span></span></code></pre></div>
+<p>To create pseudobulk data, we first define a named list with the SCE
+objects of interest. Here we name <code>example_sce</code> as
+“Reference”, and the simulated SCE object with modified effect size as
+“Simulated”.</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">sce_list</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"Reference"</span> <span class="op">=</span> <span class="va">example_sce</span>,</span>
+<span>                 <span class="st">"Simulated"</span> <span class="op">=</span> <span class="va">simu_sce</span><span class="op">)</span></span></code></pre></div>
+<p>Next, we normalize each SCE object in the data using
+<code>log1p</code> and then aggregate using <code>mean</code>. This can
+be done in one step using the <code>createPbulkExprGeno</code>
+function.</p>
+<p>We also specify the all cells (denoted as <code>"allct"</code>), and
+the cell type that we wish to visualize with
+<code>c("allct", "monoc")</code>. The SNP loci specified correspond to
+the cell types in the same order.</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">res_list</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createPbulkExprGeno.html">createPbulkExprGeno</a></span><span class="op">(</span>sce_list <span class="op">=</span> <span class="va">sce_list</span>,</span>
+<span>                                eqtlgeno <span class="op">=</span> <span class="va">example_eqtlgeno</span>,</span>
+<span>                                feature_sel <span class="op">=</span> <span class="st">"ENSG00000169385"</span>,</span>
+<span>                                celltype_sel <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"allct"</span>, <span class="st">"monoc"</span><span class="op">)</span>,</span>
+<span>                                eqtl_snp <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"14:21359808"</span>, <span class="st">"14:21359808"</span><span class="op">)</span>,</span>
+<span>                                normalize_type <span class="op">=</span> <span class="st">"log1p"</span>,</span>
+<span>                                aggregate_type <span class="op">=</span> <span class="st">"mean"</span>,</span>
+<span>                                slot_name <span class="op">=</span> <span class="st">"logcounts"</span>,</span>
+<span>                                overwrite <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>                                if_plot <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="co">#&gt; eqtl_snp input used to override eqtl_indx...</span></span>
+<span><span class="co">#&gt; 1 cell types use this SNP:</span></span>
+<span><span class="co">#&gt;   monoc </span></span>
+<span><span class="co">#&gt; Selected 14:21359808 snp for allct celltype, ENSG00000169385 feature.</span></span>
+<span><span class="co">#&gt; 1 cell types use this SNP:</span></span>
+<span><span class="co">#&gt;   monoc </span></span>
+<span><span class="co">#&gt; Selected 14:21359808 snp for monoc celltype, ENSG00000169385 feature.</span></span></code></pre></div>
+<p>One of the objects, <code>res_df</code>, in the output list is a
+dataframe with each row containing the pseudobulk values corresponding
+to each individual and their genotypes, along with other important
+columns such as cell types, aggregation used, normalization used,
+etc.</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">res_list</span><span class="op">[[</span><span class="st">"res_df"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 10</span></span></span>
+<span><span class="co">#&gt;   indiv  response genotype gene_id       cell_type snp_id sce_name normalization</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> SAMP30  0.056<span style="text-decoration: underline;">9</span>  0        ENSG00000169… allct     14:21… Referen… log1p        </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> SAMP36  0.006<span style="text-decoration: underline;">36</span> 0        ENSG00000169… allct     14:21… Referen… log1p        </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> SAMP33  0.058<span style="text-decoration: underline;">4</span>  1        ENSG00000169… allct     14:21… Referen… log1p        </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> SAMP37  0.007<span style="text-decoration: underline;">00</span> 0        ENSG00000169… allct     14:21… Referen… log1p        </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> SAMP34  0.022<span style="text-decoration: underline;">5</span>  1        ENSG00000169… allct     14:21… Referen… log1p        </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> SAMP38  0.019<span style="text-decoration: underline;">8</span>  0        ENSG00000169… allct     14:21… Referen… log1p        </span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 2 more variables: aggregate_type &lt;chr&gt;, slot_used &lt;chr&gt;</span></span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="visualize-pseudobulk-expression">Visualize pseudobulk expression<a class="anchor" aria-label="anchor" href="#visualize-pseudobulk-expression"></a>
+</h2>
+<p>Next, we show the pseudobulk expression versus genotype using violin
+plots across the two SCE objects and the cell types using the ggplot
+object, <code>p_pbulk</code>, generated in the output list. Each violin
+plot has a boxplot within and the mean marked by a red dot.</p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">res_list</span><span class="op">[[</span><span class="st">"p_pbulk"</span><span class="op">]</span><span class="op">]</span></span></code></pre></div>
+<p><img src="scDesignPop-modify-eQTL-effects_files/figure-html/unnamed-chunk-13-1.png" class="r-plt" width="576"></p>
+<p>Alternatively, users may customize the plot using additional
+<code>ggplot2</code> commands or generate their own plot directly using
+the <code>res_df</code> dataframe. We leave the latter part out of this
+tutorial.</p>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">res_list</span><span class="op">[[</span><span class="st">"p_pbulk"</span><span class="op">]</span><span class="op">]</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_classic</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"ENSG00000169385"</span>,</span>
+<span>                  y <span class="op">=</span> <span class="st">"Normalized expression"</span>,</span>
+<span>                  x <span class="op">=</span> <span class="st">"Genotype"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span></span>
+<span>        plot.title <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">14</span>, hjust <span class="op">=</span> <span class="fl">0</span>,  <span class="co"># left title</span></span>
+<span>                                  face <span class="op">=</span> <span class="st">"bold"</span><span class="op">)</span>,</span>
+<span>        axis.text <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">12</span><span class="op">)</span>,</span>
+<span>        axis.title <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">12</span><span class="op">)</span>,</span>
+<span>        strip.text <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">12</span><span class="op">)</span>,  <span class="co"># facet font size</span></span>
+<span>        aspect.ratio <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>        legend.position <span class="op">=</span> <span class="st">"none"</span></span>
+<span>    <span class="op">)</span></span></code></pre></div>
+<p><img src="scDesignPop-modify-eQTL-effects_files/figure-html/unnamed-chunk-14-1.png" class="r-plt" width="576"></p>
+</div>
+<div class="section level2">
+<h2 id="session-information">Session information<a class="anchor" aria-label="anchor" href="#session-information"></a>
+</h2>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; R version 4.2.3 (2023-03-15)</span></span>
+<span><span class="co">#&gt; Platform: x86_64-pc-linux-gnu (64-bit)</span></span>
+<span><span class="co">#&gt; Running under: Ubuntu 22.04.5 LTS</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Matrix products: default</span></span>
+<span><span class="co">#&gt; BLAS:   /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3</span></span>
+<span><span class="co">#&gt; LAPACK: /usr/lib/x86_64-linux-gnu/openblas-pthread/libopenblasp-r0.3.20.so</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; locale:</span></span>
+<span><span class="co">#&gt;  [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              </span></span>
+<span><span class="co">#&gt;  [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    </span></span>
+<span><span class="co">#&gt;  [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   </span></span>
+<span><span class="co">#&gt;  [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 </span></span>
+<span><span class="co">#&gt;  [9] LC_ADDRESS=C               LC_TELEPHONE=C            </span></span>
+<span><span class="co">#&gt; [11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; attached base packages:</span></span>
+<span><span class="co">#&gt; [1] stats4    stats     graphics  grDevices utils     datasets  methods  </span></span>
+<span><span class="co">#&gt; [8] base     </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; other attached packages:</span></span>
+<span><span class="co">#&gt;  [1] ggplot2_3.5.2               SingleCellExperiment_1.20.1</span></span>
+<span><span class="co">#&gt;  [3] SummarizedExperiment_1.28.0 Biobase_2.58.0             </span></span>
+<span><span class="co">#&gt;  [5] GenomicRanges_1.50.2        GenomeInfoDb_1.34.9        </span></span>
+<span><span class="co">#&gt;  [7] IRanges_2.32.0              S4Vectors_0.36.2           </span></span>
+<span><span class="co">#&gt;  [9] BiocGenerics_0.44.0         MatrixGenerics_1.10.0      </span></span>
+<span><span class="co">#&gt; [11] matrixStats_1.1.0           scDesignPop_0.0.0.9012     </span></span>
+<span><span class="co">#&gt; [13] BiocStyle_2.26.0           </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; loaded via a namespace (and not attached):</span></span>
+<span><span class="co">#&gt;  [1] tidyr_1.3.1            sass_0.4.10            jsonlite_2.0.0        </span></span>
+<span><span class="co">#&gt;  [4] splines_4.2.3          bslib_0.9.0            assertthat_0.2.1      </span></span>
+<span><span class="co">#&gt;  [7] BiocManager_1.30.25    GenomeInfoDbData_1.2.9 yaml_2.3.10           </span></span>
+<span><span class="co">#&gt; [10] numDeriv_2016.8-1.1    pillar_1.10.2          lattice_0.22-6        </span></span>
+<span><span class="co">#&gt; [13] glue_1.8.0             digest_0.6.37          RColorBrewer_1.1-3    </span></span>
+<span><span class="co">#&gt; [16] XVector_0.38.0         glmmTMB_1.1.9          minqa_1.2.8           </span></span>
+<span><span class="co">#&gt; [19] htmltools_0.5.8.1      Matrix_1.6-5           pkgconfig_2.0.3       </span></span>
+<span><span class="co">#&gt; [22] bookdown_0.43          zlibbioc_1.44.0        purrr_1.0.4           </span></span>
+<span><span class="co">#&gt; [25] mvtnorm_1.3-3          scales_1.4.0           lme4_1.1-35.3         </span></span>
+<span><span class="co">#&gt; [28] tibble_3.2.1           mgcv_1.9-1             generics_0.1.4        </span></span>
+<span><span class="co">#&gt; [31] farver_2.1.2           cachem_1.1.0           withr_3.0.2           </span></span>
+<span><span class="co">#&gt; [34] pbapply_1.7-2          TMB_1.9.11             cli_3.6.5             </span></span>
+<span><span class="co">#&gt; [37] magrittr_2.0.3         evaluate_1.0.3         fs_1.6.6              </span></span>
+<span><span class="co">#&gt; [40] nlme_3.1-164           MASS_7.3-58.2          textshaping_0.4.0     </span></span>
+<span><span class="co">#&gt; [43] tools_4.2.3            lifecycle_1.0.4        stringr_1.5.1         </span></span>
+<span><span class="co">#&gt; [46] DelayedArray_0.24.0    irlba_2.3.5.1          compiler_4.2.3        </span></span>
+<span><span class="co">#&gt; [49] pkgdown_2.2.0          jquerylib_0.1.4        systemfonts_1.2.3     </span></span>
+<span><span class="co">#&gt; [52] rlang_1.1.6            grid_4.2.3             RCurl_1.98-1.17       </span></span>
+<span><span class="co">#&gt; [55] nloptr_2.2.1           rstudioapi_0.17.1      htmlwidgets_1.6.4     </span></span>
+<span><span class="co">#&gt; [58] labeling_0.4.3         bitops_1.0-9           rmarkdown_2.27        </span></span>
+<span><span class="co">#&gt; [61] boot_1.3-30            gtable_0.3.6           R6_2.6.1              </span></span>
+<span><span class="co">#&gt; [64] knitr_1.50             dplyr_1.1.4            utf8_1.2.5            </span></span>
+<span><span class="co">#&gt; [67] fastmap_1.2.0          uwot_0.2.3             ragg_1.5.0            </span></span>
+<span><span class="co">#&gt; [70] desc_1.4.3             stringi_1.8.7          parallel_4.2.3        </span></span>
+<span><span class="co">#&gt; [73] Rcpp_1.0.14            vctrs_0.6.5            tidyselect_1.2.1      </span></span>
+<span><span class="co">#&gt; [76] xfun_0.52</span></span></code></pre></div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

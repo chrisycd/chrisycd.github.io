@@ -3,20 +3,22 @@
 ### All vignettes
 
 - [Modeling batch effect in population-scale scRNA-seq
-  data](https://github.com/chrisycd/scDesignPop/articles/scDesignPop-batch-effect.md):
+  data](https://chrisycd.github.io/scDesignPop/articles/scDesignPop-batch-effect.md):
 - [Model cell type proportions for new
-  individuals](https://github.com/chrisycd/scDesignPop/articles/scDesignPop-celltype-prop-modeling.md):
+  individuals](https://chrisycd.github.io/scDesignPop/articles/scDesignPop-celltype-prop-modeling.md):
 - [Model nonlinear dynamic eQTL effects in continuous cell
-  states](https://github.com/chrisycd/scDesignPop/articles/scDesignPop-dynamic-eQTL-NL.md):
+  states](https://chrisycd.github.io/scDesignPop/articles/scDesignPop-dynamic-eQTL-NL.md):
 - [Model linear dynamic eQTL effects in continuous cell
-  states](https://github.com/chrisycd/scDesignPop/articles/scDesignPop-dynamic-eQTL.md):
+  states](https://chrisycd.github.io/scDesignPop/articles/scDesignPop-dynamic-eQTL.md):
 - [Modify eQTL effect for eGenes /
-  non-eGenes](https://github.com/chrisycd/scDesignPop/articles/scDesignPop-modify-eQTL-effects.md):
+  non-eGenes](https://chrisycd.github.io/scDesignPop/articles/scDesignPop-modify-eQTL-effects.md):
+- [Parallel computing and reproducibility in
+  scDesignPop](https://chrisycd.github.io/scDesignPop/articles/scDesignPop-parallelization-reproducibility.md):
 - [Power analysis based on user specified eQTL effect
-  sizes](https://github.com/chrisycd/scDesignPop/articles/scDesignPop-power-analysis-ES-specification.md):
+  sizes](https://chrisycd.github.io/scDesignPop/articles/scDesignPop-power-analysis-ES-specification.md):
 - [Power analysis for selected
-  genes](https://github.com/chrisycd/scDesignPop/articles/scDesignPop-power-analysis-selected.md):
+  genes](https://chrisycd.github.io/scDesignPop/articles/scDesignPop-power-analysis-selected.md):
 - [Modeling trans-eQTL effect using public
-  data](https://github.com/chrisycd/scDesignPop/articles/scDesignPop-trans-eQTL.md):
+  data](https://chrisycd.github.io/scDesignPop/articles/scDesignPop-trans-eQTL.md):
 - [scDesignPop
-  Quickstart](https://github.com/chrisycd/scDesignPop/articles/scDesignPop.md):
+  Quickstart](https://chrisycd.github.io/scDesignPop/articles/scDesignPop.md):
