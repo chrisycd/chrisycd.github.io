@@ -23,9 +23,10 @@ following illustration figure summarizes the workflow of scDesignPop:
 ![](reference/figures/scDesignPop_illustration.jpg)
 
 1.  [Installation](#installation)
-2.  [Tutorials](#tutorials)
-3.  [Contact](#contact)
-4.  [Related Manuscripts](#related-manuscripts)
+2.  [Quick-start](#quickstart)
+3.  [Tutorials](#tutorials)
+4.  [Contact](#contact)
+5.  [Related Manuscripts](#related-manuscripts)
 
 ## Installation
 
@@ -47,6 +48,13 @@ if(!require("remotes")){
 remotes::install_github("chrisycd/scDesignPop")
 ```
 
+## Quick-start
+
+Here is the quick start to run scDesignPop:
+
+- [Quick
+  start](https://chrisycd.github.io/scDesignPop/docs/articles/scDesignPop.html)
+
 ## Tutorials
 
 For tutorials, please check the
@@ -54,19 +62,16 @@ For tutorials, please check the
 tutorials will demonstrate the applications of **scDesignPop** as
 follows:
 
-- [Model population-scale scRNA-seq
-  data](https://chrisycd.github.io/scDesignPop/docs/articles/scDesignPop.html)
-
-- [Modeling batch effect in population-scale scRNA-seq
+- [Model batch effect in population-scale scRNA-seq
   data](https://chrisycd.github.io/scDesignPop/docs/articles/scDesignPop-batch-effect.html)
 
-- [Modeling trans-eQTL effect using public
-  data](https://chrisycd.github.io/scDesignPop/docs/articles/scDesignPop-trans-eqtl.html)
+- [Model trans-eQTL effect using public
+  data](https://chrisycd.github.io/scDesignPop/docs/articles/scDesignPop-trans-eQTL.html)
 
 - [Model linear dynamic eQTL effects in continuous cell
   states](https://chrisycd.github.io/scDesignPop/docs/articles/scDesignPop-dynamic-eQTL.html)
 
-- [Model Nonlinear dynamic eQTL effects in continuous cell
+- [Model nonlinear dynamic eQTL effects in continuous cell
   states](https://chrisycd.github.io/scDesignPop/docs/articles/scDesignPop-dynamic-eQTL-NL.html)
 
 - [Model cell type proportions for new
@@ -81,6 +86,9 @@ follows:
 - [Power analysis based on user specified eQTL effect
   sizes](https://chrisycd.github.io/scDesignPop/docs/articles/scDesignPop-power-analysis-ES-specification.html)
 
+- [Parallel computing and reproducibility in
+  scDesignPop](https://chrisycd.github.io/scDesignPop/docs/articles/scDesignPop-parallelization-reproducibility.html)
+
 ## Contact
 
 Any questions or advice on `scDesignPop` are welcomed! Please report it
@@ -89,17 +97,17 @@ Chris Dong (<cycd@g.ucla.edu>) or Yihui Cen (<yihuicen@g.ucla.edu>).
 
 ## Related Manuscripts
 
-- The original **scDesignPop** paper (TBD. Coming soon…)
-
+- The **scDesignPop** preprint:
+  - **scDesignPop**: [Dong, C., Cen, Y., Song, D. *et al.* scDesignPop
+    generates realistic population-scale single-cell RNA-seq for power
+    analysis, benchmarking, and privacy protection. *BioRxiv*
+    (2026).](https://doi.org/10.64898/2026.02.23.707578)
 - The simulator for general single-cell counts: **scDesign3**
-
   - **scDesign3**: [Song, D., Wang, Q., Yan, G. *et al.* scDesign3
     generates realistic in silico data for multimodal single-cell and
     spatial omics. *Nat Biotechnol* **42**, 247–252
     (2024).](https://www.nature.com/articles/s41587-023-01772-1)
-
 - The predecessors of **scDesign3**
-
   - **scDesign**: [Li, W. V., & Li, J. J. (2019). A statistical
     simulator scDesign for rational scRNA-seq experimental design.
     *Bioinformatics*, **35**(14),
@@ -109,10 +117,8 @@ Chris Dong (<cycd@g.ucla.edu>) or Yihui Cen (<yihuicen@g.ucla.edu>).
     single-cell gene expression count data with gene correlations
     captured. *Genome biology*, **22**(1),
     1-37.](https://link.springer.com/article/10.1186/s13059-021-02367-2)
-
 - The simulator for single-cell multi-omics reads developed by our lab
   member Guanao Yan
-
   - **scReadSim**: [Yan, G., Song, D. & Li, J.J. scReadSim: a
     single-cell RNA-seq and ATAC-seq read simulator. *Nat Commun*
     **14**, 7482 (2023)](https://doi.org/10.1038/s41467-023-43162-w)
@@ -121,82 +127,88 @@ Chris Dong (<cycd@g.ucla.edu>) or Yihui Cen (<yihuicen@g.ucla.edu>).
 
 ## All functions
 
-- [`calcParaVectors()`](https://github.com/chrisycd/scDesignPop/reference/calcParaVectors.md)
+- [`calcParaVectors()`](https://chrisycd.github.io/scDesignPop/reference/calcParaVectors.md)
   : Generic function to compute model parameter vectors
-- [`calcParaVectors(`*`<gam>`*`)`](https://github.com/chrisycd/scDesignPop/reference/calcParaVectors.gam.md)
+- [`calcParaVectors(`*`<gam>`*`)`](https://chrisycd.github.io/scDesignPop/reference/calcParaVectors.gam.md)
   : A calcParaVectors Method for gam (mgcv package) Objects
-- [`calcParaVectors(`*`<gamlss>`*`)`](https://github.com/chrisycd/scDesignPop/reference/calcParaVectors.gamlss.md)
+- [`calcParaVectors(`*`<gamlss>`*`)`](https://chrisycd.github.io/scDesignPop/reference/calcParaVectors.gamlss.md)
   : A calcParaVectors Method for gamlss Objects
-- [`calcParaVectors(`*`<glmmTMB>`*`)`](https://github.com/chrisycd/scDesignPop/reference/calcParaVectors.glmmTMB.md)
+- [`calcParaVectors(`*`<glmmTMB>`*`)`](https://chrisycd.github.io/scDesignPop/reference/calcParaVectors.glmmTMB.md)
   : A calcParaVectors Method for glmmTMB Objects
-- [`checkVectorContain()`](https://github.com/chrisycd/scDesignPop/reference/checkVectorContain.md)
+- [`checkVectorContain()`](https://chrisycd.github.io/scDesignPop/reference/checkVectorContain.md)
   : Check membership of first vector compared to other vectors
-- [`checkVectorEqual()`](https://github.com/chrisycd/scDesignPop/reference/checkVectorEqual.md)
+- [`checkVectorEqual()`](https://chrisycd.github.io/scDesignPop/reference/checkVectorEqual.md)
   : Check if multiple vectors have same elements
-- [`constructDataPop()`](https://github.com/chrisycd/scDesignPop/reference/constructDataPop.md)
+- [`constructDataPop()`](https://chrisycd.github.io/scDesignPop/reference/constructDataPop.md)
   : Construct a list of input data
-- [`constructDesignMatrix()`](https://github.com/chrisycd/scDesignPop/reference/constructDesignMatrix.md)
+- [`constructDesignMatrix()`](https://chrisycd.github.io/scDesignPop/reference/constructDesignMatrix.md)
   : Construct a Design Matrix Dataframe
-- [`constructEqtlGeno()`](https://github.com/chrisycd/scDesignPop/reference/constructEqtlGeno.md)
+- [`constructEqtlGeno()`](https://chrisycd.github.io/scDesignPop/reference/constructEqtlGeno.md)
   : Construct eQTL annotation and genotype dataframe
-- [`constructFormula()`](https://github.com/chrisycd/scDesignPop/reference/constructFormula.md)
+- [`constructFormula()`](https://chrisycd.github.io/scDesignPop/reference/constructFormula.md)
   : Constructs a Model Formula
-- [`constructPAFormula()`](https://github.com/chrisycd/scDesignPop/reference/constructPAFormula.md)
+- [`constructPAFormula()`](https://chrisycd.github.io/scDesignPop/reference/constructPAFormula.md)
   : Construct a model formula for power analysis
-- [`constructSCE()`](https://github.com/chrisycd/scDesignPop/reference/constructSCE.md)
+- [`constructSCE()`](https://chrisycd.github.io/scDesignPop/reference/constructSCE.md)
   : Construct a SingleCellExperiment object with specified covariates.
-- [`example_eqtlgeno`](https://github.com/chrisycd/scDesignPop/reference/example_eqtlgeno.md)
-  : Example genotype data for cell-type-specific eQTLs
-- [`example_eqtlgeno_Bcell`](https://github.com/chrisycd/scDesignPop/reference/example_eqtlgeno_Bcell.md)
+- [`createPbulkExprGeno()`](https://chrisycd.github.io/scDesignPop/reference/createPbulkExprGeno.md)
+  : Creates pseudobulk expression grouped by eQTL genotypes.
+- [`example_eqtlgeno`](https://chrisycd.github.io/scDesignPop/reference/example_eqtlgeno.md)
+  : Example genotype data for cell-type-specific cis-eQTLs
+- [`example_eqtlgeno_Bcell`](https://chrisycd.github.io/scDesignPop/reference/example_eqtlgeno_Bcell.md)
   : Example B cell eQTL genotype data
-- [`example_genopc_new`](https://github.com/chrisycd/scDesignPop/reference/example_genopc_new.md)
+- [`example_eqtlgeno_trans`](https://chrisycd.github.io/scDesignPop/reference/example_eqtlgeno_trans.md)
+  : Example genotype data for cell-type-specific trans-eQTLs
+- [`example_genopc_new`](https://chrisycd.github.io/scDesignPop/reference/example_genopc_new.md)
   : Genotype principal components for new individuals
-- [`example_genopc_train`](https://github.com/chrisycd/scDesignPop/reference/example_genopc_train.md)
+- [`example_genopc_train`](https://chrisycd.github.io/scDesignPop/reference/example_genopc_train.md)
   : Genotype principal components for training individuals
-- [`example_sce`](https://github.com/chrisycd/scDesignPop/reference/example_sce.md)
+- [`example_sce`](https://chrisycd.github.io/scDesignPop/reference/example_sce.md)
   : Example single-cell RNA-seq data (multi–cell type)
-- [`example_sce_Bcell`](https://github.com/chrisycd/scDesignPop/reference/example_sce_Bcell.md)
+- [`example_sce_Bcell`](https://chrisycd.github.io/scDesignPop/reference/example_sce_Bcell.md)
   : Example B cell single-cell RNA-seq data with pseudotime
-- [`extractFromSCE()`](https://github.com/chrisycd/scDesignPop/reference/extractFromSCE.md)
+- [`extractFromSCE()`](https://chrisycd.github.io/scDesignPop/reference/extractFromSCE.md)
   : Extract data from SingleCellExperiment object
-- [`extractFromSeurat()`](https://github.com/chrisycd/scDesignPop/reference/extractFromSeurat.md)
+- [`extractFromSeurat()`](https://chrisycd.github.io/scDesignPop/reference/extractFromSeurat.md)
   : Extract data from Seurat object
-- [`extractParaPop()`](https://github.com/chrisycd/scDesignPop/reference/extractParaPop.md)
+- [`extractParaPop()`](https://chrisycd.github.io/scDesignPop/reference/extractParaPop.md)
   : Extract parameter matrix for a new covariate data frame
-- [`fitCopulaPop()`](https://github.com/chrisycd/scDesignPop/reference/fitCopulaPop.md)
+- [`fitCopulaPop()`](https://chrisycd.github.io/scDesignPop/reference/fitCopulaPop.md)
   : Fits copula for input
-- [`fitMarginalPop()`](https://github.com/chrisycd/scDesignPop/reference/fitMarginalPop.md)
+- [`fitMarginalPop()`](https://chrisycd.github.io/scDesignPop/reference/fitMarginalPop.md)
   : Fit marginal models for every feature
-- [`fitModel()`](https://github.com/chrisycd/scDesignPop/reference/fitModel.md)
-  : Fit a Marginal Model
-- [`fitPAModel()`](https://github.com/chrisycd/scDesignPop/reference/fitPAModel.md)
+- [`fitModel()`](https://chrisycd.github.io/scDesignPop/reference/fitModel.md)
+  : Fit a marginal model
+- [`fitPAModel()`](https://chrisycd.github.io/scDesignPop/reference/fitPAModel.md)
   : Fit a marginal model for power analysis
-- [`marginal_list_sel`](https://github.com/chrisycd/scDesignPop/reference/marginal_list_sel.md)
-  : Example list of scDesignPop's marginal models
-- [`modifyMarginalModels()`](https://github.com/chrisycd/scDesignPop/reference/modifyMarginalModels.md)
+- [`modifyMarginalModels()`](https://chrisycd.github.io/scDesignPop/reference/modifyMarginalModels.md)
   : Modify marginal models
-- [`modifyModelPara()`](https://github.com/chrisycd/scDesignPop/reference/modifyModelPara.md)
+- [`modifyModelPara()`](https://chrisycd.github.io/scDesignPop/reference/modifyModelPara.md)
   : Modify parameters of a glmmTMB model object
-- [`plotCellProp()`](https://github.com/chrisycd/scDesignPop/reference/plotCellProp.md)
+- [`normalizeSCE()`](https://chrisycd.github.io/scDesignPop/reference/normalizeSCE.md)
+  : Normalize data in a SingleCellExperiment object
+- [`plotCellProp()`](https://chrisycd.github.io/scDesignPop/reference/plotCellProp.md)
   : Visualize the cell type proportions across individuals
-- [`plotReducedDimPop()`](https://github.com/chrisycd/scDesignPop/reference/plotReducedDimPop.md)
+- [`plotPbulkGeno()`](https://chrisycd.github.io/scDesignPop/reference/plotPbulkGeno.md)
+  : Plot pseudobulk expression vs. genotype
+- [`plotReducedDimPop()`](https://chrisycd.github.io/scDesignPop/reference/plotReducedDimPop.md)
   : Dimensionality reduction and visualization for population-scale data
-- [`powerAnalysis()`](https://github.com/chrisycd/scDesignPop/reference/powerAnalysis.md)
+- [`powerAnalysis()`](https://chrisycd.github.io/scDesignPop/reference/powerAnalysis.md)
   : Perform a cell-type-specific power analysis on eQTL effects
-- [`powerCICalculation()`](https://github.com/chrisycd/scDesignPop/reference/powerCICalculation.md)
+- [`powerCICalculation()`](https://chrisycd.github.io/scDesignPop/reference/powerCICalculation.md)
   : Calculate a bootstrap confidence interval for each power
-- [`runPowerAnalysis()`](https://github.com/chrisycd/scDesignPop/reference/runPowerAnalysis.md)
-  : The wrapper function for power analysis
-- [`simuCellProportion()`](https://github.com/chrisycd/scDesignPop/reference/simuCellProportion.md)
+- [`runPowerAnalysis()`](https://chrisycd.github.io/scDesignPop/reference/runPowerAnalysis.md)
+  : Compute power for eQTL effects in cell types
+- [`simuCellProportion()`](https://chrisycd.github.io/scDesignPop/reference/simuCellProportion.md)
   : Simulate cell proportions using genotype principal components and
   population-level covariates
-- [`simuNewPop()`](https://github.com/chrisycd/scDesignPop/reference/simuNewPop.md)
+- [`simuNewPop()`](https://chrisycd.github.io/scDesignPop/reference/simuNewPop.md)
   : Simulate new data
-- [`simulatePADesignMatrix()`](https://github.com/chrisycd/scDesignPop/reference/simulatePADesignMatrix.md)
+- [`simulatePADesignMatrix()`](https://chrisycd.github.io/scDesignPop/reference/simulatePADesignMatrix.md)
   : Simulate new design matrix for power analysis
-- [`visualizePowerCurve()`](https://github.com/chrisycd/scDesignPop/reference/visualizePowerCurve.md)
+- [`visualizePowerCurve()`](https://chrisycd.github.io/scDesignPop/reference/visualizePowerCurve.md)
   : Visualize power as curves across study designs
-- [`visualizePowerHeatmap()`](https://github.com/chrisycd/scDesignPop/reference/visualizePowerHeatmap.md)
+- [`visualizePowerHeatmap()`](https://chrisycd.github.io/scDesignPop/reference/visualizePowerHeatmap.md)
   : Visualize power as heatmaps across study designs
 
 # Articles
@@ -204,20 +216,22 @@ Chris Dong (<cycd@g.ucla.edu>) or Yihui Cen (<yihuicen@g.ucla.edu>).
 ### All vignettes
 
 - [Modeling batch effect in population-scale scRNA-seq
-  data](https://github.com/chrisycd/scDesignPop/articles/scDesignPop-batch-effect.md):
+  data](https://chrisycd.github.io/scDesignPop/articles/scDesignPop-batch-effect.md):
 - [Model cell type proportions for new
-  individuals](https://github.com/chrisycd/scDesignPop/articles/scDesignPop-celltype-prop-modeling.md):
+  individuals](https://chrisycd.github.io/scDesignPop/articles/scDesignPop-celltype-prop-modeling.md):
 - [Model nonlinear dynamic eQTL effects in continuous cell
-  states](https://github.com/chrisycd/scDesignPop/articles/scDesignPop-dynamic-eQTL-NL.md):
+  states](https://chrisycd.github.io/scDesignPop/articles/scDesignPop-dynamic-eQTL-NL.md):
 - [Model linear dynamic eQTL effects in continuous cell
-  states](https://github.com/chrisycd/scDesignPop/articles/scDesignPop-dynamic-eQTL.md):
+  states](https://chrisycd.github.io/scDesignPop/articles/scDesignPop-dynamic-eQTL.md):
 - [Modify eQTL effect for eGenes /
-  non-eGenes](https://github.com/chrisycd/scDesignPop/articles/scDesignPop-modify-eQTL-effects.md):
+  non-eGenes](https://chrisycd.github.io/scDesignPop/articles/scDesignPop-modify-eQTL-effects.md):
+- [Parallel computing and reproducibility in
+  scDesignPop](https://chrisycd.github.io/scDesignPop/articles/scDesignPop-parallelization-reproducibility.md):
 - [Power analysis based on user specified eQTL effect
-  sizes](https://github.com/chrisycd/scDesignPop/articles/scDesignPop-power-analysis-ES-specification.md):
+  sizes](https://chrisycd.github.io/scDesignPop/articles/scDesignPop-power-analysis-ES-specification.md):
 - [Power analysis for selected
-  genes](https://github.com/chrisycd/scDesignPop/articles/scDesignPop-power-analysis-selected.md):
+  genes](https://chrisycd.github.io/scDesignPop/articles/scDesignPop-power-analysis-selected.md):
 - [Modeling trans-eQTL effect using public
-  data](https://github.com/chrisycd/scDesignPop/articles/scDesignPop-trans-eQTL.md):
+  data](https://chrisycd.github.io/scDesignPop/articles/scDesignPop-trans-eQTL.md):
 - [scDesignPop
-  Quickstart](https://github.com/chrisycd/scDesignPop/articles/scDesignPop.md):
+  Quickstart](https://chrisycd.github.io/scDesignPop/articles/scDesignPop.md):

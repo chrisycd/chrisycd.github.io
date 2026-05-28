@@ -14,12 +14,12 @@ Source:
 
 Y. Dong C, Cen Y (2026). *scDesignPop: Simulator for population-scale
 single-cell expression RNA-sequencing data*. R package version
-0.0.0.9010, <https://github.com/chrisycd/scDesignPop>.
+0.0.0.9012, <https://github.com/chrisycd/scDesignPop>.
 
     @Manual{,
       title = {scDesignPop: Simulator for population-scale single-cell expression RNA-sequencing data},
       author = {Chris {Y. Dong} and Yihui Cen},
       year = {2026},
-      note = {R package version 0.0.0.9010},
+      note = {R package version 0.0.0.9012},
       url = {https://github.com/chrisycd/scDesignPop},
     }

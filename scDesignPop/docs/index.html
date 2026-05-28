@@ -22,7 +22,7 @@
 
     <a class="navbar-brand me-2" href="index.html">scDesignPop</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9010</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9012</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -41,6 +41,7 @@
     <li><a class="dropdown-item" href="articles/scDesignPop-dynamic-eQTL-NL.html">Model nonlinear dynamic eQTL effects in continuous cell states</a></li>
     <li><a class="dropdown-item" href="articles/scDesignPop-dynamic-eQTL.html">Model linear dynamic eQTL effects in continuous cell states</a></li>
     <li><a class="dropdown-item" href="articles/scDesignPop-modify-eQTL-effects.html">Modify eQTL effect for eGenes / non-eGenes</a></li>
+    <li><a class="dropdown-item" href="articles/scDesignPop-parallelization-reproducibility.html">Parallel computing and reproducibility in scDesignPop</a></li>
     <li><a class="dropdown-item" href="articles/scDesignPop-power-analysis-ES-specification.html">Power analysis based on user specified eQTL effect sizes</a></li>
     <li><a class="dropdown-item" href="articles/scDesignPop-power-analysis-selected.html">Power analysis for selected genes</a></li>
     <li><a class="dropdown-item" href="articles/scDesignPop-trans-eQTL.html">Modeling trans-eQTL effect using public data</a></li>
@@ -51,7 +52,7 @@
 <li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="search.json">
 </form></li>
-<li class="nav-item"><a class="nav-link" href="https://github.com/chrisycd/scDesignPop/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/chrisycd/scDesignPop/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
       </ul>
 </div>
 
@@ -75,7 +76,7 @@
 <li>protecting genomic privacy by mitigating eQTL-based re-identification of individuals via linking attacks</li>
 </ol></li>
 </ul>
-<p><span style="color:blue"> <strong>Detailed tutorials that illustrate various functionalities of scDesignPop are available at this <a href="https://chrisycd.github.io/scDesignPop/docs/index.html" class="external-link">website</a></strong></span>. The following illustration figure summarizes the workflow of scDesignPop:</p>
+<p><span style="color:blue"> <strong>Detailed tutorials that illustrate various functionalities of scDesignPop are available at this <a href="https://chrisycd.github.io/scDesignPop/docs/index.html">website</a></strong></span>. The following illustration figure summarizes the workflow of scDesignPop:</p>
 <p><img src="reference/figures/scDesignPop_illustration.jpg" width="600"></p>
 </div>
 <div class="section level1">
@@ -83,6 +84,7 @@
 </h1></div>
 <ol style="list-style-type: decimal">
 <li><a href="#installation">Installation</a></li>
+<li><a href="#quickstart">Quick-start</a></li>
 <li><a href="#tutorials">Tutorials</a></li>
 <li><a href="#contact">Contact</a></li>
 <li><a href="#related-manuscripts">Related Manuscripts</a></li>
@@ -104,44 +106,57 @@
 <span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"chrisycd/scDesignPop"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
+<h2 id="quick-start">Quick-start<a name="quickstart"></a>
+<a class="anchor" aria-label="anchor" href="#quick-start"></a>
+</h2>
+<p>Here is the quick start to run scDesignPop:</p>
+<ul>
+<li><a href="https://chrisycd.github.io/scDesignPop/docs/articles/scDesignPop.html">Quick start</a></li>
+</ul>
+</div>
+<div class="section level2">
 <h2 id="tutorials">Tutorials<a name="tutorials"></a>
 <a class="anchor" aria-label="anchor" href="#tutorials"></a>
 </h2>
-<p>For tutorials, please check the <a href="https://chrisycd.github.io/scDesignPop/docs/index.html" class="external-link">website</a>. The tutorials will demonstrate the applications of <strong>scDesignPop</strong> as follows:</p>
+<p>For tutorials, please check the <a href="https://chrisycd.github.io/scDesignPop/docs/index.html">website</a>. The tutorials will demonstrate the applications of <strong>scDesignPop</strong> as follows:</p>
 <ul>
-<li><p><a href="https://chrisycd.github.io/scDesignPop/docs/articles/scDesignPop.html" class="external-link">Model population-scale scRNA-seq data</a></p></li>
-<li><p><a href="https://chrisycd.github.io/scDesignPop/docs/articles/scDesignPop-batch-effect.html" class="external-link">Modeling batch effect in population-scale scRNA-seq data</a></p></li>
-<li><p><a href="https://chrisycd.github.io/scDesignPop/docs/articles/scDesignPop-trans-eqtl.html" class="external-link">Modeling trans-eQTL effect using public data</a></p></li>
-<li><p><a href="https://chrisycd.github.io/scDesignPop/docs/articles/scDesignPop-dynamic-eQTL.html" class="external-link">Model linear dynamic eQTL effects in continuous cell states</a></p></li>
-<li><p><a href="https://chrisycd.github.io/scDesignPop/docs/articles/scDesignPop-dynamic-eQTL-NL.html" class="external-link">Model Nonlinear dynamic eQTL effects in continuous cell states</a></p></li>
-<li><p><a href="https://chrisycd.github.io/scDesignPop/docs/articles/scDesignPop-celltype-prop-modeling.html" class="external-link">Model cell type proportions for new individuals</a></p></li>
-<li><p><a href="https://chrisycd.github.io/scDesignPop/docs/articles/scDesignPop-modify-eQTL-effects.html" class="external-link">Modify eQTL effect for eGenes / non-eGenes</a></p></li>
-<li><p><a href="https://chrisycd.github.io/scDesignPop/docs/articles/scDesignPop-power-analysis-selected.html" class="external-link">Power analysis for selected genes</a></p></li>
-<li><p><a href="https://chrisycd.github.io/scDesignPop/docs/articles/scDesignPop-power-analysis-ES-specification.html" class="external-link">Power analysis based on user specified eQTL effect sizes</a></p></li>
+<li><p><a href="https://chrisycd.github.io/scDesignPop/docs/articles/scDesignPop-batch-effect.html">Model batch effect in population-scale scRNA-seq data</a></p></li>
+<li><p><a href="https://chrisycd.github.io/scDesignPop/docs/articles/scDesignPop-trans-eQTL.html">Model trans-eQTL effect using public data</a></p></li>
+<li><p><a href="https://chrisycd.github.io/scDesignPop/docs/articles/scDesignPop-dynamic-eQTL.html">Model linear dynamic eQTL effects in continuous cell states</a></p></li>
+<li><p><a href="https://chrisycd.github.io/scDesignPop/docs/articles/scDesignPop-dynamic-eQTL-NL.html">Model nonlinear dynamic eQTL effects in continuous cell states</a></p></li>
+<li><p><a href="https://chrisycd.github.io/scDesignPop/docs/articles/scDesignPop-celltype-prop-modeling.html">Model cell type proportions for new individuals</a></p></li>
+<li><p><a href="https://chrisycd.github.io/scDesignPop/docs/articles/scDesignPop-modify-eQTL-effects.html">Modify eQTL effect for eGenes / non-eGenes</a></p></li>
+<li><p><a href="https://chrisycd.github.io/scDesignPop/docs/articles/scDesignPop-power-analysis-selected.html">Power analysis for selected genes</a></p></li>
+<li><p><a href="https://chrisycd.github.io/scDesignPop/docs/articles/scDesignPop-power-analysis-ES-specification.html">Power analysis based on user specified eQTL effect sizes</a></p></li>
+<li><p><a href="https://chrisycd.github.io/scDesignPop/docs/articles/scDesignPop-parallelization-reproducibility.html">Parallel computing and reproducibility in scDesignPop</a></p></li>
 </ul>
 </div>
 <div class="section level2">
 <h2 id="contact">Contact<a name="contact"></a>
 <a class="anchor" aria-label="anchor" href="#contact"></a>
 </h2>
-<p>Any questions or advice on <code>scDesignPop</code> are welcomed! Please report it on <a href="https://github.com/chrisycd/scDesignPop/issues">issues</a>, or contact Chris Dong (<a href="mailto:cycd@g.ucla.edu" class="email">cycd@g.ucla.edu</a>) or Yihui Cen (<a href="mailto:yihuicen@g.ucla.edu" class="email">yihuicen@g.ucla.edu</a>).</p>
+<p>Any questions or advice on <code>scDesignPop</code> are welcomed! Please report it on <a href="https://github.com/chrisycd/scDesignPop/issues" class="external-link">issues</a>, or contact Chris Dong (<a href="mailto:cycd@g.ucla.edu" class="email">cycd@g.ucla.edu</a>) or Yihui Cen (<a href="mailto:yihuicen@g.ucla.edu" class="email">yihuicen@g.ucla.edu</a>).</p>
 </div>
 <div class="section level2">
 <h2 id="related-manuscripts">Related Manuscripts<a name="related-manuscripts"></a>
 <a class="anchor" aria-label="anchor" href="#related-manuscripts"></a>
 </h2>
 <ul>
-<li><p>The original <strong>scDesignPop</strong> paper (TBD. Coming soon…)</p></li>
+<li>The <strong>scDesignPop</strong> preprint:
+<ul>
 <li>
-<p>The simulator for general single-cell counts: <strong>scDesign3</strong></p>
+<strong>scDesignPop</strong>: <a href="https://doi.org/10.64898/2026.02.23.707578" class="external-link">Dong, C., Cen, Y., Song, D. <em>et al.</em> scDesignPop generates realistic population-scale single-cell RNA-seq for power analysis, benchmarking, and privacy protection. <em>BioRxiv</em> (2026).</a>
+</li>
+</ul>
+</li>
+<li>The simulator for general single-cell counts: <strong>scDesign3</strong>
 <ul>
 <li>
 <strong>scDesign3</strong>: <a href="https://www.nature.com/articles/s41587-023-01772-1" class="external-link">Song, D., Wang, Q., Yan, G. <em>et al.</em> scDesign3 generates realistic in silico data for multimodal single-cell and spatial omics. <em>Nat Biotechnol</em> <strong>42</strong>, 247–252 (2024).</a>
 </li>
 </ul>
 </li>
-<li>
-<p>The predecessors of <strong>scDesign3</strong></p>
+<li>The predecessors of <strong>scDesign3</strong>
 <ul>
 <li>
 <strong>scDesign</strong>: <a href="https://academic.oup.com/bioinformatics/article/35/14/i41/5529133" class="external-link">Li, W. V., &amp; Li, J. J. (2019). A statistical simulator scDesign for rational scRNA-seq experimental design. <em>Bioinformatics</em>, <strong>35</strong>(14), i41-i50.</a>
@@ -151,8 +166,7 @@
 </li>
 </ul>
 </li>
-<li>
-<p>The simulator for single-cell multi-omics reads developed by our lab member Guanao Yan</p>
+<li>The simulator for single-cell multi-omics reads developed by our lab member Guanao Yan
 <ul>
 <li>
 <strong>scReadSim</strong>: <a href="https://doi.org/10.1038/s41467-023-43162-w" class="external-link">Yan, G., Song, D. &amp; Li, J.J. scReadSim: a single-cell RNA-seq and ATAC-seq read simulator. <em>Nat Commun</em> <strong>14</strong>, 7482 (2023)</a>
@@ -166,16 +180,17 @@
   </main><aside class="col-md-3"><div class="links">
 <h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
-<li><a href="https://github.com/chrisycd/scDesignPop/">Browse source code</a></li>
-<li><a href="https://github.com/chrisycd/scDesignPop/issues">Report a bug</a></li>
+<li><a href="https://github.com/chrisycd/scDesignPop/" class="external-link">Browse source code</a></li>
+<li><a href="https://github.com/chrisycd/scDesignPop/issues" class="external-link">Report a bug</a></li>
 </ul>
 </div>
 
 <div class="license">
 <h2 data-toc-skip>License</h2>
 <ul class="list-unstyled">
-<li><a href="LICENSE.html">Full license</a></li>
-<li><small><a href="https://opensource.org/licenses/mit-license.php" class="external-link">MIT</a> + file <a href="LICENSE-text.html">LICENSE</a></small></li>
+<li>
+<a href="https://opensource.org/licenses/mit-license.php" class="external-link">MIT</a> + file <a href="LICENSE-text.html">LICENSE</a>
+</li>
 </ul>
 </div>
 

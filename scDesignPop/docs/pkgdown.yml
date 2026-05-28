@@ -7,11 +7,12 @@ articles:
   scDesignPop-dynamic-eQTL-NL: scDesignPop-dynamic-eQTL-NL.html
   scDesignPop-dynamic-eQTL: scDesignPop-dynamic-eQTL.html
   scDesignPop-modify-eQTL-effects: scDesignPop-modify-eQTL-effects.html
+  scDesignPop-parallelization-reproducibility: scDesignPop-parallelization-reproducibility.html
   scDesignPop-power-analysis-ES-specification: scDesignPop-power-analysis-ES-specification.html
   scDesignPop-power-analysis-selected: scDesignPop-power-analysis-selected.html
   scDesignPop-trans-eQTL: scDesignPop-trans-eQTL.html
   scDesignPop: scDesignPop.html
-last_built: 2026-02-13T08:40Z
+last_built: 2026-05-28T21:20Z
 urls:
-  reference: https://github.com/chrisycd/scDesignPop/reference
-  article: https://github.com/chrisycd/scDesignPop/articles
+  reference: https://chrisycd.github.io/scDesignPop/reference
+  article: https://chrisycd.github.io/scDesignPop/articles

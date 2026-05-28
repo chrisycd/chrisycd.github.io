@@ -23,9 +23,10 @@ following illustration figure summarizes the workflow of scDesignPop:
 ![](reference/figures/scDesignPop_illustration.jpg)
 
 1.  [Installation](#installation)
-2.  [Tutorials](#tutorials)
-3.  [Contact](#contact)
-4.  [Related Manuscripts](#related-manuscripts)
+2.  [Quick-start](#quickstart)
+3.  [Tutorials](#tutorials)
+4.  [Contact](#contact)
+5.  [Related Manuscripts](#related-manuscripts)
 
 ## Installation
 
@@ -47,6 +48,13 @@ if(!require("remotes")){
 remotes::install_github("chrisycd/scDesignPop")
 ```
 
+## Quick-start
+
+Here is the quick start to run scDesignPop:
+
+- [Quick
+  start](https://chrisycd.github.io/scDesignPop/docs/articles/scDesignPop.html)
+
 ## Tutorials
 
 For tutorials, please check the
@@ -54,19 +62,16 @@ For tutorials, please check the
 tutorials will demonstrate the applications of **scDesignPop** as
 follows:
 
-- [Model population-scale scRNA-seq
-  data](https://chrisycd.github.io/scDesignPop/docs/articles/scDesignPop.html)
-
-- [Modeling batch effect in population-scale scRNA-seq
+- [Model batch effect in population-scale scRNA-seq
   data](https://chrisycd.github.io/scDesignPop/docs/articles/scDesignPop-batch-effect.html)
 
-- [Modeling trans-eQTL effect using public
-  data](https://chrisycd.github.io/scDesignPop/docs/articles/scDesignPop-trans-eqtl.html)
+- [Model trans-eQTL effect using public
+  data](https://chrisycd.github.io/scDesignPop/docs/articles/scDesignPop-trans-eQTL.html)
 
 - [Model linear dynamic eQTL effects in continuous cell
   states](https://chrisycd.github.io/scDesignPop/docs/articles/scDesignPop-dynamic-eQTL.html)
 
-- [Model Nonlinear dynamic eQTL effects in continuous cell
+- [Model nonlinear dynamic eQTL effects in continuous cell
   states](https://chrisycd.github.io/scDesignPop/docs/articles/scDesignPop-dynamic-eQTL-NL.html)
 
 - [Model cell type proportions for new
@@ -81,6 +86,9 @@ follows:
 - [Power analysis based on user specified eQTL effect
   sizes](https://chrisycd.github.io/scDesignPop/docs/articles/scDesignPop-power-analysis-ES-specification.html)
 
+- [Parallel computing and reproducibility in
+  scDesignPop](https://chrisycd.github.io/scDesignPop/docs/articles/scDesignPop-parallelization-reproducibility.html)
+
 ## Contact
 
 Any questions or advice on `scDesignPop` are welcomed! Please report it
@@ -89,17 +97,17 @@ Chris Dong (<cycd@g.ucla.edu>) or Yihui Cen (<yihuicen@g.ucla.edu>).
 
 ## Related Manuscripts
 
-- The original **scDesignPop** paper (TBD. Coming soon…)
-
+- The **scDesignPop** preprint:
+  - **scDesignPop**: [Dong, C., Cen, Y., Song, D. *et al.* scDesignPop
+    generates realistic population-scale single-cell RNA-seq for power
+    analysis, benchmarking, and privacy protection. *BioRxiv*
+    (2026).](https://doi.org/10.64898/2026.02.23.707578)
 - The simulator for general single-cell counts: **scDesign3**
-
   - **scDesign3**: [Song, D., Wang, Q., Yan, G. *et al.* scDesign3
     generates realistic in silico data for multimodal single-cell and
     spatial omics. *Nat Biotechnol* **42**, 247–252
     (2024).](https://www.nature.com/articles/s41587-023-01772-1)
-
 - The predecessors of **scDesign3**
-
   - **scDesign**: [Li, W. V., & Li, J. J. (2019). A statistical
     simulator scDesign for rational scRNA-seq experimental design.
     *Bioinformatics*, **35**(14),
@@ -109,10 +117,8 @@ Chris Dong (<cycd@g.ucla.edu>) or Yihui Cen (<yihuicen@g.ucla.edu>).
     single-cell gene expression count data with gene correlations
     captured. *Genome biology*, **22**(1),
     1-37.](https://link.springer.com/article/10.1186/s13059-021-02367-2)
-
 - The simulator for single-cell multi-omics reads developed by our lab
   member Guanao Yan
-
   - **scReadSim**: [Yan, G., Song, D. & Li, J.J. scReadSim: a
     single-cell RNA-seq and ATAC-seq read simulator. *Nat Commun*
     **14**, 7482 (2023)](https://doi.org/10.1038/s41467-023-43162-w)
