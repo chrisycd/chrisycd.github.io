@@ -13,15 +13,11 @@ data("example_sce_Bcell")
 
 ## Format
 
-A `SingleCellExperiment` object with 817 genes and 3,726 cells.
+A `SingleCellExperiment` object with 753 genes and 3,785 cells.
 
 - assays:
 
   - `counts`: raw UMI count matrix.
-
-  - `norm`: normalized expression values.
-
-  - `logcounts`: log-transformed normalized expression values.
 
 - rowData:
 
@@ -43,6 +39,10 @@ A `SingleCellExperiment` object with 817 genes and 3,726 cells.
 
   :   Cell-type annotation within the B-cell compartment (e.g.,
       immature/naive B cells, memory B cells).
+
+  `sex`
+
+  :   Batch of the donor.
 
   `indiv`
 
@@ -72,19 +72,18 @@ A `SingleCellExperiment` object with 817 genes and 3,726 cells.
 data("example_sce_Bcell")
 example_sce_Bcell
 #> class: SingleCellExperiment 
-#> dim: 817 3726 
+#> dim: 753 3785 
 #> metadata(0):
-#> assays(3): counts norm logcounts
-#> rownames(817): ENSG00000023902 ENSG00000028137 ... ENSG00000254709
-#>   ENSG00000273272
+#> assays(1): counts
+#> rownames(753): ENSG00000023902 ENSG00000028137 ... ENSG00000244509
+#>   ENSG00000254709
 #> rowData names(2): GeneSymbol features
-#> colnames(3726): AAAGATGGTTATGCGT-1 AACTCAGGTCCGCTGA-1 ...
-#>   TTCGAAGGTGATGCCC-9 TTGCCGTGTTCGTCTC-9
-#> colData names(5): cell_type indiv sex age slingPseudotime_1
+#> colnames(3785): Cell1 Cell2 ... Cell3784 Cell3785
+#> colData names(5): indiv cell_type sex age slingPseudotime_1
 #> reducedDimNames(1): PHATE
 #> mainExpName: NULL
 #> altExpNames(0):
 summary(SingleCellExperiment::colData(example_sce_Bcell)$slingPseudotime_1)
-#>      Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
-#> 0.0006717 0.2882431 0.4254734 0.4389588 0.5794676 0.9997564 
+#>     Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
+#> 0.003699 0.317517 0.465263 0.474149 0.624296 1.000000 
 ```

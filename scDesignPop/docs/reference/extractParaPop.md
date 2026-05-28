@@ -16,7 +16,7 @@ extractParaPop(
   indiv_colname = "indiv",
   snp_colname = "snp_id",
   loc_colname = "POS",
-  parallelization = c("pbmcapply", "future.apply", "parallel", "biocparallel"),
+  parallelization = c("parallel", "biocparallel", "pbmcapply", "future.apply"),
   BPPARAM = NULL,
   future.seed = FALSE,
   data_maxsize = 1,
@@ -40,7 +40,7 @@ extractParaPop(
 
   a list of named features, each with the fitted object and other
   variables as output from
-  [`fitMarginalPop`](https://github.com/chrisycd/scDesignPop/reference/fitMarginalPop.md).
+  [`fitMarginalPop()`](https://chrisycd.github.io/scDesignPop/reference/fitMarginalPop.md).
 
 - n_cores:
 
@@ -54,14 +54,14 @@ extractParaPop(
 - new_covariate:
 
   a cell-by-covariate data frame obtained in the list output from
-  [`constructDataPop`](https://github.com/chrisycd/scDesignPop/reference/constructDataPop.md).
+  [`constructDataPop()`](https://chrisycd.github.io/scDesignPop/reference/constructDataPop.md).
   It must have a corr_group variable.
 
 - new_eqtl_geno_list:
 
   a list of eQTL genotype data frames for each gene to be simulated. If
   using same list as in
-  [`fitMarginalPop`](https://github.com/chrisycd/scDesignPop/reference/fitMarginalPop.md),
+  [`fitMarginalPop()`](https://chrisycd.github.io/scDesignPop/reference/fitMarginalPop.md),
   then the in those samples
 
 - indiv_colname:
@@ -72,7 +72,7 @@ extractParaPop(
 - snp_colname:
 
   a string scalar for the SNP variable in `eqtlgeno_df` used in
-  [`constructDataPop`](https://github.com/chrisycd/scDesignPop/reference/constructDataPop.md).
+  [`constructDataPop()`](https://chrisycd.github.io/scDesignPop/reference/constructDataPop.md).
   The default is "snp_id".
 
 - loc_colname:
@@ -90,8 +90,7 @@ extractParaPop(
 - BPPARAM:
 
   a BiocParallelParam class object (from `BiocParallel` R package) that
-  must be specified when using `parallelization = "biocparallel"`.
-  Either
+  may be specified when using `parallelization = "biocparallel"`. Either
   [`BiocParallel::SnowParam()`](https://rdrr.io/pkg/BiocParallel/man/SnowParam-class.html)
   or
   [`BiocParallel::MulticoreParam()`](https://rdrr.io/pkg/BiocParallel/man/MulticoreParam-class.html)
@@ -115,9 +114,9 @@ extractParaPop(
 
 - data:
 
-  a cell-by-covariate data frame obtained in the list output from
-  [`constructDataPop`](https://github.com/chrisycd/scDesignPop/reference/constructDataPop.md).
-  It must have a corr_group variable. Used only in gamlss fits.
+  a cell-by-covariate data frame used to fit marginal models in
+  [`fitMarginalPop()`](https://chrisycd.github.io/scDesignPop/reference/fitMarginalPop.md).
+  It must have a corr_group variable.
 
 - ...:
 

@@ -9,25 +9,26 @@ powerAnalysis(
   marginal_list,
   marginal_model = NULL,
   refit_formula = NULL,
-  geneid = NULL,
-  snpid = NULL,
+  geneid,
+  snpid,
   celltype_colname = "cell_type",
-  celltype_vector = NULL,
+  celltype_vector,
   celltype_specific_ES_vector = NULL,
   indiv_colname = "indiv",
   method = c("nb", "poisson", "gaussian", "pseudoBulkLinear"),
-  nindivs = NULL,
-  ncells = NULL,
+  nindivs,
+  ncells,
   nPool = NULL,
   nIndivPerPool = NULL,
   nCellPerPool = NULL,
   alpha = 0.05,
   nsims = 100,
-  ncores = 2L,
-  parallelization = c("pbmcapply", "future.apply", "parallel", "biocparallel"),
+  n_cores = 2L,
+  parallelization = c("parallel", "biocparallel", "pbmcapply", "future.apply"),
   BPPARAM = NULL,
   future.seed = FALSE,
-  data_maxsize = 1
+  data_maxsize = 1,
+  ...
 )
 ```
 
@@ -112,7 +113,7 @@ powerAnalysis(
   number of simulations for calculating the power. This parameter will
   affect the resolution of the power value.
 
-- ncores:
+- n_cores:
 
   a positive integer value (greater or equal to 1) to specify the number
   of CPU cores used in parallelization. The default is 2.
@@ -126,9 +127,10 @@ powerAnalysis(
 
 - BPPARAM:
 
-  a BiocParallelParam class object (from `BiocParallel` R package) that
-  must be specified when using `parallelization = "biocparallel"`.
-  Either
+  a
+  [`BiocParallel::BiocParallelParam()`](https://rdrr.io/pkg/BiocParallel/man/BiocParallelParam-class.html)
+  class object (from `BiocParallel` R package) that may be specified
+  when using `parallelization = "biocparallel"`. Either
   [`BiocParallel::SnowParam()`](https://rdrr.io/pkg/BiocParallel/man/SnowParam-class.html)
   or
   [`BiocParallel::MulticoreParam()`](https://rdrr.io/pkg/BiocParallel/man/MulticoreParam-class.html)
@@ -149,6 +151,10 @@ powerAnalysis(
   a positive numeric value used to set max marginal_list size in GiB
   increments. Used only when `parallelization = "future.apply"`. The
   default is 1.
+
+- ...:
+
+  additional arguments passed to internal functions.
 
 ## Value
 

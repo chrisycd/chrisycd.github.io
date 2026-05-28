@@ -15,7 +15,7 @@ constructDataPop(
   sampid_vec = NULL,
   copula_variable = celltype_colname,
   n_quantiles = 10,
-  slot_name = "counts",
+  assay_use = "counts",
   snp_mode = c("single", "multi"),
   time_colname = NULL,
   celltype_colname = "cell_type",
@@ -71,7 +71,7 @@ constructDataPop(
   an integer value used for how many time quantiles of continuous cell
   states will be assigned for copula fitting. The default is 10.
 
-- slot_name:
+- assay_use:
 
   a string scalar specifying the slot to use in input `sce`. The default
   is "counts".

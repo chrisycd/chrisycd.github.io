@@ -23,7 +23,7 @@ simuNewPop(
   input_data,
   new_covariate,
   important_feature = "all",
-  parallelization = c("pbmcapply", "future.apply", "parallel", "biocparallel"),
+  parallelization = c("parallel", "biocparallel", "pbmcapply", "future.apply"),
   BPPARAM = NULL,
   future.seed = FALSE,
   data_maxsize = 1,
@@ -100,22 +100,22 @@ simuNewPop(
 - new_covariate:
 
   A data.frame which contains covariates of targeted simulated data from
-  [`constructDataPop`](https://github.com/chrisycd/scDesignPop/reference/constructDataPop.md).
+  [`constructDataPop()`](https://chrisycd.github.io/scDesignPop/reference/constructDataPop.md).
 
 - important_feature:
 
-  important_feature A string or vector which indicates whether a gene
-  will be used in correlation estimation or not. If this is a string,
-  then this string must be either "all" (using all genes) or "auto",
-  which indicates that the genes will be automatically selected based on
-  the proportion of zero expression across cells for each gene. Gene
-  with zero proportion greater than 0.8 will be excluded form gene-gene
-  correlation estimation. If this is a vector, then this should be a
-  logical vector with length equal to the number of genes in `sce`.
-  `TRUE` in the logical vector means the corresponding gene will be
-  included in gene-gene correlation estimation and `FALSE` in the
-  logical vector means the corresponding gene will be excluded from the
-  gene-gene correlation estimation. The default value for is "all".
+  A string or vector which indicates whether a gene will be used in
+  correlation estimation or not. If this is a string, then this string
+  must be either "all" (using all genes) or "auto", which indicates that
+  the genes will be automatically selected based on the proportion of
+  zero expression across cells for each gene. Gene with zero proportion
+  greater than 0.8 will be excluded form gene-gene correlation
+  estimation. If this is a vector, then this should be a logical vector
+  with length equal to the number of genes in `sce`. `TRUE` in the
+  logical vector means the corresponding gene will be included in
+  gene-gene correlation estimation and `FALSE` in the logical vector
+  means the corresponding gene will be excluded from the gene-gene
+  correlation estimation. The default value for is "all".
 
 - parallelization:
 
@@ -126,9 +126,10 @@ simuNewPop(
 
 - BPPARAM:
 
-  a BiocParallelParam class object (from `BiocParallel` R package) that
-  must be specified when using `parallelization = "biocparallel"`.
-  Either
+  a
+  [`BiocParallel::BiocParallelParam()`](https://rdrr.io/pkg/BiocParallel/man/BiocParallelParam-class.html)
+  class object (from `BiocParallel` R package) that may be specified
+  when using `parallelization = "biocparallel"`. Either
   [`BiocParallel::SnowParam()`](https://rdrr.io/pkg/BiocParallel/man/SnowParam-class.html)
   or
   [`BiocParallel::MulticoreParam()`](https://rdrr.io/pkg/BiocParallel/man/MulticoreParam-class.html)
@@ -177,12 +178,12 @@ or sparse matrix.
 
 ## Details
 
-The function takes the new covariate (if use) from
-[`constructDataPop`](https://github.com/chrisycd/scDesignPop/reference/constructDataPop.md),
+The function takes the new covariate (if used) from
+[`constructDataPop()`](https://chrisycd.github.io/scDesignPop/reference/constructDataPop.md),
 parameter matrices from
-[`extractParaPop`](https://github.com/chrisycd/scDesignPop/reference/extractParaPop.md)
+[`extractParaPop()`](https://chrisycd.github.io/scDesignPop/reference/extractParaPop.md),
 and multivariate Unifs from
-[`fitCopulaPop`](https://github.com/chrisycd/scDesignPop/reference/fitCopulaPop.md).
+[`fitCopulaPop()`](https://chrisycd.github.io/scDesignPop/reference/fitCopulaPop.md).
 
 ### Parallelization options
 

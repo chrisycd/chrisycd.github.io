@@ -1,12 +1,13 @@
 # Generic function to compute model parameter vectors
 
-A S3 generic function for computing model parameters for with or without
-new covariate of a feature
+A S3 generic function for computing the mean, theta, zero parameter
+vectors with covariates for a feature, given the parametric family of
+the marginal model.
 
 ## Usage
 
 ``` r
-calcParaVectors(fit, family_use, new_covariate, total_cells, data, ...)
+calcParaVectors(fit, family_use, new_covariate, data, ...)
 ```
 
 ## Arguments
@@ -22,19 +23,22 @@ calcParaVectors(fit, family_use, new_covariate, total_cells, data, ...)
 - new_covariate:
 
   a cell-by-covariate data frame obtained in the list output from
-  [`constructDataPop`](https://github.com/chrisycd/scDesignPop/reference/constructDataPop.md).
+  [`constructDataPop()`](https://chrisycd.github.io/scDesignPop/reference/constructDataPop.md).
   It must have a corr_group variable.
-
-- total_cells:
-
-  a positive integer for the number of total cells to simulate.
 
 - data:
 
-  a cell-by-covariate data frame obtained in the list output from
-  [`constructDataPop`](https://github.com/chrisycd/scDesignPop/reference/constructDataPop.md).
-  It must have a corr_group variable. Used only in gamlss fits.
+  a cell-by-covariate data frame used to fit marginal models in
+  [`fitMarginalPop()`](https://chrisycd.github.io/scDesignPop/reference/fitMarginalPop.md).
+  It must have a corr_group variable.
 
 - ...:
 
   additional arguments passed to calcParaVectors S3 method functions.
+
+## Details
+
+It also uses either train or new data, and has option to compute
+parameter vectors for new individuals options. Note that there is
+randomness introduced when computing the parameter vectors for new
+individuals, as there are random effects.

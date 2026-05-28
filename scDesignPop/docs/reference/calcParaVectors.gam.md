@@ -6,7 +6,7 @@ A calcParaVectors Method for gam (mgcv package) Objects
 
 ``` r
 # S3 method for class 'gam'
-calcParaVectors(fit, family_use, new_covariate, total_cells, ...)
+calcParaVectors(fit, family_use, new_covariate, ...)
 ```
 
 ## Arguments
@@ -22,12 +22,8 @@ calcParaVectors(fit, family_use, new_covariate, total_cells, ...)
 - new_covariate:
 
   a cell-by-covariate data frame obtained in the list output from
-  [`constructDataPop`](https://github.com/chrisycd/scDesignPop/reference/constructDataPop.md).
+  [`constructDataPop()`](https://chrisycd.github.io/scDesignPop/reference/constructDataPop.md).
   It must have a corr_group variable.
-
-- total_cells:
-
-  a positive integer for the number of total cells to simulate.
 
 - ...:
 

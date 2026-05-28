@@ -6,7 +6,7 @@ A calcParaVectors Method for gamlss Objects
 
 ``` r
 # S3 method for class 'gamlss'
-calcParaVectors(fit, family_use, new_covariate, total_cells, data, ...)
+calcParaVectors(fit, family_use, new_covariate, data, ...)
 ```
 
 ## Arguments
@@ -22,18 +22,14 @@ calcParaVectors(fit, family_use, new_covariate, total_cells, data, ...)
 - new_covariate:
 
   a cell-by-covariate data frame obtained in the list output from
-  [`constructDataPop`](https://github.com/chrisycd/scDesignPop/reference/constructDataPop.md).
+  [`constructDataPop()`](https://chrisycd.github.io/scDesignPop/reference/constructDataPop.md).
   It must have a corr_group variable.
-
-- total_cells:
-
-  a positive integer for the number of total cells to simulate.
 
 - data:
 
-  a cell-by-covariate data frame obtained in the list output from
-  [`constructDataPop`](https://github.com/chrisycd/scDesignPop/reference/constructDataPop.md).
-  It must have a corr_group variable. Used only in gamlss fits.
+  a cell-by-covariate data frame used to fit marginal models in
+  [`fitMarginalPop()`](https://chrisycd.github.io/scDesignPop/reference/fitMarginalPop.md).
+  It must have a corr_group variable.
 
 - ...:
 

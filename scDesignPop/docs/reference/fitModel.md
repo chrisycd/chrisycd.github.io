@@ -1,4 +1,4 @@
-# Fit a Marginal Model
+# Fit a marginal model
 
 Fits a specified parametric model for a feature using a response
 variable, and eQTL genotype and cell covariates as explanatory
@@ -29,7 +29,7 @@ fitModel(
 
 - feature_name:
 
-  a string scalar of a feature's name (ie. gene id).
+  a string scalar of a feature's name (e.g., gene id).
 
 - response_vec:
 
@@ -54,7 +54,9 @@ fitModel(
 
 - model_family:
 
-  a string scalar to specify model fitting used.
+  a string scalar to specify model fitting used. Must be one of either
+  'nb', 'poisson', 'gaussian', 'binomial', 'zinb', 'zip', or
+  'lognormal'.
 
 - interact_colnames:
 

@@ -7,7 +7,7 @@ This is the main function for fitting a copula.
 ``` r
 fitCopulaPop(
   sce,
-  assay_use,
+  assay_use = "counts",
   input_data,
   marginal_list,
   family_use,
@@ -18,7 +18,7 @@ fitCopulaPop(
   family_set = c("gaussian", "indep"),
   important_feature = "all",
   n_cores = 2L,
-  parallelization = c("pbmcapply", "future.apply", "parallel", "biocparallel"),
+  parallelization = c("parallel", "biocparallel", "pbmcapply", "future.apply"),
   BPPARAM = NULL,
   future.seed = FALSE,
   data_maxsize = 1,
@@ -40,14 +40,14 @@ fitCopulaPop(
 - input_data:
 
   a cell-by-covariate data frame obtained in the list output from
-  [`constructDataPop`](https://github.com/chrisycd/scDesignPop/reference/constructDataPop.md).
+  [`constructDataPop`](https://chrisycd.github.io/scDesignPop/reference/constructDataPop.md).
   It must have a corr_group variable.
 
 - marginal_list:
 
   a list of named features, each with the fitted object and other
   variables as output from
-  [`fitMarginalPop`](https://github.com/chrisycd/scDesignPop/reference/fitMarginalPop.md).
+  [`fitMarginalPop()`](https://chrisycd.github.io/scDesignPop/reference/fitMarginalPop.md).
 
 - family_use:
 
@@ -82,7 +82,8 @@ fitCopulaPop(
 
 - important_feature:
 
-  a string vector of genes.
+  a string vector of genes. The default is "all", which means all
+  features will be used for gene-gene correlation estimation.
 
 - n_cores:
 
@@ -99,8 +100,7 @@ fitCopulaPop(
 - BPPARAM:
 
   a BiocParallelParam class object (from `BiocParallel` R package) that
-  must be specified when using `parallelization = "biocparallel"`.
-  Either
+  may be specified when using `parallelization = "biocparallel"`. Either
   [`BiocParallel::SnowParam()`](https://rdrr.io/pkg/BiocParallel/man/SnowParam-class.html)
   or
   [`BiocParallel::MulticoreParam()`](https://rdrr.io/pkg/BiocParallel/man/MulticoreParam-class.html)

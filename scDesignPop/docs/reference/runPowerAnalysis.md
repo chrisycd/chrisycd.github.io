@@ -1,4 +1,4 @@
-# The wrapper function for power analysis
+# Compute power for eQTL effects in cell types
 
 ### Parallelization options
 
@@ -15,15 +15,15 @@ runPowerAnalysis(
   marginal_list,
   marginal_model = "nb",
   refit_formula = NULL,
-  geneid = NULL,
-  snpid = NULL,
+  geneid,
+  snpid,
   celltype_colname = "cell_type",
-  celltype_vector = NULL,
+  celltype_vector,
   celltype_specific_ES_list = NULL,
   indiv_colname = "indiv",
-  methods = NULL,
-  nindivs = NULL,
-  ncells = NULL,
+  methods,
+  nindivs,
+  ncells,
   nPool = NULL,
   nIndivPerPool = NULL,
   nCellPerPool = NULL,
@@ -33,8 +33,8 @@ runPowerAnalysis(
   gene_number = 800,
   CI_nsim = 1000,
   CI_conf = 0.05,
-  ncores = 2L,
-  parallelization = c("pbmcapply", "future.apply", "parallel", "biocparallel"),
+  n_cores = 2L,
+  parallelization = c("parallel", "biocparallel", "pbmcapply", "future.apply"),
   BPPARAM = NULL,
   future.seed = FALSE,
   data_maxsize = 1
@@ -138,7 +138,7 @@ runPowerAnalysis(
 
   Bootstrap CI interval.
 
-- ncores:
+- n_cores:
 
   a positive integer value (greater or equal to 1) to specify the number
   of CPU cores used in parallelization. The default is 2.
@@ -152,9 +152,10 @@ runPowerAnalysis(
 
 - BPPARAM:
 
-  a BiocParallelParam class object (from `BiocParallel` R package) that
-  must be specified when using `parallelization = "biocparallel"`.
-  Either
+  a
+  [`BiocParallel::BiocParallelParam()`](https://rdrr.io/pkg/BiocParallel/man/BiocParallelParam-class.html)
+  class object (from `BiocParallel` R package) that may be specified
+  when using `parallelization = "biocparallel"`. Either
   [`BiocParallel::SnowParam()`](https://rdrr.io/pkg/BiocParallel/man/SnowParam-class.html)
   or
   [`BiocParallel::MulticoreParam()`](https://rdrr.io/pkg/BiocParallel/man/MulticoreParam-class.html)

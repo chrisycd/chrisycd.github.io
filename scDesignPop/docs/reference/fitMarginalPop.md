@@ -10,7 +10,7 @@ fitMarginalPop(
   mean_formula,
   model_family = "nb",
   interact_colnames = NULL,
-  parallelization = c("pbmcapply", "future.apply", "parallel", "biocparallel"),
+  parallelization = c("parallel", "biocparallel", "pbmcapply", "future.apply"),
   n_cores = 2L,
   loc_colname = "POS",
   snp_colname = "snp_id",
@@ -31,7 +31,8 @@ fitMarginalPop(
 
 - data_list:
 
-  a list of input data.
+  a list of input data created by
+  [`constructDataPop()`](https://chrisycd.github.io/scDesignPop/reference/constructDataPop.md).
 
 - mean_formula:
 
@@ -41,7 +42,9 @@ fitMarginalPop(
 
 - model_family:
 
-  a string scalar to specify model fitting used.
+  a string scalar to specify model fitting used. Must be one of either
+  'nb', 'poisson', 'gaussian', 'binomial', 'zinb', 'zip', or
+  'lognormal'.
 
 - interact_colnames:
 
@@ -52,7 +55,7 @@ fitMarginalPop(
 
   a string scalar specifying the parallelization backend used during
   marginal fitting. Must be one of either "parallel", "future.apply",
-  "biocparallel", or "pbmcapply". The default value is "pbmcapply". See
+  "biocparallel", or "pbmcapply". The default value is "parallel". See
   details.
 
 - n_cores:
@@ -103,9 +106,10 @@ fitMarginalPop(
 
 - BPPARAM:
 
-  a BiocParallelParam class object (from `BiocParallel` R package) that
-  must be specified when using `parallelization = "biocparallel"`.
-  Either
+  a
+  [`BiocParallel::BiocParallelParam()`](https://rdrr.io/pkg/BiocParallel/man/BiocParallelParam-class.html)
+  class object (from `BiocParallel` R package) that may be specified
+  when using `parallelization = "biocparallel"`. Either
   [`BiocParallel::SnowParam()`](https://rdrr.io/pkg/BiocParallel/man/SnowParam-class.html)
   or
   [`BiocParallel::MulticoreParam()`](https://rdrr.io/pkg/BiocParallel/man/MulticoreParam-class.html)
@@ -117,9 +121,9 @@ fitMarginalPop(
   a logical or an integer (of length one or seven), or a list of
   length(X) with pre-generated random seeds that can be specified when
   using `parallelization = "future.apply"`. See
-  [`future.apply::future_eapply`](https://future.apply.futureverse.org/reference/future_lapply.html)
-  documentation for more details on its usage. future.seed is not used
-  in other parallelization options. The default is FALSE.
+  [`future.apply::future_eapply()`](https://future.apply.futureverse.org/reference/future_lapply.html)
+  for more details on its usage. future.seed is not used in other
+  parallelization options. The default is FALSE.
 
 - data_maxsize:
 
